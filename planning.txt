@@ -1,0 +1,45 @@
+Multiuser Possibility
+- potentially possible by storing credentials for each account
+
+
+
+RESOURCES:-------------------------------------------------------------------------------------
+
+React/Google Drive API Example:
+https://dev.to/arnabsen1729/using-google-drive-api-v3-to-upload-a-file-to-drive-using-react-4loi
+
+
+
+Multiuser Possibility:
+- Multiple user Auth Simultaneously for Gmail API 
+https://stackoverflow.com/questions/51396314/multiple-user-auth-simultaneously-for-gmail-api
+
+- Gmail API multiple accounts
+https://stackoverflow.com/questions/51398912/gmail-api-multiple-accounts
+
+- Android GoogleSignIn: Multiple accounts at the same time + deferred sign-in upon failure
+https://stackoverflow.com/questions/41707085/android-googlesignin-multiple-accounts-at-the-same-time-deferred-sign-in-upon
+
+- Support multiple accounts simultaneously
+https://github.com/react-native-community/google-signin/issues/200
+
+
+Verifying App:
+https://support.google.com/cloud/answer/7454865
+- during testing/development period, app doesn't need to be verified UNTIL it goes public
+- when public/in production, need to add the production link as an "Authorized JavaScript origins" under credentials
+- also, edit api key restrictions to include production link
+
+
+
+
+
+Running the code
+- Clone the repo
+- make sure you have NPM installed
+- run command "npm install"
+- start the development server with "npm start"
+
+
+8.22.20
+- added example code from https://dev.to/arnabsen1729/using-google-drive-api-v3-to-upload-a-file-to-drive-using-react-4loi
