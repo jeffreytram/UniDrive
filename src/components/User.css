@@ -1,0 +1,12 @@
+.User {
+    padding: 2px;
+    border-radius: 10px;
+    position: sticky;
+}
+
+.File {
+    padding: 10px;
+    border-radius: 2px;
+    margin: 5px;
+    background-color: blueviolet;
+}
