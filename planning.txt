@@ -8,6 +8,13 @@ RESOURCES:----------------------------------------------------------------------
 React/Google Drive API Example:
 https://dev.to/arnabsen1729/using-google-drive-api-v3-to-upload-a-file-to-drive-using-react-4loi
 
+How to request file information:
+Formatting request:
+https://developers.google.com/drive/api/v3/search-files#node.js
+List of parameters:
+https://developers.google.com/drive/api/v3/reference/files/list
+File information:
+https://developers.google.com/drive/api/v3/reference/files#resource-representations
 
 
 Multiuser Possibility:

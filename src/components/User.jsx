@@ -26,16 +26,10 @@ class User extends Component {
         }
     }
     getStyle() {
-        let styles = {
+        return {
             backgroundColor: `hsl(${Math.floor(Math.random()*16)}, 50%, 70%)`,
             color: "#808080",
-            display: "none"
         };
-        const letBank = "0123456789ABCDF";
-        for(let i = 0; i < 6; i++) {
-            styles.backgroundColor += letBank[Math.floor(Math.random() * 16)];
-        }
-        return styles;
     }
     viewToggle() {
         this.setState({
@@ -43,16 +37,30 @@ class User extends Component {
         });
     }
     render() {
-        let styles = this.getStyle();
-        styles.display = this.state.isDisplayed ? "flex" : "none";
+        let bannerStyles = this.getStyle();
+        let fileContainerStyles = {
+            display: this.state.isDisplayed ? "flex" : "none"
+        }
         return (
-            <div className="User" style={styles} onClick={() => this.viewToggle()}>
-                {this.props.fileList.map(file => (
-                    <File
-                        data = {file}
-                    />
-                ))}
+            <div className="User">
+                <div className="UserBanner" style={bannerStyles} onClick={() => this.viewToggle()}>
+                    {this.props.name}
+                </div>
+                <div className="UserFilesContainer" style={fileContainerStyles}>
+                    {this.props.fileList.map(file => (
+                        <File
+                            data = {file}
+                        />
+                    ))}
+                </div>
             </div>
         );
     }
 }
+
+/* const letBank = "0123456789ABCDF";
+for(let i = 0; i < 6; i++) {
+    styles.backgroundColor += letBank[Math.floor(Math.random() * 16)];
+} */
+
+export default User;

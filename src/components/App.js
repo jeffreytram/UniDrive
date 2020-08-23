@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import User from './User'
 import { config } from '../config';
 
 var SCOPE = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
@@ -7,9 +8,13 @@ const API_KEY = config.web.api_key
 const CLIENT_ID = config.web.client_id
 
 class App extends Component {
-  state = {
-    name: '',
-    googleAuth: ''
+  constructor() {
+    super();
+    this.state = {
+      name: '',
+      googleAuth: '',
+      userFiles: [],
+    }
   }
   componentDidMount() {
     var script = document.createElement('script');
@@ -35,11 +40,19 @@ class App extends Component {
         })
         this.state.googleAuth.isSignedIn.listen(this.updateSigninStatus);
         console.log(window.gapi)
-        window.gapi.client.drive.files.list({})
-          .then(function (response) {
+        // Setting parameters for list
+        console.log(this);
+        window.gapi.client.drive.files.list({
+          fields: 'files(id, name, mimeType, starred, iconLink, shared)'
+        })
+          .then(response => {
             // Handle the results here (response.result has the parsed body).
-            console.log("Response", response)
-            console.log(response.result.files)
+            console.log(this)
+            this.setState({
+              userFiles: response.result.files
+            });
+            console.log("Response", response);
+            console.log(response.result.files);
           },
             function (err) { console.error("Execute error", err); });
         document.getElementById('signin-btn').addEventListener('click', this.signInFunction);
@@ -53,12 +66,12 @@ class App extends Component {
 
   signInFunction = () => {
     this.state.googleAuth.signIn();
-    this.updateSigninStatus()
+    this.updateSigninStatus();
   }
 
   signOutFunction = () => {
     this.state.googleAuth.signOut();
-    this.updateSigninStatus()
+    this.updateSigninStatus();
   }
 
   updateSigninStatus = () => {
@@ -88,6 +101,10 @@ class App extends Component {
         <div>UserName: <strong>{this.state.name}</strong></div>
         <button id="signin-btn">Sign In</button>
         <button id="signout-btn">Sign Out</button>
+        <User 
+          fileList = {this.state.userFiles}
+          name = {this.state.name}
+        />
       </div>
     );
   }

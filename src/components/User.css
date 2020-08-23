@@ -1,7 +1,26 @@
 .User {
-    padding: 2px;
+    width: 100%;
+}
+
+.UserBanner {
     border-radius: 10px;
     position: sticky;
+    top: 0;
+    text-align: center;
+    height: 20px;
+    width: 15vw;
+    padding: 8px 0px;
+}
+
+.UserBanner:hover {
+    cursor: pointer;
+}
+
+.UserFilesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100vw;
 }
 
 .File {
