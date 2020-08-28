@@ -16,6 +16,7 @@ class App extends Component {
       userList: []
     }
   }
+
   componentDidMount() {
     var script = document.createElement('script');
     script.onload = this.handleClientLoad;
@@ -45,6 +46,9 @@ class App extends Component {
     }
   }
 
+  /**
+   * Handles user sign in
+   */
   signInFunction = () => {
     window.gapi.auth2.getAuthInstance().signIn()
     this.addUser()
@@ -54,7 +58,9 @@ class App extends Component {
     
   }
 
-  //TODO: need to remove user from userlist when signing out
+  /**
+   * TODO: Handles user sign out.
+   */
   signOutFunction = () => {
     this.state.googleAuth.signOut();
     this.updateSigninStatus();
@@ -64,25 +70,9 @@ class App extends Component {
     this.setSigninStatus();
   }
 
-  //sets the sign in display name - TODO: delete
-  setSigninStatus = async () => {
-    var user = this.state.googleAuth.currentUser.get();
-    console.log(user)
-    if (user.wc == null) {
-      this.setState({
-        name: ''
-      });
-    }
-    else {
-      var isAuthorized = user.hasGrantedScopes(SCOPE);
-      if (isAuthorized) {
-        this.setState({
-          name: user.rt.Ad
-        });
-      }
-    }
-  }
-
+  /**
+   * Adds a user to the userList
+   */
   addUser = () => {
     this.setState(prevState => {
       return {
@@ -91,15 +81,16 @@ class App extends Component {
     })
   }
 
-  //gets the files and stores them for user at given index
+  /**
+   * Gets the files and stores them for the user at the given index
+   * @param {Number} index index of the user in the userList to update
+   * @param {Object} files the file object to store
+   */
   updateFiles = (index, files) => {
-    // check if right user
     files.list({
       fields: 'files(id, name, mimeType, starred, iconLink, shared)'
     })
       .then(response => {
-        // Handle the results here (response.result has the parsed body).
-        // update that user's files
         this.setState(prevState => {
           let newUserList = prevState.userList
           newUserList[index].files = response.result.files
@@ -111,6 +102,11 @@ class App extends Component {
         function (err) { console.error("Execute error", err); });
   }
 
+  /**
+   * Stores the users info for the user at the given index
+   * @param {Number} index index of the user in the userList to add the info
+   * @param {Object} info info object to store
+   */
   addUserInfo = (index, info) => {
     this.setState(prevState => {
       let newUserList = prevState.userList
@@ -120,7 +116,6 @@ class App extends Component {
       }
     })
   }
-
 
   render() {
     return (
