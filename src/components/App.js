@@ -8,7 +8,7 @@ const API_KEY = config.web.api_key
 const CLIENT_ID = config.web.client_id
 
 let userId = 1
-
+var GoogleAuth;
 class App extends Component {
   constructor() {
     super();
@@ -50,9 +50,12 @@ class App extends Component {
    * Handles user sign in
    */
   signInFunction = () => {
-    window.gapi.auth2.getAuthInstance().signIn()
-    this.addUser()
-    const newUserIndex = this.state.userList.length - 1
+    GoogleAuth = window.gapi.auth2.getAuthInstance();
+    var options = new window.gapi.auth2.SigninOptionsBuilder();
+    options.setPrompt('select_account');
+    window.gapi.auth2.getAuthInstance().signIn(options);
+    this.addUser();
+    const newUserIndex = this.state.userList.length - 1;
     this.updateFiles(newUserIndex, this.state.userList[newUserIndex].drive.files)
     this.addUserInfo(newUserIndex, this.state.userList[newUserIndex].googleAuth.currentUser.get().rt)
     
