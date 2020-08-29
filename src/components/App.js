@@ -36,11 +36,13 @@ class App extends Component {
         'scope': SCOPE,
         'discoveryDocs': [discoveryUrl]
       }).then(() => {
-        //this.state.googleAuth.isSignedIn.listen(this.updateSigninStatus);
-        document.getElementById('signin-btn').addEventListener('click', this.signInFunction);
-        document.getElementById('signout-btn').addEventListener('click', this.signOutFunction);
-
+        //this.state.googleAuth.isSignedIn.listen(this.updateSigninStatus);     
+        //console.log(GoogleAuth); 
+        GoogleAuth = window.gapi.auth2.getAuthInstance(); 
+        var options = new window.gapi.auth2.SigninOptionsBuilder();
+        GoogleAuth.attachClickHandler('signin-btn', options, this.signInFunction, console.log('error'));
       });
+
     } catch (e) {
       console.log(e);
     }
@@ -50,10 +52,10 @@ class App extends Component {
    * Handles user sign in
    */
   signInFunction = () => {
-    GoogleAuth = window.gapi.auth2.getAuthInstance();
+   // GoogleAuth = window.gapi.auth2.getAuthInstance();
     var options = new window.gapi.auth2.SigninOptionsBuilder();
     options.setPrompt('select_account');
-    window.gapi.auth2.getAuthInstance().signIn(options);
+    GoogleAuth.signIn(options);
     this.addUser();
     const newUserIndex = this.state.userList.length - 1;
     this.updateFiles(newUserIndex, this.state.userList[newUserIndex].drive.files)
