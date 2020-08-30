@@ -39,8 +39,8 @@ class App extends Component {
         //this.state.googleAuth.isSignedIn.listen(this.updateSigninStatus);     
         //console.log(GoogleAuth); 
         GoogleAuth = window.gapi.auth2.getAuthInstance(); 
-        var options = new window.gapi.auth2.SigninOptionsBuilder();
-        GoogleAuth.attachClickHandler('signin-btn', options, this.signInFunction, console.log('error'));
+        
+        GoogleAuth.attachClickHandler('signin-btn', GoogleAuth.options, this.signInFunction, console.log('startup'));
       });
 
     } catch (e) {
@@ -53,9 +53,10 @@ class App extends Component {
    */
   signInFunction = () => {
    // GoogleAuth = window.gapi.auth2.getAuthInstance();
-    var options = new window.gapi.auth2.SigninOptionsBuilder();
-    options.setPrompt('select_account');
-    GoogleAuth.signIn(options);
+   console.log('sign in clicked');
+    //var options = new window.gapi.auth2.SigninOptionsBuilder();
+    //options.setPrompt('select_account');
+    //GoogleAuth.signIn();
     this.addUser();
     const newUserIndex = this.state.userList.length - 1;
     this.updateFiles(newUserIndex, this.state.userList[newUserIndex].drive.files)
