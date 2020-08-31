@@ -39,17 +39,20 @@ class User extends Component {
     });
   }
 
+
   render() {
     const { $t, TJ } = this.props.infoData
     let fileContainerStyles = {
       display: this.state.isDisplayed ? "flex" : "none"
     }
+  
     return (
       <div className="User">
         <div className="UserBanner" onClick={() => this.viewToggle()}>
           <img height="15px" src={TJ}/>
           {this.props.name} ({$t})
         </div>
+  `      <button id="remove-btn" onClick = {() => this.props.removeFunc(this.props.userId)}> Remove Account </button>
 
         <div className="UserFilesContainer" style={fileContainerStyles}>
           {this.props.fileList.map(file => (
