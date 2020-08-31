@@ -32,7 +32,7 @@ class User extends Component {
       isDisplayed: false
     }
   }
-  a
+
   viewToggle() {
     this.setState({
       isDisplayed: !this.state.isDisplayed
