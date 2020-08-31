@@ -1,0 +1,10 @@
+.HeaderContainer {
+    height: 50px;
+    border-bottom-style: solid;
+    border-color: grey;
+}
+.Icon {
+    height: 100%;
+    left: 0;
+    top: 0;
+}
