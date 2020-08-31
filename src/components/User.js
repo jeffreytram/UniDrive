@@ -48,14 +48,6 @@ class User extends Component {
   
     return (
       <div className="User">
-
-        
-        <div className="UserBanner" style={bannerStyles} onClick={() => this.viewToggle()}>
-          
-          {this.props.name}
-        </div> 
-        <button id="remove-btn" onClick = {() => this.props.removeFunc(this.props.userId)}> Remove Account </button>
-
         <div className="UserBanner" onClick={() => this.viewToggle()}>
           <img height="15px" src={TJ}/>
           {this.props.name} ({$t})
