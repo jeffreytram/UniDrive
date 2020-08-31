@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import App from './App'
 import './User.css';
 //background-color
 //color for text color
@@ -37,17 +38,22 @@ class User extends Component {
     });
   }
 
+
   render() {
     let bannerStyles = this.getStyle();
     let fileContainerStyles = {
       display: this.state.isDisplayed ? "flex" : "none"
     }
+    console.log(this.props.userId)
+    //document.getElementById('remove-btn').addEventListener('click', this.signOutFunction());
     return (
       <div className="User">
-        <div className="UserBanner" style={bannerStyles} onClick={() => this.viewToggle()}>
-          {this.props.name}
-        </div>
         
+        <div className="UserBanner" style={bannerStyles} onClick={() => this.viewToggle()}>
+          
+          {this.props.name}
+        </div> 
+        <button id="remove-btn" onClick = {() => this.props.removeFunc(this.props.userId)}> Remove Account </button>
         <div className="UserFilesContainer" style={fileContainerStyles}>
           {this.props.fileList.map(file => (
             <File

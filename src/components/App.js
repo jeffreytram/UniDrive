@@ -7,7 +7,7 @@ var discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const API_KEY = config.web.api_key
 const CLIENT_ID = config.web.client_id
 
-let userId = 1
+let userId = 1;
 var GoogleAuth;
 class App extends Component {
   constructor() {
@@ -61,15 +61,30 @@ class App extends Component {
     const newUserIndex = this.state.userList.length - 1;
     this.updateFiles(newUserIndex, this.state.userList[newUserIndex].drive.files)
     this.addUserInfo(newUserIndex, this.state.userList[newUserIndex].googleAuth.currentUser.get().rt)
-    
   }
 
   /**
-   * TODO: Handles user sign out.
+   *  Handles user sign out.
+   *  Removes the specified user from the userList array, then updates the State
+   * 
+   * @param {number} id attribute of the specific User tp be removed in the UserList array
    */
-  signOutFunction = () => {
-    this.state.googleAuth.signOut();
-    this.updateSigninStatus();
+  signOutFunction = (id) => {
+    if (window.confirm("Are you sure you want to remove this account?")) {
+    
+      console.log("sign-out clicked");
+
+      console.log(id)
+      //let userIndex = this.state.userList.findIndex(user => (user.id === id));
+      //console.log(userIndex);
+      this.setState(prevState => {
+        let newUserList =  this.state.userList.filter(function(user) {
+          return user.id !== id;
+        });
+        return {
+        userList: newUserList
+        }})
+    }
   }
 
   updateSigninStatus = () => {
@@ -127,13 +142,15 @@ class App extends Component {
     return (
       <div className="App">
         <div>UserName: <strong>{this.state.name}</strong></div>
-        <button id="signin-btn">Sign In</button>
-        <button id="signout-btn">Sign Out</button>
+        <button id="signin-btn">Add an Account</button>
         {this.state.userList.map(user => {
           return (
             <User
               name={user.info.Ad}
               fileList={user.files}
+              userId={user.id}
+              removeFunc = {(id) => this.signOutFunction(id)}
+              
             />
           )
         })}
