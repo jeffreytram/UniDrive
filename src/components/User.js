@@ -9,7 +9,14 @@ Props:
     ...
 */
 const File = props => (
-  <div className="File">{props.data.name}</div>
+  <div className="File">
+    <div>
+
+    </div>
+    <div>
+      {props.data.name}
+    </div>
+  </div>
 );
 
 /*
@@ -25,12 +32,7 @@ class User extends Component {
       isDisplayed: false
     }
   }
-  getStyle() {
-    return {
-      backgroundColor: `hsl(${Math.floor(Math.random() * 16)}, 50%, 70%)`,
-      color: "#808080",
-    };
-  }
+  a
   viewToggle() {
     this.setState({
       isDisplayed: !this.state.isDisplayed
@@ -38,16 +40,17 @@ class User extends Component {
   }
 
   render() {
-    let bannerStyles = this.getStyle();
+    const { $t, TJ } = this.props.infoData
     let fileContainerStyles = {
       display: this.state.isDisplayed ? "flex" : "none"
     }
     return (
       <div className="User">
-        <div className="UserBanner" style={bannerStyles} onClick={() => this.viewToggle()}>
-          {this.props.name}
+        <div className="UserBanner" onClick={() => this.viewToggle()}>
+          <img height="15px" src={TJ}/>
+          {this.props.name} ({$t})
         </div>
-        
+
         <div className="UserFilesContainer" style={fileContainerStyles}>
           {this.props.fileList.map(file => (
             <File
