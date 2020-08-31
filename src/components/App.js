@@ -6,7 +6,7 @@ var SCOPE = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/au
 var discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const API_KEY = config.web.api_key
 const CLIENT_ID = config.web.client_id
-
+let ready = false;
 let userId = 1;
 var GoogleAuth;
 class App extends Component {
@@ -52,15 +52,12 @@ class App extends Component {
    * Handles user sign in
    */
   signInFunction = () => {
-   // GoogleAuth = window.gapi.auth2.getAuthInstance();
-   console.log('sign in clicked');
-    //var options = new window.gapi.auth2.SigninOptionsBuilder();
-    //options.setPrompt('select_account');
-    //GoogleAuth.signIn();
-    this.addUser();
-    const newUserIndex = this.state.userList.length - 1;
-    this.updateFiles(newUserIndex, this.state.userList[newUserIndex].drive.files)
-    this.addUserInfo(newUserIndex, this.state.userList[newUserIndex].googleAuth.currentUser.get().rt)
+  ready = false;
+  this.addUser();
+  const newUserIndex = this.state.userList.length - 1;
+    
+  this.updateFiles(newUserIndex, this.state.userList[newUserIndex].drive.files)
+  this.addUserInfo(newUserIndex, this.state.userList[newUserIndex].googleAuth.currentUser.get().rt)
   }
 
   /**
@@ -70,20 +67,17 @@ class App extends Component {
    * @param {number} id attribute of the specific User tp be removed in the UserList array
    */
   signOutFunction = (id) => {
-    if (window.confirm("Are you sure you want to remove this account?")) {
+    if (ready) {
     
-      //console.log("sign-out clicked");
-
-      //console.log(id)
-      //let userIndex = this.state.userList.findIndex(user => (user.id === id));
-      //console.log(userIndex);
-      this.setState(prevState => {
-        let newUserList =  this.state.userList.filter(function(user) {
-          return user.id !== id;
-        });
-        return {
-        userList: newUserList
-        }})
+      if (window.confirm("Are you sure you want to remove this account?")) {
+        this.setState(prevState => {
+          let newUserList =  this.state.userList.filter(function(user) {
+            return user.id !== id;
+          });
+          return {
+          userList: newUserList
+          }})
+      }
     }
   }
 
@@ -115,8 +109,10 @@ class App extends Component {
         this.setState(prevState => {
           let newUserList = prevState.userList
           newUserList[index].files = response.result.files
+          ready = true;
           return {
             userList: newUserList
+            
           }
         })
       },
