@@ -8,7 +8,7 @@ const API_KEY = config.web.api_key
 const CLIENT_ID = config.web.client_id
 
 let userId = 1
-
+var GoogleAuth;
 class App extends Component {
   constructor() {
     super();
@@ -36,11 +36,13 @@ class App extends Component {
         'scope': SCOPE,
         'discoveryDocs': [discoveryUrl]
       }).then(() => {
-        //this.state.googleAuth.isSignedIn.listen(this.updateSigninStatus);
-        document.getElementById('signin-btn').addEventListener('click', this.signInFunction);
-        document.getElementById('signout-btn').addEventListener('click', this.signOutFunction);
-
+        //this.state.googleAuth.isSignedIn.listen(this.updateSigninStatus);     
+        //console.log(GoogleAuth); 
+        GoogleAuth = window.gapi.auth2.getAuthInstance(); 
+        
+        GoogleAuth.attachClickHandler('signin-btn', GoogleAuth.options, this.signInFunction, console.log('startup'));
       });
+
     } catch (e) {
       console.log(e);
     }
@@ -50,9 +52,13 @@ class App extends Component {
    * Handles user sign in
    */
   signInFunction = () => {
-    window.gapi.auth2.getAuthInstance().signIn()
-    this.addUser()
-    const newUserIndex = this.state.userList.length - 1
+   // GoogleAuth = window.gapi.auth2.getAuthInstance();
+   console.log('sign in clicked');
+    //var options = new window.gapi.auth2.SigninOptionsBuilder();
+    //options.setPrompt('select_account');
+    //GoogleAuth.signIn();
+    this.addUser();
+    const newUserIndex = this.state.userList.length - 1;
     this.updateFiles(newUserIndex, this.state.userList[newUserIndex].drive.files)
     this.addUserInfo(newUserIndex, this.state.userList[newUserIndex].googleAuth.currentUser.get().rt)
     
