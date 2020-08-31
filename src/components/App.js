@@ -72,9 +72,9 @@ class App extends Component {
   signOutFunction = (id) => {
     if (window.confirm("Are you sure you want to remove this account?")) {
     
-      console.log("sign-out clicked");
+      //console.log("sign-out clicked");
 
-      console.log(id)
+      //console.log(id)
       //let userIndex = this.state.userList.findIndex(user => (user.id === id));
       //console.log(userIndex);
       this.setState(prevState => {

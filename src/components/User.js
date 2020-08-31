@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import App from './App'
 import './User.css';
 //background-color
 //color for text color
@@ -44,8 +43,7 @@ class User extends Component {
     let fileContainerStyles = {
       display: this.state.isDisplayed ? "flex" : "none"
     }
-    console.log(this.props.userId)
-    //document.getElementById('remove-btn').addEventListener('click', this.signOutFunction());
+  
     return (
       <div className="User">
         
