@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import User from './User'
+import Header from './Header'
 import { config } from '../config';
 
 var SCOPE = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
@@ -126,6 +127,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Header />
         <div>UserName: <strong>{this.state.name}</strong></div>
         <button id="signin-btn">Sign In</button>
         <button id="signout-btn">Sign Out</button>
