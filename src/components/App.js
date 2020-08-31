@@ -133,6 +133,7 @@ class App extends Component {
           return (
             <User
               name={user.info.Ad}
+              infoData={user.info}
               fileList={user.files}
             />
           )
