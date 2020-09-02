@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './User.css';
 
-const File = (props) => (
+const File = ({ data }) => (
   <div className="File">
     <div />
     <div>
-      {props.data.name}
+      {data.name}
     </div>
   </div>
 );
+
+File.propTypes = {
+  data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])).isRequired,
+};
 
 class User extends Component {
   constructor() {
@@ -26,12 +31,10 @@ class User extends Component {
 
   render() {
     const { isDisplayed } = this.state;
-
     const {
-      name, infoData, removeFunc, userId, fileList,
+      infoData, removeFunc, userId, fileList,
     } = this.props;
-
-    const { $t, TJ } = infoData;
+    const { Ad, $t, TJ } = infoData;
     const fileContainerStyles = {
       display: isDisplayed ? 'flex' : 'none',
     };
@@ -45,7 +48,7 @@ class User extends Component {
           onKeyDown={() => this.viewToggle()}
         >
           <img height="15px" src={TJ} alt="UniDrive logo" />
-          {name}
+          {Ad}
           {' '}
           (
           {$t}
@@ -66,5 +69,12 @@ class User extends Component {
     );
   }
 }
+
+User.propTypes = {
+  infoData: PropTypes.objectOf(PropTypes.string).isRequired,
+  fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  userId: PropTypes.number.isRequired,
+  removeFunc: PropTypes.func.isRequired,
+};
 
 export default User;

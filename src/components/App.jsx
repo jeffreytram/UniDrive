@@ -144,7 +144,6 @@ class App extends Component {
         <button type="button" id="signin-btn">Add an Account</button>
         {userList.map((user) => (
           <User
-            name={user.info.Ad}
             infoData={user.info}
             fileList={user.files}
             userId={user.id}
