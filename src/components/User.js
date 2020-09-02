@@ -1,23 +1,8 @@
 import React, { Component } from 'react';
+import File from './File'
 import './User.css';
 //background-color
 //color for text color
-
-/*
-Props:
-    data: object from array
-    ...
-*/
-const File = props => (
-  <div className="File">
-    <div>
-
-    </div>
-    <div>
-      {props.data.name}
-    </div>
-  </div>
-);
 
 /*
 Should below be part of state??
