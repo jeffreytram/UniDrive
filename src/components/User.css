@@ -7,9 +7,10 @@
   border: 2px solid gray;
   position: sticky;
   top: 0;
-  height: 20px;
+  height: 40px;
   width: 100%;
   padding: 8px 10px;
+  text-align: left;
 }
 
 .UserBanner:hover {
@@ -20,4 +21,5 @@
   display: flex;
   flex-wrap: wrap;
   width: 100vw;
+  padding: 4px;
 }
