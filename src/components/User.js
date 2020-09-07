@@ -1,57 +1,46 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import File from './File'
-import PropTypes from 'prop-types'
-import './User.css'
+import './User.css';
+//background-color
+//color for text color
 
-File.propTypes = {
-  data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])).isRequired,
-};
-
+/*
+Should below be part of state??
+Props:
+    fileList: array
+    credentials: idk auth object?
+*/
 class User extends Component {
   constructor() {
     super();
     this.state = {
-      isDisplayed: false,
-    };
+      isDisplayed: false
+    }
   }
 
   viewToggle() {
-    this.setState((prevState) => ({
-      isDisplayed: !prevState.isDisplayed,
-    }));
+    this.setState({
+      isDisplayed: !this.state.isDisplayed
+    });
   }
 
-  render() {
-    const { isDisplayed } = this.state;
-    const {
-      infoData, removeFunc, userId, fileList,
-    } = this.props;
-    const { Ad, $t, TJ } = infoData;
-    const fileContainerStyles = {
-      display: isDisplayed ? 'flex' : 'none',
-    };
 
+  render() {
+    const { $t, TJ } = this.props.infoData
+    let fileContainerStyles = {
+      display: this.state.isDisplayed ? "flex" : "none"
+    }
+  
     return (
       <div className="User">
-        <button
-          type="button"
-          className="UserBanner"
-          onClick={() => this.viewToggle()}
-          onKeyDown={() => this.viewToggle()}
-        >
-          <img height="15px" src={TJ} alt="UniDrive logo" />
-          {Ad}
-          {' '}
-          (
-          {$t}
-          )
-        </button>
-        `
-        {' '}
-        <button type="button" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
+        <div className="UserBanner" onClick={() => this.viewToggle()}>
+          <img height="15px" src={TJ}/>
+          {this.props.name} ({$t})
+        </div>
+  `      <button id="remove-btn" onClick = {() => this.props.removeFunc(this.props.userId)}> Remove Account </button>
 
         <div className="UserFilesContainer" style={fileContainerStyles}>
-          {fileList.map((file) => (
+          {this.props.fileList.map(file => (
             <File
               data={file}
             />
@@ -62,11 +51,9 @@ class User extends Component {
   }
 }
 
-User.propTypes = {
-  infoData: PropTypes.objectOf(PropTypes.string).isRequired,
-  fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  userId: PropTypes.number.isRequired,
-  removeFunc: PropTypes.func.isRequired,
-};
+/* const letBank = "0123456789ABCDF";
+for(let i = 0; i < 6; i++) {
+    styles.backgroundColor += letBank[Math.floor(Math.random() * 16)];
+} */
 
 export default User;
