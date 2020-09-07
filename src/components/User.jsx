@@ -1,19 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import File from './File';
 import './User.css';
-
-const File = ({ data }) => (
-  <div className="File">
-    <div />
-    <div>
-      {data.name}
-    </div>
-  </div>
-);
-
-File.propTypes = {
-  data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])).isRequired,
-};
 
 class User extends Component {
   constructor() {
@@ -54,7 +42,6 @@ class User extends Component {
           {$t}
           )
         </button>
-        `
         {' '}
         <button type="button" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
 

@@ -1,0 +1,31 @@
+.FileContainer {
+    height: 70px;
+    width: 50px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    border: 1px solid gray;
+}
+.FileImg {
+    height: 30px;
+    width: 25px;
+}
+.FileName {
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;/* Not doing its thing */
+}
+a {
+    color: black;
+}
+a:link {
+    text-decoration: none;
+}
+a:visited {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}

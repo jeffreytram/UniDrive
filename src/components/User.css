@@ -22,13 +22,3 @@
   flex-wrap: wrap;
   width: 100vw;
 }
-
-.File {
-  padding: 10px;
-  border-radius: 5px;
-  margin: 5px;
-  border: 1px solid gray;
-  width: 120px;
-  height: 15px;
-  overflow: hidden;
-}

@@ -114,7 +114,6 @@ class App extends Component {
           ready = true;
           return {
             userList: newUserList,
-
           };
         });
       },
