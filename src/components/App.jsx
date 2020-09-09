@@ -105,7 +105,7 @@ class App extends Component {
    */
   updateFiles(index, files) {
     files.list({
-      fields: 'files(id, name, mimeType, starred, iconLink, shared)',
+      fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink)',
     })
       .then((response) => {
         this.setState((prevState) => {
