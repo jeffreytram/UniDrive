@@ -20,9 +20,12 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, removeFunc, userId, fileList,
+      infoData, removeFunc, userId, fileList, refreshFunc
     } = this.props;
-    const { Ad, $t, TJ } = infoData;
+    const Ad = infoData.name;
+    const $t = infoData.email;
+    const TJ = infoData.picture;
+    //const { Ad, $t, TJ } = infoData;
     const fileContainerStyles = {
       display: isDisplayed ? 'flex' : 'none',
     };
@@ -44,6 +47,7 @@ class User extends Component {
         </button>
         {' '}
         <button type="button" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
+        <button type="button" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
 
         <div className="UserFilesContainer" style={fileContainerStyles}>
           {fileList.map((file) => (
@@ -62,6 +66,7 @@ User.propTypes = {
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   userId: PropTypes.number.isRequired,
   removeFunc: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
 };
 
 export default User;
