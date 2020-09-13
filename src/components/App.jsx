@@ -9,7 +9,7 @@ const API_KEY = config.web.api_key;
 const CLIENT_ID = config.web.client_id;
 let ready = false;
 let userId = 1;
-let GoogleAuth;
+
 class App extends Component {
   constructor() {
     super();
@@ -23,17 +23,21 @@ class App extends Component {
 
   componentDidMount() {
     const script = document.createElement('script');
-
     script.onload = this.handleClientLoad;
     script.src = 'https://apis.google.com/js/api.js';
     document.body.appendChild(script);
-  
   }
 
   handleClientLoad() {
     window.gapi.load('client:auth');
   }
 
+
+
+   /**
+   * Signs a new user into Google, and then begins the process of storing all of their information
+   * Returns an idToken, an AccessToken, and a Code, all unique to the user in a Response object
+   */
   authorizeUser() {
         window.gapi.load('client:auth', () => {
           window.gapi.auth2.authorize({
@@ -55,33 +59,30 @@ class App extends Component {
             this.signInFunction(accessToken, idToken, code);
           })
         } )
-    
-        
-  
- 
   }
 
+
   /**
-   * Handles user sign in
+   * Handles user sign in by storing all the information gained from the authrizeUser() function above
+   
+   * @param {Object} accessToken the accessToken granted to the user by gapi.client.authorize()
+   * @param {Object} idToken the accessToken granted to the user by gapi.client.authorize()
+    * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   signInFunction(accessToken, idToken, code) {
     ready = false;
     let userInfo = this.parseIDToken(idToken)
     let email = userInfo.email;
     this.addUser(accessToken, idToken, code);
-
     const { userList } = this.state;
     const newUserIndex = userList.length - 1;
     this.updateFiles(newUserIndex, accessToken, idToken, email);
-    
-    this.addUserInfo(newUserIndex, accessToken, idToken);
-    //console.log(window.gapi.client)
   }
+
 
   /**
    *  Handles user sign out.
    *  Removes the specified user from the userList array, then updates the State
-   *
    * @param {number} id attribute of the specific User tp be removed in the UserList array
    */
   signOutFunction(id) {
@@ -97,28 +98,27 @@ class App extends Component {
     }
   }
 
+
   /**
-   * Adds a user to the userList
+   * Adds a new user to the list
+   * @param {Object} accessToken the accessToken granted to the user by gapi.client.authorize()
+   * @param {Object} idToken the accessToken granted to the user by gapi.client.authorize()
+    * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   addUser(accessToken, idToken, code) { 
-    console.log(window.gapi.client)
-    console.log(idToken)
-    console.log(this.parseIDToken(idToken))
-    
-    
     this.setState((prevState) => ({
       userList: [...prevState.userList, {
         id: userId,
         accessToken: accessToken,
         idToken: idToken,
         code : code,
-        //drive: window.gapi.client.drive,
         files: [],
       }],
     }));
     userId += 1;
     console.log(this.state.userList)
   }
+
 
   /**
    * Gets the files and stores them for the user at the given index
@@ -132,7 +132,6 @@ class App extends Component {
         apiKey : API_KEY,
         clientId: CLIENT_ID,
         scope: SCOPE,
-        //responseType : 'id_token permission code',
         prompt : 'none',
         login_hint : email,
         discoveryDocs : [discoveryUrl]
@@ -160,9 +159,13 @@ class App extends Component {
     });
     }
 
+
+  /**
+   * Decrypts the JSON string idToken in order to access the encrytped user information held within
+   * @param {Object} token the idToken of the user
+   */
   parseIDToken(token) {
       try {
-        
       return JSON.parse(atob(token.split('.')[1]));
       } catch (e) {
         return null;
@@ -171,24 +174,10 @@ class App extends Component {
 
 
   /**
-   * Stores the users info for the user at the given index
-   * @param {Number} index index of the user in the userList to add the info
-   * @param {Object} info info object to store
+   * Refreshes all the files being displayed within an account
+   * @param {Number} id the unique id granted to the user when placed within the userList
    */
-  addUserInfo(index, accessToken, idToken) {
-          this.setState((prevState) => {
-            const newUserList = prevState.userList;
-            return {
-              userList: newUserList
-            }
-          })
- 
-  
-    }
-  
-
   refreshFunction(id) {
-    console.log('refresh')
     let index = -1;
     for (let i = 0; i < this.state.userList.length; i++) {
       if (this.state.userList[i].id === id) {
@@ -201,17 +190,34 @@ class App extends Component {
     let userInfo = this.parseIDToken(this.state.userList[index].idToken)
     let email = userInfo.email;
     this.updateFiles(index, accessToken, idToken, email)
-
+    console.log('refreshed account: ' + email)
   }
 
-//}
+   /**
+   * Refreshes all of the accounts currently within the userList
+   */
+  refreshAllFunction() {
+  for(let i = 0; i < this.state.userList.length; i++) {
+    let idToken = this.state.userList[i].idToken;
+    let accessToken = this.state.userList[i].accessToken;
+    let userInfo = this.parseIDToken(this.state.userList[i].idToken);
+    let email = userInfo.email;
+    this.updateFiles(i, accessToken, idToken, email);
+  }
+  console.log('refreshed all accounts');
+  }
+
+
 
   render() {
     const { userList } = this.state;
     return (
       <div className="App">
         <Header />
+        <span>
         <button type="button" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
+        <button type="button" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>Refresh all Accounts</button>
+        </span>
         {userList.map((user) => (
           <User
             infoData={this.parseIDToken(user.idToken)}
