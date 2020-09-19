@@ -4,12 +4,12 @@
 
 .UserBanner {
   border-radius: 5px;
-  border: 2px solid gray;
+  border: 2px solid #929292;
   position: sticky;
   top: 0;
   height: 40px;
   width: 100%;
-  padding: 8px 10px;
+  background-color: white;
   text-align: left;
 }
 
@@ -20,5 +20,37 @@
 .UserFilesContainer {
   display: flex;
   flex-wrap: wrap;
+  gap: 10px;
   width: 100vw;
+}
+
+.profile-picture {
+  height: 20px;
+  vertical-align: text-bottom;
+  border-radius: 10px;
+}
+
+.profile-name {
+  font-weight: bold;
+}
+
+.profile-email {
+  font-style: italic;
+  color: gray;
+}
+
+.delete-btn {
+  border: 2px solid #DB4437;
+  background-color: white;
+  color: #DB4437;
+  font-weight: bold;
+  padding: 3px 5px;
+}
+
+.refresh-btn {
+  border: 2px solid #4285F4;
+  background-color: white;
+  color: #4285F4;
+  font-weight: bold;
+  padding: 3px 5px;
 }

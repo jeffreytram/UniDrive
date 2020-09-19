@@ -1,9 +1,9 @@
-.HeaderContainer {
+.header-container {
     height: 50px;
     border-bottom-style: solid;
     border-color: grey;
 }
-.Icon {
+.logo {
     height: 100%;
     left: 0;
     top: 0;

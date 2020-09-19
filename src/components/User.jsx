@@ -20,12 +20,12 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, removeFunc, userId, fileList, refreshFunc, copyFunc
+      infoData, removeFunc, userId, fileList, refreshFunc, copyFunc,
     } = this.props;
     const Ad = infoData.name;
     const $t = infoData.email;
     const TJ = infoData.picture;
-    //const { Ad, $t, TJ } = infoData;
+    // const { Ad, $t, TJ } = infoData;
     const fileContainerStyles = {
       display: isDisplayed ? 'flex' : 'none',
     };
@@ -38,16 +38,20 @@ class User extends Component {
           onClick={() => this.viewToggle()}
           onKeyDown={() => this.viewToggle()}
         >
-          <img height="15px" src={TJ} alt="UniDrive logo" />
-          {Ad}
-          {' '}
-          (
-          {$t}
-          )
+          <img className="profile-picture" src={TJ} alt="UniDrive logo" />
+          <span className="profile-text">
+            <span className="profile-name">{Ad}</span>
+            {' '}
+            <span className="profile-email">
+              (
+              {$t}
+              )
+            </span>
+          </span>
         </button>
         {' '}
-        <button type="button" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
-        <button type="button" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
+        <button type="button" className="delete-btn" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
+        <button type="button" className="refresh-btn" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
 
         <div className="UserFilesContainer" style={fileContainerStyles}>
           {fileList.map((file) => (
