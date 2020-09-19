@@ -57,7 +57,7 @@ class App extends Component {
   }
 
   /**
-   * Handles user sign in by storing all the information gained from the 
+   * Handles user sign in by storing all the information gained from the
    * authrizeUser() function above
    * @param {Object} accessToken the accessToken granted to the user by gapi.client.authorize()
    * @param {Object} idToken the accessToken granted to the user by gapi.client.authorize()
@@ -171,6 +171,44 @@ class App extends Component {
   }
 
   /**
+   * TODO: Work in progress
+   * @param {*} userId
+   * @param {*} fileId
+   */
+  copyFile = (userId, fileId) => {
+    const index = this.getAccountIndex(userId);
+    const { userList } = this.state;
+
+    const { accessToken, idToken } = userList[index];
+    const email = this.parseIDToken(idToken).email;
+
+    console.log(`copying: ${fileId}`);
+    window.gapi.client.load('drive', 'v3').then(() => {
+      console.log(window.gapi.client);
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        console.log(response);
+        if (response.error) {
+          console.log(response.error);
+          console.log('authorization error');
+        }
+        // todo: add stuff here to do the copying
+        window.gapi.client.drive.files.copy({
+          fileId: fileId
+        }).then((response) => {
+          this.refreshFunction(userList[index].id);
+        });
+      });
+    });
+  }
+
+  /**
    * Refreshes all the files being displayed within an account
    * @param {Number} id the unique id granted to the user when placed within the userList
    */
@@ -226,8 +264,9 @@ class App extends Component {
             infoData={this.parseIDToken(user.idToken)}
             fileList={user.files}
             userId={user.id}
-            removeFunc={(id) => this.signOutFunction(id)}
-            refreshFunc={(id) => this.refreshFunction(id)}
+            removeFunc={this.signOutFunction}
+            refreshFunc={this.refreshFunction}
+            copyFunc={this.copyFile}
           />
         ))}
       </div>
