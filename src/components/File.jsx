@@ -4,15 +4,16 @@ import './File.css';
 
 /* Props contains: Name, Link, Image */
 export default function File(props) {
-  const { data } = props;
-  const { webViewLink, iconLink, name } = data;
+  const { userId, data, copyFunc } = props;
+  const { id, webViewLink, iconLink, name } = data;
   return (
-    <a href={webViewLink} target="_blank">
-      <div className="FileContainer">
+    <div className="FileContainer">
+      <a href={webViewLink}>
         <img className="FileImg" src={iconLink} alt="File icon" />
         <div className="FileName">{name}</div>
-      </div>
-    </a>
+      </a>
+      <button type="button" onClick={() => copyFunc(userId, id)}>Copy</button>
+    </div>
   );
 }
 

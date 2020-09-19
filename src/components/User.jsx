@@ -20,7 +20,7 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, removeFunc, userId, fileList, refreshFunc
+      infoData, removeFunc, userId, fileList, refreshFunc, copyFunc
     } = this.props;
     const Ad = infoData.name;
     const $t = infoData.email;
@@ -52,7 +52,9 @@ class User extends Component {
         <div className="UserFilesContainer" style={fileContainerStyles}>
           {fileList.map((file) => (
             <File
+              userId={userId}
               data={file}
+              copyFunc={copyFunc}
             />
           ))}
         </div>
