@@ -118,7 +118,6 @@ class App extends Component {
    */
   updateFiles = (index, accessToken, idToken, email) => {
     window.gapi.client.load('drive', 'v3').then(() => {
-      console.log(window.gapi.client);
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
@@ -146,7 +145,6 @@ class App extends Component {
     files.list({
       fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink)',
     }).then((response) => {
-      console.log(response);
       this.setState((prevState) => {
         const newUserList = prevState.userList;
         newUserList[index].files = response.result.files;
@@ -183,9 +181,7 @@ class App extends Component {
     const { accessToken, idToken } = userList[index];
     const { email } = this.parseIDToken(idToken);
 
-    console.log(`copying: ${fileId}`);
     window.gapi.client.load('drive', 'v3').then(() => {
-      console.log(window.gapi.client);
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
@@ -194,7 +190,6 @@ class App extends Component {
         login_hint: email,
         discoveryDocs: [discoveryUrl],
       }, (response) => {
-        console.log(response);
         if (response.error) {
           console.log(response.error);
           console.log('authorization error');
@@ -223,7 +218,6 @@ class App extends Component {
     const userInfo = this.parseIDToken(userList[index].idToken);
     const { email } = userInfo;
     this.updateFiles(index, accessToken, idToken, email);
-    console.log(`refreshed account: ${email}`);
   }
 
   getAccountIndex = (id) => {
@@ -248,7 +242,6 @@ class App extends Component {
       const { email } = userInfo;
       this.updateFiles(i, accessToken, idToken, email);
     }
-    console.log('refreshed all accounts');
   }
 
   render() {

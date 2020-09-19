@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import File from './File';
+import FileList from './FileList';
 import './User.css';
 
 class User extends Component {
@@ -52,15 +52,12 @@ class User extends Component {
         <button type="button" className="delete-btn" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
         <button type="button" className="refresh-btn" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
 
-        <div className="user-files-container" style={fileContainerStyles}>
-          {fileList.map((file) => (
-            <File
-              userId={userId}
-              data={file}
-              copyFunc={copyFunc}
-            />
-          ))}
-        </div>
+        <FileList
+          fileList={fileList}
+          fileContainerStyles={fileContainerStyles}
+          userId={userId}
+          copyFunc={copyFunc}
+        />
       </div>
     );
   }

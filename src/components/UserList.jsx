@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import User from './User';
 import './UserList.css';
 
 export default function UserList(props) {
-  console.log(props);
   const {
     userList, parseIDToken, removeFunc, refreshFunc, copyFunc,
   } = props;

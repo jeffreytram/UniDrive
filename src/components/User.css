@@ -19,13 +19,6 @@
   cursor: pointer;
 }
 
-.user-files-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  width: 100vw;
-}
-
 .profile-picture {
   height: 20px;
   vertical-align: text-bottom;
