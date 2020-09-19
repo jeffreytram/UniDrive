@@ -105,6 +105,7 @@ class App extends Component {
         idToken,
         code,
         files: [],
+        parentsList: [],
       }],
     }));
     userId += 1;
@@ -116,8 +117,7 @@ class App extends Component {
    * @param {Object} files the file object to store
    */
   updateFiles = (index, accessToken, idToken, email) => {
-    window.gapi.client.load('drive', 'v3').then(() => {
-      console.log(window.gapi.client);
+    window.gapi.client.load('drive', 'v3').then(() => {;
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
@@ -132,6 +132,7 @@ class App extends Component {
           return;
         }
         this.setfiles(index, window.gapi.client.drive.files);
+        //this.getFiles(this.state.userList[index].id)
       });
     });
   }
@@ -143,21 +144,39 @@ class App extends Component {
    */
   setfiles = (index, files) => {
     files.list({
-      fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink)',
+      fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, starred)',
+      orderBy: 'folder',
+      //q: "'1bE-jTd4HO8VwVEtuBqeFkABE07alOSka' in parents and trash = false"
     }).then((response) => {
-      console.log(response);
       this.setState((prevState) => {
         const newUserList = prevState.userList;
         newUserList[index].files = response.result.files;
         ready = true;
+        console.log(response.result.files)
+        newUserList[index].parentsList = this.findUniqueParents(response.result.files);
+        console.log(newUserList[index].parentsList)
         return {
           userList: newUserList,
         };
       });
     },
     (err) => { console.error('Execute error', err); });
-
   }
+
+
+findUniqueParents = (files) => {
+  let parentsList = [];
+  for (let i = 0; i < files.length; i++) {
+    if (files[i].parents !== undefined) {
+      if (!parentsList.includes(files[i].parents[0])) {
+       parentsList.push(files[i].parents[0])
+      }
+  }
+}
+return parentsList;
+}
+
+
 
   /**
    * Decrypts the JSON string idToken in order to access the encrytped user information held within
