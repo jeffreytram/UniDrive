@@ -131,22 +131,31 @@ class App extends Component {
           console.log('authorization error');
           return;
         }
-        window.gapi.client.drive.files.list({
-          fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink)',
-        }).then((response) => {
-          console.log(response);
-          this.setState((prevState) => {
-            const newUserList = prevState.userList;
-            newUserList[index].files = response.result.files;
-            ready = true;
-            return {
-              userList: newUserList,
-            };
-          });
-        },
-        (err) => { console.error('Execute error', err); });
+        this.setfiles(index, window.gapi.client.drive.files);
       });
     });
+  }
+
+  /**
+   * Stores the files for the given user
+   * @param {Number} index the index of the user to store the files
+   * @param {Object} files file object
+   */
+  setfiles = (index, files) => {
+    files.list({
+      fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink)',
+    }).then((response) => {
+      console.log(response);
+      this.setState((prevState) => {
+        const newUserList = prevState.userList;
+        newUserList[index].files = response.result.files;
+        ready = true;
+        return {
+          userList: newUserList,
+        };
+      });
+    },
+    (err) => { console.error('Execute error', err); });
   }
 
   /**
