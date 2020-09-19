@@ -45,3 +45,16 @@ a:visited {
 a:hover {
   text-decoration: underline;
 }
+
+.copy-btn {
+  background-color: #f7f7f7;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+}
+
+.copy-btn:hover {
+  cursor: pointer;
+  border-color: #303030;
+  background-color: #303030;
+  color: white;
+}

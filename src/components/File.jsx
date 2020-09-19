@@ -18,11 +18,13 @@ export default function File(props) {
       <div className="file-name">
         <a href={webViewLink}>{name}</a>
       </div>
-      <button type="button" onClick={() => copyFunc(userId, id)}>Copy</button>
+      <button type="button" className="copy-btn" onClick={() => copyFunc(userId, id)}>Copy</button>
     </div>
   );
 }
 
 File.propTypes = {
+  userId: PropTypes.number.isRequired,
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])).isRequired,
+  copyFunc: PropTypes.func.isRequired,
 };

@@ -4,7 +4,6 @@ import File from './File';
 import './FileList.css';
 
 export default function UserList(props) {
-  console.log(props)
   const {
     fileList, fileContainerStyles, userId, copyFunc,
   } = props;
