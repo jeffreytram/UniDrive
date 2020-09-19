@@ -20,31 +20,30 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, removeFunc, userId, fileList, refreshFunc, copyFunc,
+      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc,
     } = this.props;
-    const Ad = infoData.name;
-    const $t = infoData.email;
-    const TJ = infoData.picture;
-    // const { Ad, $t, TJ } = infoData;
+
+    const parsedInfo = parseIDToken(infoData);
+    const { name, email, picture } = parsedInfo;
     const fileContainerStyles = {
       display: isDisplayed ? 'flex' : 'none',
     };
 
     return (
-      <div className="User">
+      <div className="user">
         <button
           type="button"
-          className="UserBanner"
+          className="user-banner"
           onClick={() => this.viewToggle()}
           onKeyDown={() => this.viewToggle()}
         >
-          <img className="profile-picture" src={TJ} alt="UniDrive logo" />
+          <img className="profile-picture" src={picture} alt="UniDrive logo" />
           <span className="profile-text">
-            <span className="profile-name">{Ad}</span>
+            <span className="profile-name">{name}</span>
             {' '}
             <span className="profile-email">
               (
-              {$t}
+              {email}
               )
             </span>
           </span>
@@ -53,7 +52,7 @@ class User extends Component {
         <button type="button" className="delete-btn" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
         <button type="button" className="refresh-btn" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
 
-        <div className="UserFilesContainer" style={fileContainerStyles}>
+        <div className="user-files-container" style={fileContainerStyles}>
           {fileList.map((file) => (
             <File
               userId={userId}
@@ -68,7 +67,8 @@ class User extends Component {
 }
 
 User.propTypes = {
-  infoData: PropTypes.objectOf(PropTypes.string).isRequired,
+  infoData: PropTypes.string.isRequired,
+  parseIDToken: PropTypes.func.isRequired,
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   userId: PropTypes.number.isRequired,
   removeFunc: PropTypes.func.isRequired,

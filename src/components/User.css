@@ -1,8 +1,9 @@
-.User {
+.user {
   width: 100%;
+  margin: 15px 0px;
 }
 
-.UserBanner {
+.user-banner {
   border-radius: 5px;
   border: 2px solid #929292;
   position: sticky;
@@ -11,13 +12,14 @@
   width: 100%;
   background-color: white;
   text-align: left;
+  z-index: 1;
 }
 
-.UserBanner:hover {
+.user-banner:hover {
   cursor: pointer;
 }
 
-.UserFilesContainer {
+.user-files-container {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -41,16 +43,30 @@
 
 .delete-btn {
   border: 2px solid #DB4437;
+  border-radius: 5px;
   background-color: white;
   color: #DB4437;
   font-weight: bold;
   padding: 3px 5px;
 }
 
+.delete-btn:hover {
+  cursor: pointer;
+  background-color: #DB4437;
+  color: white;
+}
+
 .refresh-btn {
   border: 2px solid #4285F4;
+  border-radius: 5px;
   background-color: white;
   color: #4285F4;
   font-weight: bold;
   padding: 3px 5px;
+}
+
+.refresh-btn:hover {
+  cursor: pointer;
+  background-color: #4285F4;
+  color: white;
 }

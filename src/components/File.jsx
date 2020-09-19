@@ -18,6 +18,7 @@ export default function File(props) {
       <div className="file-name">
         <a href={webViewLink}>{name}</a>
       </div>
+      <button type="button" onClick={() => copyFunc(userId, id)}>Copy</button>
     </div>
   );
 }

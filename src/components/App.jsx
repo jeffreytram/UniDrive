@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import User from './User';
+import UserList from './UserList';
 import Header from './Header';
 import { config } from '../config';
 import './App.css';
@@ -260,16 +260,13 @@ class App extends Component {
         <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
           Refresh All
         </button>
-        {userList.map((user) => (
-          <User
-            infoData={this.parseIDToken(user.idToken)}
-            fileList={user.files}
-            userId={user.id}
-            removeFunc={this.signOutFunction}
-            refreshFunc={this.refreshFunction}
-            copyFunc={this.copyFile}
-          />
-        ))}
+        <UserList
+          userList={userList}
+          parseIDToken={this.parseIDToken}
+          removeFunc={this.signOutFunction}
+          refreshFunc={this.refreshFunction}
+          copyFunc={this.copyFile}
+        />
       </div>
     );
   }
