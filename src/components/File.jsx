@@ -7,7 +7,7 @@ export default function File(props) {
   const { data } = props;
   const { webViewLink, iconLink, name } = data;
   return (
-    <a href={webViewLink}>
+    <a href={webViewLink} target="_blank">
       <div className="FileContainer">
         <img className="FileImg" src={iconLink} alt="File icon" />
         <div className="FileName">{name}</div>
