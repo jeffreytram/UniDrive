@@ -175,21 +175,26 @@ class App extends Component {
    * @param {Number} id the unique id granted to the user when placed within the userList
    */
   refreshFunction = (id) => {
-    let index = -1;
+    const index = this.getAccountIndex(id);
 
     const { userList } = this.state;
-    for (let i = 0; i < userList.length; i++) {
-      if (userList[i].id === id) {
-        index = i;
-        break;
-      }
-    }
+
     const { idToken } = userList[index];
     const { accessToken } = userList[index];
     const userInfo = this.parseIDToken(userList[index].idToken);
     const { email } = userInfo;
     this.updateFiles(index, accessToken, idToken, email);
     console.log(`refreshed account: ${email}`);
+  }
+
+  getAccountIndex = (id) => {
+    const { userList } = this.state;
+    for (let i = 0; i < userList.length; i++) {
+      if (userList[i].id === id) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   /**
