@@ -11,7 +11,6 @@ export default function File(props) {
     <div className="FileContainer">
         <img className="FileImg" src={iconLink} alt="File icon" />
         <div className="FileName">{name}</div>
-      <button type="button" onClick={() => copyFunc(userId, id)}>Copy</button>
     </div>
   );
   } else {

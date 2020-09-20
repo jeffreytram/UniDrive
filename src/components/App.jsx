@@ -105,7 +105,10 @@ class App extends Component {
         idToken,
         code,
         files: [],
-        parentsList: [],
+        parentFiles: [],
+        parentsIds: [],
+        folders: [],
+        filesWithChildren: [],
       }],
     }));
     userId += 1;
@@ -137,44 +140,157 @@ class App extends Component {
     });
   }
 
+
+/*
+* Function to allow unlimited number of files to be pulled
+* Needs to call api.list() until the nextPageToken object reurned is null
+* try finding example online, requires the promise to be inside a loop or recusive call, which is difficult
+
+
+  listAdditionalFiles = (pageToken, files, api) => {
+    if (pageToken !== undefined) {
+      api.list({
+        // fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents)',
+        fields : '*',
+        orderBy: 'folder',
+        q : "trashed = false",
+        pageSize: 100,
+        corpera : 'allDrives',
+        includeItemsFromAllDrives : 'true',
+        supportsAllDrives : 'true',
+        pageToken : pageToken
+      }).then((response) => {
+        files = files.concat(response.result.files)
+        pageToken = response.result.nextPageToken
+        console.log(files)
+        return this.listFiles(pageToken,files, api)
+        
+   
+          });
+      }
+    } else {
+      return files
+    }
+  */
+
+
+
+
   /**
    * Stores the files for the given user
    * @param {Number} index the index of the user to store the files
-   * @param {Object} files file object
+   * @param {Object} fileApi reference to drive.files
+   * Right now will only fetch a limited number(unnsure how many) of files due to Google api bug. 
+   * The more fields requested, the lower the max files. It should be 1000 but is less due to this, works with at least 188 right now (my number of files)
+   * To fix use nextPageTokens, see method above 
    */
-  setfiles = (index, files) => {
-    files.list({
-      fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, starred)',
+
+  setfiles = (index, fileApi) => {
+  
+    fileApi.list({
+      fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents)',
+     // fields : '*',
       orderBy: 'folder',
-      //q: "'1bE-jTd4HO8VwVEtuBqeFkABE07alOSka' in parents and trash = false"
+      //q: "'1bE-jTd4HO8VwVEtuBqeFkABE07alOSka' in parents and trashed = false"
+      q : "trashed = false",
+      pageSize: 1000,
+      
+      maxResults : 1000,
+
+      corpera : 'allDrives',
+      includeItemsFromAllDrives : 'true',
+      supportsAllDrives : 'true',
     }).then((response) => {
+      console.log(response.result)
       this.setState((prevState) => {
         const newUserList = prevState.userList;
         newUserList[index].files = response.result.files;
+        newUserList[index].filesWithChildren = this.assignChildren(response.result.files)
+        console.log(this.assignChildren(response.result.files))
         ready = true;
-        console.log(response.result.files)
-        newUserList[index].parentsList = this.findUniqueParents(response.result.files);
-        console.log(newUserList[index].parentsList)
         return {
           userList: newUserList,
         };
-      });
-    },
-    (err) => { console.error('Execute error', err); });
+    })
+  
+  },
+  (err) => { console.error('Execute error', err); })
+
   }
 
 
-findUniqueParents = (files) => {
-  let parentsList = [];
+assignChildren = (files) => {
+  let currentFile;
+  let filesWithChildren = []
+  for (let i = 0; i < files.length; i++) {
+    currentFile = files[i];
+    let fileObj = new Object()
+      fileObj.file = currentFile
+      fileObj.children = []
+    for (let j = 0; j < files.length; j++) {
+      if (files[j].parents !== undefined) {
+        if (files[i].id === files[j].parents[0]) {
+          fileObj.children.push(files[j])
+        }
+      }
+      
+     }
+     filesWithChildren[i] = fileObj;
+    }  
+    return filesWithChildren
+  }
+
+checkIfChild = (file, parentIds) =>  {
+  return parentIds.includes(file.id)
+}
+
+
+findUniqueParentsById = (files) => {
+  let parentsIds = [];
   for (let i = 0; i < files.length; i++) {
     if (files[i].parents !== undefined) {
-      if (!parentsList.includes(files[i].parents[0])) {
-       parentsList.push(files[i].parents[0])
+      if (!parentsIds.includes(files[i].parents[0])) {
+       parentsIds.push(files[i].parents[0])
       }
   }
 }
-return parentsList;
+return parentsIds;
 }
+
+findUniqueParents = (parentIds, files) => {
+  let parentsFiles = [];
+  for (let i = 0; i < parentIds.length; i++) {
+    let file = files.find((file) => {
+      if (file !== undefined) {
+         if (file.id === parentIds[i]) {
+             parentsFiles.push(file)
+         }
+          }
+      }) 
+    }
+return parentsFiles;
+}
+
+
+
+sortIntoFolders = (files, parentsIds, parentFiles) => {
+  let sortedFolders = [];
+  let query = "";
+  let topFolderId = parentsIds[0];
+  let childFiles = [];
+  let parentCheck = files.filter((file) => {file.parents !== undefined})
+  console.log(files.filter((file) => {file.parents === undefined}))
+  for (let i = 0; i < parentsIds.length; i ++){
+        childFiles = parentCheck.filter((file) => {file.parents[0] === parentsIds[i]})
+        sortedFolders[i] = {
+          parentId : parentsIds[i],
+          parentFile : parentFiles[i],
+          children : childFiles
+        }
+    }
+
+  return sortedFolders;
+  }
 
 
 
