@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import File from './File';
+import FileList from './FileList';
 import './User.css';
 
 class User extends Component {
@@ -20,51 +20,52 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, removeFunc, userId, fileList, refreshFunc, copyFunc
+      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc,
     } = this.props;
-    const Ad = infoData.name;
-    const $t = infoData.email;
-    const TJ = infoData.picture;
-    //const { Ad, $t, TJ } = infoData;
+
+    const parsedInfo = parseIDToken(infoData);
+    const { name, email, picture } = parsedInfo;
     const fileContainerStyles = {
       display: isDisplayed ? 'flex' : 'none',
     };
 
     return (
-      <div className="User">
+      <div className="user">
         <button
           type="button"
-          className="UserBanner"
+          className="user-banner"
           onClick={() => this.viewToggle()}
           onKeyDown={() => this.viewToggle()}
         >
-          <img height="15px" src={TJ} alt="UniDrive logo" />
-          {Ad}
-          {' '}
-          (
-          {$t}
-          )
+          <img className="profile-picture" src={picture} alt="UniDrive logo" />
+          <span className="profile-text">
+            <span className="profile-name">{name}</span>
+            {' '}
+            <span className="profile-email">
+              (
+              {email}
+              )
+            </span>
+          </span>
         </button>
         {' '}
-        <button type="button" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
-        <button type="button" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
+        <button type="button" className="delete-btn" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
+        <button type="button" className="refresh-btn" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
 
-        <div className="UserFilesContainer" style={fileContainerStyles}>
-          {fileList.map((file) => (
-            <File
-              userId={userId}
-              data={file}
-              copyFunc={copyFunc}
-            />
-          ))}
-        </div>
+        <FileList
+          fileList={fileList}
+          fileContainerStyles={fileContainerStyles}
+          userId={userId}
+          copyFunc={copyFunc}
+        />
       </div>
     );
   }
 }
 
 User.propTypes = {
-  infoData: PropTypes.objectOf(PropTypes.string).isRequired,
+  infoData: PropTypes.string.isRequired,
+  parseIDToken: PropTypes.func.isRequired,
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   userId: PropTypes.number.isRequired,
   removeFunc: PropTypes.func.isRequired,

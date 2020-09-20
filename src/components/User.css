@@ -1,24 +1,65 @@
-.User {
+.user {
   width: 100%;
+  margin: 15px 0px;
 }
 
-.UserBanner {
+.user-banner {
   border-radius: 5px;
-  border: 2px solid gray;
+  border: 2px solid #929292;
   position: sticky;
   top: 0;
   height: 40px;
   width: 100%;
-  padding: 8px 10px;
+  background-color: white;
   text-align: left;
+  z-index: 1;
 }
 
-.UserBanner:hover {
+.user-banner:hover {
   cursor: pointer;
 }
 
-.UserFilesContainer {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100vw;
+.profile-picture {
+  height: 20px;
+  vertical-align: text-bottom;
+  border-radius: 10px;
+}
+
+.profile-name {
+  font-weight: bold;
+}
+
+.profile-email {
+  font-style: italic;
+  color: gray;
+}
+
+.delete-btn {
+  border: 2px solid #DB4437;
+  border-radius: 5px;
+  background-color: white;
+  color: #DB4437;
+  font-weight: bold;
+  padding: 3px 5px;
+}
+
+.delete-btn:hover {
+  cursor: pointer;
+  background-color: #DB4437;
+  color: white;
+}
+
+.refresh-btn {
+  border: 2px solid #4285F4;
+  border-radius: 5px;
+  background-color: white;
+  color: #4285F4;
+  font-weight: bold;
+  padding: 3px 5px;
+}
+
+.refresh-btn:hover {
+  cursor: pointer;
+  background-color: #4285F4;
+  color: white;
 }

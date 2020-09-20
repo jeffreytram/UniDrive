@@ -1,0 +1,7 @@
+.file-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100vw;
+  margin: 10px 10px;
+}
