@@ -4,18 +4,27 @@ import './File.css';
 
 /* Props contains: Name, Link, Image */
 export default function File(props) {
-  const { data } = props;
-  const { webViewLink, iconLink, name } = data;
+  const { userId, data, copyFunc } = props;
+  const {
+    id, webViewLink, iconLink, name,
+  } = data;
   return (
-    <a href={webViewLink} target="_blank">
-      <div className="FileContainer">
-        <img className="FileImg" src={iconLink} alt="File icon" />
-        <div className="FileName">{name}</div>
+    <div className="file-container">
+      <div className="file-image-container">
+        <a href={webViewLink}>
+          <img className="file-img" src={iconLink} alt="File icon" />
+        </a>
       </div>
-    </a>
+      <div className="file-name">
+        <a href={webViewLink}>{name}</a>
+      </div>
+      <button type="button" className="copy-btn" onClick={() => copyFunc(userId, id)}>Copy</button>
+    </div>
   );
 }
 
 File.propTypes = {
+  userId: PropTypes.number.isRequired,
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])).isRequired,
+  copyFunc: PropTypes.func.isRequired,
 };

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import User from './User';
+import UserList from './UserList';
 import Header from './Header';
 import { config } from '../config';
+import './App.css';
 
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
 const discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
@@ -57,7 +58,7 @@ class App extends Component {
   }
 
   /**
-   * Handles user sign in by storing all the information gained from the 
+   * Handles user sign in by storing all the information gained from the
    * authrizeUser() function above
    * @param {Object} accessToken the accessToken granted to the user by gapi.client.authorize()
    * @param {Object} idToken the accessToken granted to the user by gapi.client.authorize()
@@ -117,7 +118,6 @@ class App extends Component {
    */
   updateFiles = (index, accessToken, idToken, email) => {
     window.gapi.client.load('drive', 'v3').then(() => {
-      console.log(window.gapi.client);
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
@@ -145,7 +145,6 @@ class App extends Component {
     files.list({
       fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink)',
     }).then((response) => {
-      console.log(response);
       this.setState((prevState) => {
         const newUserList = prevState.userList;
         newUserList[index].files = response.result.files;
@@ -156,7 +155,6 @@ class App extends Component {
       });
     },
     (err) => { console.error('Execute error', err); });
-
   }
 
   /**
@@ -169,6 +167,41 @@ class App extends Component {
     } catch (e) {
       return null;
     }
+  }
+
+  /**
+   * TODO: Work in progress
+   * @param {*} userId
+   * @param {*} fileId
+   */
+  copyFile = (userId, fileId) => {
+    const index = this.getAccountIndex(userId);
+    const { userList } = this.state;
+
+    const { accessToken, idToken } = userList[index];
+    const { email } = this.parseIDToken(idToken);
+
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        if (response.error) {
+          console.log(response.error);
+          console.log('authorization error');
+        }
+        // todo: add stuff here to do the copying
+        window.gapi.client.drive.files.copy({
+          fileId,
+        }).then((response) => {
+          this.refreshFunction(userList[index].id);
+        });
+      });
+    });
   }
 
   /**
@@ -185,7 +218,6 @@ class App extends Component {
     const userInfo = this.parseIDToken(userList[index].idToken);
     const { email } = userInfo;
     this.updateFiles(index, accessToken, idToken, email);
-    console.log(`refreshed account: ${email}`);
   }
 
   getAccountIndex = (id) => {
@@ -210,7 +242,6 @@ class App extends Component {
       const { email } = userInfo;
       this.updateFiles(i, accessToken, idToken, email);
     }
-    console.log('refreshed all accounts');
   }
 
   render() {
@@ -218,19 +249,17 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        <span>
-          <button type="button" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-          <button type="button" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>Refresh all Accounts</button>
-        </span>
-        {userList.map((user) => (
-          <User
-            infoData={this.parseIDToken(user.idToken)}
-            fileList={user.files}
-            userId={user.id}
-            removeFunc={(id) => this.signOutFunction(id)}
-            refreshFunc={(id) => this.refreshFunction(id)}
-          />
-        ))}
+        <button type="button" className="button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
+        <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
+          Refresh All
+        </button>
+        <UserList
+          userList={userList}
+          parseIDToken={this.parseIDToken}
+          removeFunc={this.signOutFunction}
+          refreshFunc={this.refreshFunction}
+          copyFunc={this.copyFile}
+        />
       </div>
     );
   }
