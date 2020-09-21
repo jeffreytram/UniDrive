@@ -107,8 +107,8 @@ class App extends Component {
         code,
         files: [],
         parentFiles: [],
-        parentsIds: [],
-        folders: [],
+        parentIds: [],
+        sortedFolders: [],
         filesWithChildren: [],
       }],
     }));
@@ -140,6 +140,8 @@ class App extends Component {
       });
     });
   }
+
+
 
 
 /*
@@ -177,6 +179,10 @@ class App extends Component {
 
 
 
+
+
+
+
   /**
    * Stores the files for the given user
    * @param {Number} index the index of the user to store the files
@@ -188,9 +194,10 @@ class App extends Component {
 
   setfiles = (index, fileApi) => {
   
+
     fileApi.list({
-      fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents)',
-     // fields : '*',
+      fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId)',
+     
       orderBy: 'folder',
       //q: "'1bE-jTd4HO8VwVEtuBqeFkABE07alOSka' in parents and trashed = false"
       q : "trashed = false",
@@ -206,7 +213,15 @@ class App extends Component {
         const newUserList = prevState.userList;
         newUserList[index].files = response.result.files;
         newUserList[index].filesWithChildren = this.assignChildren(response.result.files)
-        console.log(this.assignChildren(response.result.files))
+        newUserList[index].filesWithChildren = this.findTopLevel(newUserList[index].filesWithChildren)
+        console.log(newUserList[index].filesWithChildren)
+        //newUserList[index].parentIds = this.findUniqueParentsById(response.result.files)
+      //  newUserList[index].parentFiles = this.findUniqueParents(newUserList[index].parentIds, response.result.files)
+       // newUserList[index].sortedFolders = this.sortIntoFolders(newUserList[index].files, newUserList[index].parentIds,  newUserList[index].parentFiles)
+        console.log(newUserList[index].filesWithChildren)
+        //console.log(newUserList[index].parentIds)
+        //console.log(this.findUniqueParents(newUserList[index].parentIds, response.result.files))
+        //console.log(this.sortIntoFolders(newUserList[index].files, newUserList[index].parentIds,  newUserList[index].parentFiles))
         ready = true;
         return {
           userList: newUserList,
@@ -227,6 +242,7 @@ assignChildren = (files) => {
     let fileObj = new Object()
       fileObj.file = currentFile
       fileObj.children = []
+      fileObj.display = true;
     for (let j = 0; j < files.length; j++) {
       if (files[j].parents !== undefined) {
         if (files[i].id === files[j].parents[0]) {
@@ -240,9 +256,44 @@ assignChildren = (files) => {
     return filesWithChildren
   }
 
-checkIfChild = (file, parentIds) =>  {
-  return parentIds.includes(file.id)
+findTopLevel = (filesWithChildren) => {
+  
+  for (let i = 0; i< filesWithChildren.length; i++) {
+    filesWithChildren[i].display = !(this.checkIfChild(filesWithChildren[i].file, filesWithChildren));
+  }
+  console.log(filesWithChildren)
+  return filesWithChildren
 }
+
+checkIfChild = (file, filesWithChildren) =>  {
+    let i = 0;
+    while (filesWithChildren[i].children.length > 0) {
+      if (filesWithChildren[i].children.includes(file)) {
+        return true;
+      }
+      i++
+    }
+    return false;
+}
+
+toggleChildren = (childrenList, fileList, id) => {
+  //const index = this.getAccountIndex(id);
+  //const { userList } = this.state;
+  for (let i = 0; i < childrenList.length; i++) {
+    for (let j = 0; j< fileList.length; j++) {
+      if(childrenList[i] === fileList[j].file)
+        fileList[j].display =  !fileList[j].display;
+    }
+  }
+  console.log(fileList)
+  this.setState((prevState) => {
+    const newUserList = prevState.userList
+    return {
+      userList: newUserList,
+    }
+})
+}
+
 
 
 findUniqueParentsById = (files) => {
@@ -257,40 +308,44 @@ findUniqueParentsById = (files) => {
 return parentsIds;
 }
 
-findUniqueParents = (parentIds, files) => {
+findUniqueParents = (parentIds, files, userId) => {
   let parentsFiles = [];
   for (let i = 0; i < parentIds.length; i++) {
-    let file = files.find((file) => {
-      if (file !== undefined) {
+    files.find((file) => {
          if (file.id === parentIds[i]) {
              parentsFiles.push(file)
          }
-          }
+          
       }) 
     }
+   // files.find((file) => {
+    //  if (file.parents === undefined) {
+         // parentsFiles.push(file)
+      //}
+   // })
 return parentsFiles;
 }
 
 
 
-sortIntoFolders = (files, parentsIds, parentFiles) => {
-  let sortedFolders = [];
-  let query = "";
-  let topFolderId = parentsIds[0];
-  let childFiles = [];
-  let parentCheck = files.filter((file) => {file.parents !== undefined})
-  console.log(files.filter((file) => {file.parents === undefined}))
-  for (let i = 0; i < parentsIds.length; i ++){
-        childFiles = parentCheck.filter((file) => {file.parents[0] === parentsIds[i]})
-        sortedFolders[i] = {
-          parentId : parentsIds[i],
-          parentFile : parentFiles[i],
-          children : childFiles
-        }
+  sortIntoFolders = (files, parentsIds, parentFiles) => {
+    let sortedFolders = [];
+    let childFiles = [];
+    let parentCheck = files.filter((file) => {file.parents !== undefined})
+    console.log(files.filter((file) => {file.parents === undefined}))
+    for (let i = 0; i < parentsIds.length; i ++){
+          childFiles = parentCheck.filter((file) => {file.parents[0] === parentsIds[i]})
+          sortedFolders[i] = {
+            parentId : parentsIds[i],
+            parentFile : parentFiles[i],
+            children : childFiles
+          }
+      }
+  
+    return sortedFolders;
     }
-
-  return sortedFolders;
-  }
+  
+  
 
 
 
@@ -396,6 +451,8 @@ sortIntoFolders = (files, parentsIds, parentFiles) => {
           removeFunc={this.signOutFunction}
           refreshFunc={this.refreshFunction}
           copyFunc={this.copyFile}
+          isChildFunc={this.checkIfChild}
+          toggleChildrenFunc={this.toggleChildren}
         />
       </div>
     );

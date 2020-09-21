@@ -20,7 +20,7 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc,
+      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, isChildFunc, parentIdList, parentFiles, sortedFolders, toggleChildrenFunc
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -57,6 +57,11 @@ class User extends Component {
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
+          isChildFunc={isChildFunc}
+          parentIdList={parentIdList}
+          parentFiles={parentFiles}
+          sortedFolders={sortedFolders}
+          toggleChildrenFunc={toggleChildrenFunc}
         />
       </div>
     );
@@ -70,6 +75,11 @@ User.propTypes = {
   userId: PropTypes.number.isRequired,
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
+  isChildFunc: PropTypes.func.isRequired,
+  parentIdList: PropTypes.arrayOf(PropTypes.string).isRequired,
+  parentFiles: PropTypes.arrayOf(PropTypes.object).isRequired,
+  sortedFolders: PropTypes.arrayOf(PropTypes.object).isRequired,
+  toggleChildrenFunc: PropTypes.func.isRequired,
 };
 
 export default User;
