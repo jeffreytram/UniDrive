@@ -52,17 +52,36 @@ class User extends Component {
         <button type="button" className="delete-btn" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
         <button type="button" className="refresh-btn" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
 
+         {// <TopLevelFolderList> 
+
+
+
+
+
+
+       // </TopLevelFolderList>
+
+      //  <OpenFolders>
+
+
+
+
+
+
+       // </OpenFolders>
+  }
         <FileList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
           isChildFunc={isChildFunc}
-          parentIdList={parentIdList}
-          parentFiles={parentFiles}
-          sortedFolders={sortedFolders}
+         // parentIdList={parentIdList}
+         // parentFiles={parentFiles}
+         // sortedFolders={sortedFolders}
           toggleChildrenFunc={toggleChildrenFunc}
         />
+        
       </div>
     );
   }
@@ -76,9 +95,9 @@ User.propTypes = {
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
   isChildFunc: PropTypes.func.isRequired,
-  parentIdList: PropTypes.arrayOf(PropTypes.string).isRequired,
-  parentFiles: PropTypes.arrayOf(PropTypes.object).isRequired,
-  sortedFolders: PropTypes.arrayOf(PropTypes.object).isRequired,
+  topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
+ // parentFiles: PropTypes.arrayOf(PropTypes.object).isRequired,
+  folderTrees: PropTypes.arrayOf(PropTypes.object).isRequired,
   toggleChildrenFunc: PropTypes.func.isRequired,
 };
 
