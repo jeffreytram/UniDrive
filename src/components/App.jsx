@@ -10,6 +10,7 @@ const API_KEY = config.web.api_key;
 const CLIENT_ID = config.web.client_id;
 let ready = false;
 let userId = 1;
+let folderId = 1;
 
 class App extends Component {
   constructor() {
@@ -111,6 +112,7 @@ class App extends Component {
         folderTrees: [],
         filesWithChildren: [],
         looseFiles: [],
+        openFolders: [],
       }],
     }));
     userId += 1;
@@ -226,9 +228,13 @@ class App extends Component {
         childFolderList = childFolderList.filter(f => !newUserList[index].topLevelFolders.includes(f));
 
         newUserList[index].looseFiles = this.findLooseFiles(response.result.files, allFolders)
-        newUserList[index].folderTrees = this.createFileTrees(newUserList[index].topLevelFolders, childFolderList)
+        //newUserList[index].folderTrees = this.createFileTrees(newUserList[index].topLevelFolders, childFolderList)
+        newUserList[index].openFolders = [];
+        console.log(newUserList[index].openFolders);
+        
         console.log( newUserList[index].looseFiles)
         console.log(newUserList[index].filesWithChildren)
+        console.log( newUserList[index].topLevelFolders)
       
         ready = true;
         return {
@@ -246,7 +252,10 @@ findLooseFiles = (files, folders) => {
   let looseFiles = [];
   let check = true;;
   files = files.filter(file => file.mimeType != "application/vnd.google-apps.folder")
+  //this gets all loosefiles in the shared drive
   looseFiles = files.filter(file => file.parents === undefined);
+  //loops to check for loosefiles in myDrive, or any other case where parents is defined, but no parent folder actaully 
+  //exists anywhere in the drive
   for (let i = 0; i < files.length; i++) {
     if (files[i].parents != undefined) {
      for (let j = 0; j < folders.length; j++) {
@@ -255,7 +264,8 @@ findLooseFiles = (files, folders) => {
        }
      }
      if (check) {
-       looseFiles.push(files[i]);
+      
+      looseFiles.push(files[i]);
      }
      check = true;;
     }
@@ -290,7 +300,6 @@ assignChildren = (files) => {
   }
 
 findTopLevel = (filesWithChildren) => {
-  
   for (let i = 0; i< filesWithChildren.length; i++) {
     filesWithChildren[i].display = !(this.checkIfChild(filesWithChildren[i].file, filesWithChildren));
   }
@@ -309,14 +318,64 @@ checkIfChild = (file, filesWithChildren) =>  {
     return false;
 }
 
-toggleChildren = (childrenList, fileList, id) => {
-  for (let i = 0; i < childrenList.length; i++) {
-    for (let j = 0; j< fileList.length; j++) {
-      if(childrenList[i] === fileList[j].file)
-        fileList[j].display =  !fileList[j].display;
-    }
-  }
-  console.log(fileList)
+toggleChildren = (userId, folder, fId) => {
+  const index = this.getAccountIndex(userId);
+  const { userList } = this.state;
+  let isTopLevel = false;
+  let parent;
+  let parentIndex;
+  console.log(folder)
+
+   //adds file to the filePath in openFolder[]
+   if (folder.file === undefined) {
+    isTopLevel = false;
+    let fileObj = new Object()
+    fileObj.file = folder;
+    fileObj.children = this.buildChildrenArray(folder, userId);
+    fileObj.folderId = fId;
+    console.log(fileObj.children)
+        //finds current index of the folderList
+        //for (let j = 0; j <  folder.parents.length; j++) {
+          for (let k = 0; k < userList[index].openFolders.length; k++) {
+              if (userList[index].openFolders[k].fId === fId) {
+                parent = userList[index].openFolders[k]
+                parentIndex = k;
+                //break;
+              }
+          }
+       // }
+       console.log(fileObj)
+       console.log(userList[index].openFolders[parentIndex])
+       let filepathNew = new Object()
+        filepathNew.id = fileObj.file.id,
+        filepathNew.name = fileObj.file.name
+        filepathNew.fId = fId;
+        let filepathArray =  userList[index].openFolders[parentIndex].filepath
+        filepathArray.push(filepathNew)
+        fileObj.filepath = filepathArray
+
+        fileObj.fId = parent.fId
+        userList[index].openFolders[parentIndex] = fileObj;
+
+  } else {
+    let fileObj = new Object()
+    fileObj.fId = folderId;
+    fileObj.file = folder.file
+    fileObj.children = folder.children
+    fileObj.filepath = [{
+      id : folder.file.id, 
+      name : folder.file.name,
+      fId : fileObj.fId,
+    }]
+     // fileObj.fId = folderId;
+      folderId ++;
+    userList[index].openFolders.push(fileObj);
+   } 
+
+
+  
+
+   console.log(userList[index].openFolders)
   this.setState((prevState) => {
     const newUserList = prevState.userList
     return {
@@ -325,6 +384,24 @@ toggleChildren = (childrenList, fileList, id) => {
 })
 }
 
+
+buildChildrenArray = (folder, userId) => {
+  let childrenArray = [];
+  let files = [];
+  console.log(folder)
+  const index = this.getAccountIndex(userId);
+  const { userList } = this.state;
+  files = userList[index].files.filter(file => file.parents !== undefined);
+  console.log(files)
+    for (let j = 0; j < files.length; j++) {
+      if (files[j].parents.includes(folder.id)) {
+        childrenArray.push(files[j])
+        //break;
+    }
+  }
+  console.log(childrenArray)
+  return childrenArray;
+}
 
 
 findUniqueParentsById = (files) => {
@@ -363,7 +440,11 @@ findTopLevelFolders = (fileList) => {
   for (let i = 0; i < fileList.length; i++) {
     if (fileList[i].file.mimeType === "application/vnd.google-apps.folder") {
       if (!(this.checkIfChild(fileList[i].file, fileList))){
-        top.push(fileList[i].file)
+        let fileObj = new Object();
+        fileObj.file = fileList[i].file
+        fileObj.children = fileList[i].children
+        fileObj.filepath = [];
+        top.push(fileObj);
       }
 
     }
@@ -375,7 +456,7 @@ return top;
 createFileTrees = (topFolderList, childrenFolderList)  =>  {
 let folderTreeArray = [];
 for (let i = 0; i < topFolderList.length; i++) {
-  let topFolderId = topFolderList[i].id;
+  let topFolderId = topFolderList[i].file.id;
 
             let folderTree = function c(folder, folderSt, res) {
                 let ar = childrenFolderList.filter(e => e.parents[0] == folder);
@@ -387,8 +468,7 @@ for (let i = 0; i < topFolderList.length; i++) {
                 ar.forEach(e => c(e.id, folderSt, res));
                 return res;
             }(topFolderId, "", []);
-            // Output the folder tree.
-            console.log(folderTree);
+
             folderTreeArray[i] = folderTree;
             console.log(folderTreeArray)
             
@@ -504,6 +584,7 @@ for (let i = 0; i < topFolderList.length; i++) {
           copyFunc={this.copyFile}
           isChildFunc={this.checkIfChild}
           toggleChildrenFunc={this.toggleChildren}
+          buildChildrenArray = {this.buildChildrenArray}
         />
       </div>
     );

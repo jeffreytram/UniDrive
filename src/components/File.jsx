@@ -17,12 +17,13 @@ class File extends Component {
 /* Props contains: Name, Link, Image */
 //export default function File(props) {
 render() {
-  const { userId, data, copyFunc, childrenList, isChildFunc, parentIdList, parentFiles, sortedFolders, fileList, displayed, toggleChildrenFunc } = this.props;
+  const { userId, data, copyFunc, fId, isChildFunc, parentIdList, parentFiles, sortedFolders, fileList, displayed, toggleChildrenFunc, fileObj } = this.props;
   const {
     id, webViewLink, iconLink, name, mimeType, parents
   } = data;
 if (displayed) {
     if (mimeType !== 'application/vnd.google-apps.folder') {
+      //if file
         return (
           <div className="file-container">
             <div className="file-image-container">
@@ -46,7 +47,7 @@ if (displayed) {
           <div className="file-name">
             <a href={webViewLink}  target="_blank">{name}</a>
           </div>
-          <button type="button" className="copy-btn" onClick={() => toggleChildrenFunc(childrenList, fileList, userId)}>Toggle</button>
+          <button type="button" className="copy-btn" onClick={() => toggleChildrenFunc(userId, fileObj, fId)}>Open</button>
         </div>
       );
       }
@@ -62,7 +63,7 @@ File.propTypes = {
   userId: PropTypes.number.isRequired,
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
   copyFunc: PropTypes.func.isRequired,
-  childrenList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  folderId: PropTypes.number.isRequired,
   isChildFunc: PropTypes.func.isRequired,
   parentIdList: PropTypes.arrayOf(PropTypes.string).isRequired,
   parentFiles: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -70,6 +71,7 @@ File.propTypes = {
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   displayed: PropTypes.bool.isRequired,
   toggleChildrenFunc: PropTypes.func.isRequired,
+  fileObj: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default File;
