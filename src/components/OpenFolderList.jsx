@@ -6,7 +6,7 @@ import './FileList.css';
 export default function UserList(props) {
   const {
     fileList, fileContainerStyles, userId, copyFunc, isChildFunc, topLevelFolderList, toggleChildrenFunc,
-     openFolderList, buildChildrenArray
+     openFolderList, buildChildrenArray, filepathTraceFunc
   } = props;
   
   return (
@@ -22,6 +22,7 @@ export default function UserList(props) {
           fileList = {fileList}
           displayed = {true}
           toggleChildrenFunc={toggleChildrenFunc}
+          filepathTraceFunc={filepathTraceFunc}
           filePath = {fileObj.filepath}
           buildChildrenArray = {buildChildrenArray}
           
@@ -36,6 +37,7 @@ UserList.propTypes = {
   fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
   userId: PropTypes.number.isRequired,
   copyFunc: PropTypes.func.isRequired,
+  filepathTraceFunc: PropTypes.func.isRequired,
   isChildFunc: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   toggleChildrenFunc: PropTypes.func.isRequired,

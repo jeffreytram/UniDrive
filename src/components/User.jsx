@@ -23,7 +23,7 @@ class User extends Component {
     const { isDisplayed } = this.state;
     const {
       infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, isChildFunc, topLevelFolderList
-      , toggleChildrenFunc, looseFileList, openFolderList, buildChildrenArray,
+      , toggleChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -73,6 +73,7 @@ class User extends Component {
       isChildFunc={isChildFunc}
       topLevelFolderList={topLevelFolderList}
       toggleChildrenFunc={toggleChildrenFunc}
+      filepathTraceFunc={filepathTraceFunc}
       openFolderList = {openFolderList}
       buildChildrenArray = {buildChildrenArray}
        />
@@ -104,6 +105,7 @@ User.propTypes = {
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   folderTrees: PropTypes.arrayOf(PropTypes.object).isRequired,
   toggleChildrenFunc: PropTypes.func.isRequired,
+  filepathTraceFunc: PropTypes.func.isRequired,
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
 };

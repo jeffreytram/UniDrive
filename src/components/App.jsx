@@ -138,7 +138,7 @@ class App extends Component {
           console.log('authorization error');
           return;
         }
-        this.setfiles(index, window.gapi.client.drive.files, response);
+        this.setfiles(index, window.gapi.client.drive.files);
         //this.getFiles(this.state.userList[index].id)
       });
     });
@@ -195,7 +195,7 @@ class App extends Component {
    * To fix use nextPageTokens, see method above 
    */
 
-  setfiles = (index, fileApi,auth) => {
+  setfiles = (index, fileApi) => {
     console.log(window.gapi.client.drive)
   
 
@@ -332,7 +332,7 @@ toggleChildren = (userId, folder, fId) => {
     let fileObj = new Object()
     fileObj.file = folder;
     fileObj.children = this.buildChildrenArray(folder, userId);
-    fileObj.folderId = fId;
+    fileObj.fId = fId;
     console.log(fileObj.children)
         //finds current index of the folderList
         //for (let j = 0; j <  folder.parents.length; j++) {
@@ -357,7 +357,29 @@ toggleChildren = (userId, folder, fId) => {
         fileObj.fId = parent.fId
         userList[index].openFolders[parentIndex] = fileObj;
 
-  } else {
+  } else  if (fId != undefined) {
+    let fileObj = new Object()
+    fileObj.fId = fId;
+    fileObj.file = folder.file
+    fileObj.children = folder.children
+    fileObj.filepath = [{
+      id : folder.file.id, 
+      name : folder.file.name,
+      fId : fileObj.fId,
+    }]
+     //finds current index of the folderList
+    for (let k = 0; k < userList[index].openFolders.length; k++) {
+      if (userList[index].openFolders[k].fId === fId) {
+        parent = userList[index].openFolders[k]
+        parentIndex = k;
+        //break;
+      }
+  }
+
+    userList[index].openFolders[parentIndex] = fileObj;
+  console.log(userList[index].openFolders[parentIndex])
+   } 
+   else {
     let fileObj = new Object()
     fileObj.fId = folderId;
     fileObj.file = folder.file
@@ -373,8 +395,6 @@ toggleChildren = (userId, folder, fId) => {
    } 
 
 
-  
-
    console.log(userList[index].openFolders)
   this.setState((prevState) => {
     const newUserList = prevState.userList
@@ -383,6 +403,83 @@ toggleChildren = (userId, folder, fId) => {
     }
 })
 }
+
+filepathTrace = (userId, filepath, filepathArray) => {
+  if (filepathArray[filepathArray.length - 1] === filepath) {
+    return;
+  }
+  const index = this.getAccountIndex(userId);
+  const { userList } = this.state;
+  let topFolder;
+  let openFolderIndex;
+  let filepathFinish = 0;
+  let childrenArray;
+  // finds root of the filepath
+  for (let i = 0; i < userList[index].topLevelFolders.length; i++) {
+    if ( userList[index].topLevelFolders[i].file.id === filepathArray[0].id) {
+      topFolder = userList[index].topLevelFolders[i];
+    }
+  }
+  console.log(topFolder)
+//finds correct index in OpenFolders
+  for (let i = 0; i < userList[index].openFolders.length; i++) {  
+    if (userList[index].openFolders.fId === filepath.fId) {
+      openFolderIndex = i;
+      }
+    }
+
+  //calculates how many times to run toggleChildren(how many folders deep the folder desired is)
+  for (let i = 0; i <filepathArray.length; i++) {
+    if (filepathArray[i] === filepath) {
+      break;
+    }
+    filepathFinish ++;
+  }
+
+console.log(filepathFinish)
+  //resets openFolder to root and then loops until it reaches the child listed in this filepath
+  let filepathCount = 1;
+  let k = 0;
+  
+  while (k <= filepathFinish) {
+ 
+
+    this.toggleChildren(userId, topFolder, filepath.fId)
+ 
+    // handles nested folders
+  
+    if (topFolder.file === undefined) {
+    childrenArray = this.buildChildrenArray(topFolder, userId)
+    for (let i = 0; i < childrenArray.length; i++) {
+      if (childrenArray[i].id === filepathArray[filepathCount].id) {
+        topFolder = childrenArray[i]
+      }
+    }
+
+  //handles topLevel folder
+    } else {
+      
+    for (let i = 0; i < topFolder.children.length; i++) {
+      if (topFolder.children[i].id === filepathArray[filepathCount].id) {
+        topFolder = topFolder.children[i];
+        break;
+      }
+    }
+  }
+    filepathCount++;
+    k++;
+  }
+
+
+  this.setState((prevState) => {
+    const newUserList = prevState.userList
+    return {
+      userList: newUserList,
+    }
+})
+}
+
+
 
 
 buildChildrenArray = (folder, userId) => {
@@ -582,6 +679,7 @@ for (let i = 0; i < topFolderList.length; i++) {
           removeFunc={this.signOutFunction}
           refreshFunc={this.refreshFunction}
           copyFunc={this.copyFile}
+          filepathTraceFunc={this.filepathTrace}
           isChildFunc={this.checkIfChild}
           toggleChildrenFunc={this.toggleChildren}
           buildChildrenArray = {this.buildChildrenArray}

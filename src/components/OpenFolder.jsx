@@ -23,7 +23,7 @@ class OpenFolder extends Component {
 //export default function File(props) {
 render() {
   const { userId, data, copyFunc, childrenList, isChildFunc, parentIdList, parentFiles, sortedFolders, fileList, displayed, toggleChildrenFunc, 
-    fileObj, filePath, buildChildrenArray } = this.props;
+    fileObj, filePath, buildChildrenArray, filepathTraceFunc } = this.props;
   const {
     id, webViewLink, iconLink, name, mimeType, parents
   } = data;
@@ -32,10 +32,13 @@ render() {
     return (
     <div className ="open-folder">
           <div className="file-path-container">
-              {fileObj.filepath.map((fileObj) => (
+              {fileObj.filepath.map((filep) => (
               <FilePath
-                fileObj = {fileObj}
+                filepath = {filep}
                 toggleChildrenFunc={toggleChildrenFunc}
+                userId={userId}
+                filepathArray = {filePath}
+                filepathTraceFunc={filepathTraceFunc}
         
               />
               ))}
@@ -54,6 +57,7 @@ render() {
             displayed = {true}
             toggleChildrenFunc={toggleChildrenFunc}
             fileObj ={file}
+          
             
     
             />
@@ -81,6 +85,7 @@ OpenFolder.propTypes = {
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   displayed: PropTypes.bool.isRequired,
   toggleChildrenFunc: PropTypes.func.isRequired,
+  filepathTraceFunc: PropTypes.func.isRequired,
   fileObj: PropTypes.arrayOf(PropTypes.object),
   filePath: PropTypes.arrayOf(PropTypes.string),
   buildChildrenArray: PropTypes.func.isRequired,

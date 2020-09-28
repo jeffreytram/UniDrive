@@ -17,12 +17,12 @@ class Filepath extends Component {
 
 
 render() {
-  const {  toggleChildrenFunc, fileObj } = this.props;
+  const {  toggleChildrenFunc, filepath, userId, filepathArray, filepathTraceFunc } = this.props;
  
       return (
         
         <span className="file-path" > 
-                <span> &rarr; {fileObj.name}</span></span>
+                <span> &rarr; <button class="btn info" onClick={() => filepathTraceFunc(userId, filepath, filepathArray)}>{filepath.name}</button></span></span>
         
       );
       }
@@ -36,8 +36,10 @@ render() {
 
 Filepath.propTypes = {
   toggleChildrenFunc: PropTypes.func.isRequired,
-
-  fileObj: PropTypes.object,
+  filepathTraceFunc: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
+  filepathArray: PropTypes.arrayOf(PropTypes.object).isRequired,
+  filepath: PropTypes.object,
 };
 
 export default Filepath;
