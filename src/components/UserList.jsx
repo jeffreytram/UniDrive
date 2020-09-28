@@ -5,8 +5,8 @@ import './UserList.css';
 
 export default function UserList(props) {
   const {
-    userList, parseIDToken, removeFunc, refreshFunc, copyFunc, isChildFunc, toggleChildrenFunc,
-     buildChildrenArray, filepathTraceFunc
+    userList, parseIDToken, removeFunc, refreshFunc, copyFunc, isChildFunc, openChildrenFunc,
+     buildChildrenArray, filepathTraceFunc, closeFolderFunc
   } = props;
   return (
     <div className="user-list">
@@ -23,10 +23,11 @@ export default function UserList(props) {
           topLevelFolderList={user.topLevelFolders}
           looseFileList={user.looseFiles}
           fileTrees={user.folderTrees}
-          toggleChildrenFunc={toggleChildrenFunc}
+          openChildrenFunc={openChildrenFunc}
           filepathTraceFunc={filepathTraceFunc}
           openFolderList={user.openFolders}
           buildChildrenArray = {buildChildrenArray}
+          closeFolderFunc = {closeFolderFunc}
         />
       ))}
     </div>
@@ -34,14 +35,15 @@ export default function UserList(props) {
 }
 
 UserList.propTypes = {
-  userList: PropTypes.objectOf([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
+  userList: PropTypes.arrayOf(PropTypes.object).isRequired,
   parseIDToken: PropTypes.func.isRequired,
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
   copyFunc: PropTypes.func.isRequired,
   filepathTraceFunc: PropTypes.func.isRequired,
   isChildFunc: PropTypes.func.isRequired,
-  toggleChildrenFunc: PropTypes.func.isRequired,
+  openChildrenFunc: PropTypes.func.isRequired,
+  closeFolderFunc: PropTypes.func.isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
   
 };

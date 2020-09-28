@@ -23,7 +23,7 @@ class User extends Component {
     const { isDisplayed } = this.state;
     const {
       infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, isChildFunc, topLevelFolderList
-      , toggleChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc
+      , openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -60,9 +60,8 @@ class User extends Component {
       fileContainerStyles={fileContainerStyles}
       userId={userId}
       copyFunc={copyFunc}
-      isChildFunc={isChildFunc}
       topLevelFolderList={topLevelFolderList}
-      toggleChildrenFunc={toggleChildrenFunc}
+      openChildrenFunc={openChildrenFunc}
         />
 
       <OpenFolderList
@@ -70,12 +69,11 @@ class User extends Component {
       fileContainerStyles={fileContainerStyles}
       userId={userId}
       copyFunc={copyFunc}
-      isChildFunc={isChildFunc}
-      topLevelFolderList={topLevelFolderList}
-      toggleChildrenFunc={toggleChildrenFunc}
+      openChildrenFunc={openChildrenFunc}
       filepathTraceFunc={filepathTraceFunc}
       openFolderList = {openFolderList}
       buildChildrenArray = {buildChildrenArray}
+      closeFolderFunc = {closeFolderFunc}
        />
   
       <LooseFileList
@@ -83,8 +81,7 @@ class User extends Component {
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
-          isChildFunc={isChildFunc}
-          toggleChildrenFunc={toggleChildrenFunc}
+          openChildrenFunc={openChildrenFunc}
           looseFileList = {looseFileList}
         />
         
@@ -100,11 +97,10 @@ User.propTypes = {
   userId: PropTypes.number.isRequired,
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
-  isChildFunc: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  folderTrees: PropTypes.arrayOf(PropTypes.object).isRequired,
-  toggleChildrenFunc: PropTypes.func.isRequired,
+  openChildrenFunc: PropTypes.func.isRequired,
+  closeFolderFunc: PropTypes.func.isRequired,
   filepathTraceFunc: PropTypes.func.isRequired,
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   buildChildrenArray: PropTypes.func.isRequired,

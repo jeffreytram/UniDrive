@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import File from './File';
 import './FileList.css';
 
-export default function UserList(props) {
+export default function LooseFileList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, isChildFunc, toggleChildrenFunc, looseFileList
+    fileList, fileContainerStyles, userId, copyFunc, openChildrenFunc, looseFileList
   } = props;
   
   return (
@@ -16,22 +16,20 @@ export default function UserList(props) {
           data={file}
           copyFunc={copyFunc}
           childrenList={[]}
-          isChildFunc={isChildFunc}
           fileList = {fileList}
           displayed = {true}
-          toggleChildrenFunc={toggleChildrenFunc}
+          openChildrenFunc={openChildrenFunc}
         />
       ))}
     </div>
   );
 }
 
-UserList.propTypes = {
+LooseFileList.propTypes = {
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
   userId: PropTypes.number.isRequired,
   copyFunc: PropTypes.func.isRequired,
-  isChildFunc: PropTypes.func.isRequired,
-  toggleChildrenFunc: PropTypes.func.isRequired,
+  openChildrenFunc: PropTypes.func.isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

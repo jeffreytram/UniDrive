@@ -17,7 +17,7 @@ class File extends Component {
 /* Props contains: Name, Link, Image */
 //export default function File(props) {
 render() {
-  const { userId, data, copyFunc, fId, isChildFunc, parentIdList, parentFiles, sortedFolders, fileList, displayed, toggleChildrenFunc, fileObj } = this.props;
+  const { userId, data, copyFunc, fId, fileList, displayed, openChildrenFunc, fileObj } = this.props;
   const {
     id, webViewLink, iconLink, name, mimeType, parents
   } = data;
@@ -47,7 +47,7 @@ if (displayed) {
           <div className="file-name">
             <a href={webViewLink}  target="_blank">{name}</a>
           </div>
-          <button type="button" className="copy-btn" onClick={() => toggleChildrenFunc(userId, fileObj, fId)}>Open</button>
+          <button type="button" className="copy-btn" onClick={() => openChildrenFunc(userId, fileObj, fId)}>Open</button>
         </div>
       );
       }
@@ -64,14 +64,10 @@ File.propTypes = {
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
   copyFunc: PropTypes.func.isRequired,
   folderId: PropTypes.number.isRequired,
-  isChildFunc: PropTypes.func.isRequired,
-  parentIdList: PropTypes.arrayOf(PropTypes.string).isRequired,
-  parentFiles: PropTypes.arrayOf(PropTypes.object).isRequired,
-  sortedFolders: PropTypes.arrayOf(PropTypes.object).isRequired,
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   displayed: PropTypes.bool.isRequired,
-  toggleChildrenFunc: PropTypes.func.isRequired,
-  fileObj: PropTypes.arrayOf(PropTypes.object),
+  openChildrenFunc: PropTypes.func.isRequired,
+  fileObj: PropTypes.object,
 };
 
 export default File;
