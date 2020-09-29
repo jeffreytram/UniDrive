@@ -8,7 +8,7 @@ const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https:
 const discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const API_KEY = config.web.api_key;
 const CLIENT_ID = config.web.client_id;
-let ready = false;
+let ready = true;
 let userId = 1;
 let folderId = 1;
 
@@ -66,7 +66,7 @@ class App extends Component {
     * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   signInFunction = (accessToken, idToken, code) => {
-    ready = false;
+    //ready = false;
     const userInfo = this.parseIDToken(idToken);
     const { email } = userInfo;
     this.addUser(accessToken, idToken, code);
@@ -165,19 +165,38 @@ class App extends Component {
     }).then((response) => {
       this.setState((prevState) => {
         const newUserList = prevState.userList;
+        console.log(newUserList[index])
+        if (newUserList[index] === undefined) {
+          return;
+        }
+        let allFilepaths = [];
+        console.log(newUserList[index].openFolders.length)
+        for (let i = 0; i <  newUserList[index].openFolders.length; i++) {
+          allFilepaths.push( newUserList[index].openFolders[i].filepath)
+          }
+          console.log(allFilepaths)
+
         newUserList[index].files = response.result.files;
         newUserList[index].filesWithChildren = this.assignChildren(response.result.files)
         newUserList[index].topLevelFolders = this.findTopLevelFolders(newUserList[index].filesWithChildren)
+
+          
+
         let childFolderList = newUserList[index].files.filter(file => file.mimeType === "application/vnd.google-apps.folder" || file.parents != undefined);
         let allFolders = childFolderList.filter(file => file.mimeType === "application/vnd.google-apps.folder");
         childFolderList = childFolderList.filter(f => !newUserList[index].topLevelFolders.includes(f));
         newUserList[index].looseFiles = this.findLooseFiles(response.result.files, allFolders)
         newUserList[index].openFolders = [];
-        ready = true;
+        console.log(allFilepaths)
+        for (let i = 0; i < allFilepaths.length; i++) {
+          this.filepathTrace(newUserList[index].id, allFilepaths[i][allFilepaths[i].length - 1], allFilepaths[i], true);
+        }
+        console.log(newUserList[index].openFolders)
+        //ready = true;
         return {
           userList: newUserList,
         };
-    })
+    }, () => {ready = true;})
   
   },
   (err) => { console.error('Execute error', err); })
@@ -349,7 +368,9 @@ openChildren = (userId, folder, fId) => {
    } 
   this.setState((prevState) => {
     const newUserList = prevState.userList
+   
     return {
+      
       userList: newUserList,
     }
 })
@@ -363,15 +384,14 @@ openChildren = (userId, folder, fId) => {
    * @param {Object} filepath this is the particular entry in the filepath which was clicked (each filepath has a file id, name, and fId element)
    * @param {Array} filepathArray this is the array which contains all the filepaths of this openFolder (filepathArray[0] will contain the filepath of the root folder)
    */
-filepathTrace = (userId, filepath, filepathArray) => {
-  if (filepathArray[filepathArray.length - 1] === filepath) {
-    return;
-  }
+filepathTrace = (userId, filepath, filepathArray, isUpdate) => {
+  
   const index = this.getAccountIndex(userId);
   const { userList } = this.state;
   let topFolder;
   let filepathFinish = 0;
   let childrenArray;
+  let changed = false;
   // finds root of the filepath
   for (let i = 0; i < userList[index].topLevelFolders.length; i++) {
     if ( userList[index].topLevelFolders[i].file.id === filepathArray[0].id) {
@@ -389,13 +409,27 @@ filepathTrace = (userId, filepath, filepathArray) => {
   let filepathCount = 1;
   let k = 0;
   while (k <= filepathFinish) {
+    changed = false;
+    if (isUpdate != undefined) {
+      console.log(topFolder)
+      this.openChildrenUpdate(userId, topFolder, filepath.fId)
+    } else {
     this.openChildren(userId, topFolder, filepath.fId)
+    }
     // handles nested folders
+    if (filepathCount === filepathArray.length) {
+      return;
+    }
+    // if folder is deleted or moved, stops
+    if (topFolder === undefined) {
+      return;
+    }
     if (topFolder.file === undefined) {
     childrenArray = this.buildChildrenArray(topFolder, userId)
     for (let i = 0; i < childrenArray.length; i++) {
       if (childrenArray[i].id === filepathArray[filepathCount].id) {
         topFolder = childrenArray[i]
+        changed = true;
       }
     }
   //handles topLevel folder
@@ -403,21 +437,78 @@ filepathTrace = (userId, filepath, filepathArray) => {
     for (let i = 0; i < topFolder.children.length; i++) {
       if (topFolder.children[i].id === filepathArray[filepathCount].id) {
         topFolder = topFolder.children[i];
+        changed = true;
         break;
       }
     }
+  }
+  if (!changed) {
+    return;
   }
     filepathCount++;
     k++;
   }
 
-  this.setState((prevState) => {
-    const newUserList = prevState.userList
-    return {
-      userList: newUserList,
-    }
-})
 }
+
+
+// works very similarly to openChildren(), just with some modifications to be able to run from inside setState() call in updateFiles()
+openChildrenUpdate = (userId, folder, fId) => {
+  const index = this.getAccountIndex(userId);
+  const { userList } = this.state;
+  let isTopLevel = false;
+  let parent;
+  let parentIndex;
+   // if folder is deleted or moved, stops
+   if (folder === undefined) {
+     return;
+   }
+    //checks to see whether folder is a fileObj or file itself
+   //if it's just a plain file, then file.file is undefiined and proceeds here
+   //this happens when the folder is a child of an already open folder
+   if (folder.file === undefined) {
+    isTopLevel = false;
+    let fileObj = new Object()
+    fileObj.file = folder;
+    fileObj.children = this.buildChildrenArray(folder, userId);
+    fileObj.fId = fId;
+        //finds current index of the openfolderList
+          for (let k = 0; k < userList[index].openFolders.length; k++) {
+              if (userList[index].openFolders[k].fId === fId) {
+                parent = userList[index].openFolders[k]
+                parentIndex = k;
+                break;
+              }
+          }
+       let filepathNew = new Object()
+        filepathNew.id = fileObj.file.id,
+        filepathNew.name = fileObj.file.name
+        filepathNew.fId = fId;
+        let filepathArray =  userList[index].openFolders[parentIndex].filepath
+        filepathArray.push(filepathNew)
+        fileObj.filepath = filepathArray
+        fileObj.fId = parent.fId
+        userList[index].openFolders[parentIndex] = fileObj;
+
+  //this handles placing the root folder and is slightly different from the normal openChildren()
+  } else  if (fId != undefined) {
+    let fileObj = new Object()
+    fileObj.fId = fId;
+    fileObj.file = folder.file
+    fileObj.children = folder.children
+    fileObj.filepath = [{
+      id : folder.file.id, 
+      name : folder.file.name,
+      fId : fileObj.fId,
+    }]
+
+    userList[index].openFolders.push(fileObj);
+   } 
+
+
+}
+
+
 
 
 /**
@@ -530,8 +621,12 @@ return top;
   /**
    * Refreshes all the files being displayed within an account
    * @param {Number} id the unique id granted to the user when placed within the userList
+   * 
+   * if you delete a file and refresh very quickly, the file will still be shown due to Google being slow to mark as trashed, another refresh will clear it
+   * 
    */
   refreshFunction = (id) => {
+    //ready = false;
     const index = this.getAccountIndex(id);
 
     const { userList } = this.state;
@@ -563,7 +658,15 @@ return top;
       const { accessToken } = userList[i];
       const userInfo = this.parseIDToken(userList[i].idToken);
       const { email } = userInfo;
-      this.updateFiles(i, accessToken, idToken, email);
+     this.updateFiles(i, accessToken, idToken, email);
+
+
+     //refreshes every 10 seconds after refresh button is clicked
+     //if you set to a time too low, the browser gets locked up in GET requests, and no other messages can get through(e.g. copyfunc won't work anymore)
+      //this.interval = setInterval(() => {
+       // this.updateFiles(i, accessToken, idToken, email);
+     // },10000);
+
     }
   }
 
