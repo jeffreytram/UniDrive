@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import UserList from './UserList';
+import Upload from './Upload'
 import Header from './Header';
 import { config } from '../config';
 import './App.css';
@@ -253,6 +254,10 @@ class App extends Component {
         <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
           Refresh All
         </button>
+        <Upload 
+          userList={userList}
+          parseIDToken={this.parseIDToken}
+        />
         <UserList
           userList={userList}
           parseIDToken={this.parseIDToken}

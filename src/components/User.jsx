@@ -51,7 +51,6 @@ class User extends Component {
         {' '}
         <button type="button" className="delete-btn" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
         <button type="button" className="refresh-btn" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
-
         <FileList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
