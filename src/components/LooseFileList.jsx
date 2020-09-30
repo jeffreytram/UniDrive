@@ -5,9 +5,9 @@ import './FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, openChildrenFunc, looseFileList
+    fileList, fileContainerStyles, userId, copyFunc, openChildrenFunc, looseFileList,
   } = props;
-  
+
   return (
     <div className="file-list-container" style={fileContainerStyles}>
       {looseFileList.map((file) => (
@@ -16,8 +16,8 @@ export default function LooseFileList(props) {
           data={file}
           copyFunc={copyFunc}
           childrenList={[]}
-          fileList = {fileList}
-          displayed = {true}
+          fileList={fileList}
+          displayed
           openChildrenFunc={openChildrenFunc}
         />
       ))}

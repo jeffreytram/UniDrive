@@ -6,27 +6,26 @@ import './FileList.css';
 export default function OpenFolderList(props) {
   const {
     fileList, fileContainerStyles, userId, copyFunc, openChildrenFunc,
-     openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc
+    openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
   } = props;
-  
+
   return (
     <div className="file-list-container" style={fileContainerStyles}>
       {openFolderList.map((fileObj) => (
         <OpenFolder
-          fileObj = {fileObj}
+          fileObj={fileObj}
           userId={userId}
           data={fileObj.file}
           copyFunc={copyFunc}
           childrenList={fileObj.children}
-          fileList = {fileList}
-          displayed = {true}
+          fileList={fileList}
+          displayed
           openChildrenFunc={openChildrenFunc}
           filepathTraceFunc={filepathTraceFunc}
-          filePath = {fileObj.filepath}
-          buildChildrenArray = {buildChildrenArray}
-          closeFolderFunc = {closeFolderFunc}
+          filePath={fileObj.filepath}
+          buildChildrenArray={buildChildrenArray}
+          closeFolderFunc={closeFolderFunc}
 
-          
         />
       ))}
     </div>
@@ -44,6 +43,3 @@ OpenFolderList.propTypes = {
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
 };
-
-
-

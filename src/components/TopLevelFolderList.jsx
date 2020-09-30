@@ -5,20 +5,20 @@ import './FileList.css';
 
 export default function TopLevelFolderList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, topLevelFolderList, openChildrenFunc
+    fileList, fileContainerStyles, userId, copyFunc, topLevelFolderList, openChildrenFunc,
   } = props;
-  
+
   return (
     <div className="file-list-container" style={fileContainerStyles}>
       {topLevelFolderList.map((fileObj) => (
         <File
-          fileObj = {fileObj}
+          fileObj={fileObj}
           userId={userId}
           data={fileObj.file}
           copyFunc={copyFunc}
           childrenList={fileObj.children}
-          fileList = {fileList}
-          displayed = {true}
+          fileList={fileList}
+          displayed
           openChildrenFunc={openChildrenFunc}
         />
       ))}
@@ -34,5 +34,3 @@ TopLevelFolderList.propTypes = {
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
 };
-
-
