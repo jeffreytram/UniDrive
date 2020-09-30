@@ -24,7 +24,7 @@ class Upload extends Component {
     for (let i = 0; i < target.files.length; i++) {
       list[i] = {
         file: target.files[i],
-        user: this.props.parseIDToken(target.id)
+        user: this.props.parseIDToken(target.idToken)
       };
     }
     this.setState((prevState) => ({
@@ -61,9 +61,6 @@ class Upload extends Component {
           <div className="menu" style={uploadStyles}>
             {userList.map((user) => (
               <div>
-                <div>
-                  {parseIDToken(user.id)}
-                </div>
                 <input 
                   type="file" 
                   className="button selectFile" 
