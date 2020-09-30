@@ -57,9 +57,8 @@ class Upload extends Component {
           className="button selectUser"
           id="upload-menu-btn"
           onClick={() => this.toggleUploadMenu()}
-          onKeyDown={() => this.toggleUploadMenu()}
-        >
-          Uploado
+          onKeyDown={() => this.toggleUploadMenu()}>
+          Uploader
         </button>
         <div className="menu" style={uploadStyles}>
           {userList.map((user) => (
