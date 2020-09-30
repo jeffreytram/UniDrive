@@ -25,6 +25,10 @@ class App extends Component {
     script.onload = this.handleClientLoad;
     script.src = 'https://apis.google.com/js/api.js';
     document.body.appendChild(script);
+    //this.interval = setInterval(() => {
+     // this.refreshAllFunction();
+     //},5000);
+  
   }
 
   handleClientLoad = () => {
@@ -54,6 +58,7 @@ class App extends Component {
         const idToken = response.id_token;
         const { code } = response;
         this.signInFunction(accessToken, idToken, code);
+        
       });
     });
   }
@@ -67,7 +72,9 @@ class App extends Component {
    */
   signInFunction = (accessToken, idToken, code) => {
     //ready = false;
+    
     const userInfo = this.parseIDToken(idToken);
+    console.log(userInfo)
     const { email } = userInfo;
     this.addUser(accessToken, idToken, code);
     const { userList } = this.state;
@@ -136,7 +143,7 @@ class App extends Component {
           console.log('authorization error');
           return;
         }
-        this.setfiles(index, window.gapi.client.drive.files);
+        this.getfiles(index, email);
       });
     });
   }
@@ -145,63 +152,118 @@ class App extends Component {
   /**
    * Stores the files for the given user
    * @param {Number} index the index of the user to store the files
-   * @param {Object} fileApi reference to drive.files
-   * Right now will only fetch a limited number(unnsure how many) of files due to Google api bug. 
-   * The more fields requested, the lower the max files. It should be 1000 but is less due to this, works with at least 188 right now (my number of files)
-   * To fix use nextPageTokens
+   * @param {Object} email email of the user (used for authentication)
    */
 
-  setfiles = (index, fileApi) => {
-    
-    fileApi.list({
-      fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId)',
-      orderBy: 'folder',
-      q : "trashed = false",
-      pageSize: 1000,
-      maxResults : 1000,
-      corpera : 'allDrives',
-      includeItemsFromAllDrives : 'true',
-      supportsAllDrives : 'true',
-    }).then((response) => {
+  getfiles = (index, email) => {
+    this.retrieveAllFiles((result) => {
       this.setState((prevState) => {
         const newUserList = prevState.userList;
-        console.log(newUserList[index])
         if (newUserList[index] === undefined) {
           return;
         }
         let allFilepaths = [];
-        console.log(newUserList[index].openFolders.length)
         for (let i = 0; i <  newUserList[index].openFolders.length; i++) {
           allFilepaths.push( newUserList[index].openFolders[i].filepath)
           }
-          console.log(allFilepaths)
-
-        newUserList[index].files = response.result.files;
-        newUserList[index].filesWithChildren = this.assignChildren(response.result.files)
+        newUserList[index].files = result;
+        newUserList[index].filesWithChildren = this.assignChildren(newUserList[index].files)
         newUserList[index].topLevelFolders = this.findTopLevelFolders(newUserList[index].filesWithChildren)
-
-          
-
         let childFolderList = newUserList[index].files.filter(file => file.mimeType === "application/vnd.google-apps.folder" || file.parents != undefined);
         let allFolders = childFolderList.filter(file => file.mimeType === "application/vnd.google-apps.folder");
         childFolderList = childFolderList.filter(f => !newUserList[index].topLevelFolders.includes(f));
-        newUserList[index].looseFiles = this.findLooseFiles(response.result.files, allFolders)
+        newUserList[index].looseFiles = this.findLooseFiles(result, allFolders)
         newUserList[index].openFolders = [];
-        console.log(allFilepaths)
         for (let i = 0; i < allFilepaths.length; i++) {
           this.filepathTrace(newUserList[index].id, allFilepaths[i][allFilepaths[i].length - 1], allFilepaths[i], true);
         }
-        console.log(newUserList[index].openFolders)
-        //ready = true;
         return {
           userList: newUserList,
         };
     }, () => {ready = true;})
   
-  },
-  (err) => { console.error('Execute error', err); })
+  }, email)
+}
 
-  }
+
+
+        
+
+
+  
+
+
+/**
+ * Retrieve all the files of user
+ *
+ * @param {Function} callback Function to call when the request is complete.
+ * @param {String} email email of the user to keep automatically authenticating for each list request
+ */
+retrieveAllFiles = (callback, email)  => {
+  let res = [];
+  var retrievePageOfFiles = function(email, response) {
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (r) => {
+      res = res.concat(response.result.files);
+      let nextPageToken = response.result.nextPageToken;
+      if (nextPageToken) {  
+        window.gapi.client.drive.files.list({
+          pageToken : nextPageToken,
+          fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId), nextPageToken',
+          orderBy: 'folder',
+            q : "trashed = false",
+          pageSize: 1000,
+           //maxResults : 10,
+            corpera : 'allDrives',
+           includeItemsFromAllDrives : 'true',
+          supportsAllDrives : 'true',
+        }).then((response) =>  {
+          retrievePageOfFiles(email, response)}); 
+      } else {
+        callback(res);
+      }
+  })
+  })
+}
+
+  window.gapi.client.load('drive', 'v3').then(() => {
+    window.gapi.auth2.authorize({
+      apiKey: API_KEY,
+      clientId: CLIENT_ID,
+      scope: SCOPE,
+      prompt: 'none',
+      login_hint: email,
+      discoveryDocs: [discoveryUrl],
+    }, (response) => {
+      if (response.error) {
+        console.log(response.error);
+        console.log('authorization error');
+        return;
+      }
+ 
+       window.gapi.client.drive.files.list({
+          fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId) , nextPageToken',
+          orderBy: 'folder',
+            q : "trashed = false",
+          pageSize: 1000,
+           //maxResults : 10,
+            corpera : 'allDrives',
+           includeItemsFromAllDrives : 'true',
+          supportsAllDrives : 'true',
+        }).then((response) =>  {
+          retrievePageOfFiles(email, response)});
+      })
+    })
+  
+ 
+}
 
 
 //finds all of the files in the user's drive which are not held within a folder
@@ -663,9 +725,9 @@ return top;
 
      //refreshes every 10 seconds after refresh button is clicked
      //if you set to a time too low, the browser gets locked up in GET requests, and no other messages can get through(e.g. copyfunc won't work anymore)
-      //this.interval = setInterval(() => {
-       // this.updateFiles(i, accessToken, idToken, email);
-     // },10000);
+     this.interval = setInterval(() => {
+      this.updateFiles(i, accessToken, idToken, email);
+     },1000);
 
     }
   }
