@@ -1,8 +1,13 @@
 .header-container {
     height: 50px;
+    width: 100%;
+    background-color: white;
     border-bottom-style: solid;
     border-color: grey;
+    position: fixed;
+    z-index: 2;
 }
+
 .logo {
     height: 100%;
     left: 0;
