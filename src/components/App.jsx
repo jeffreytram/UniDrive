@@ -164,7 +164,7 @@ class App extends Component {
         newUserList[index].files = result;
         newUserList[index].filesWithChildren = this.assignChildren(newUserList[index].files);
         newUserList[index].topLevelFolders = this.findTopLevelFolders(newUserList[index].filesWithChildren);
-        let childFolderList = newUserList[index].files.filter((file) => file.mimeType === 'application/vnd.google-apps.folder' || file.parents != undefined);
+        let childFolderList = newUserList[index].files.filter((file) => file.mimeType === 'application/vnd.google-apps.folder' || file.parents !== undefined);
         const allFolders = childFolderList.filter((file) => file.mimeType === 'application/vnd.google-apps.folder');
         childFolderList = childFolderList.filter((f) => !newUserList[index].topLevelFolders.includes(f));
         newUserList[index].looseFiles = this.findLooseFiles(result, allFolders);

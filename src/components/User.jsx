@@ -22,8 +22,8 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, isChildFunc, topLevelFolderList
-      , openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc
+      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, isChildFunc, topLevelFolderList,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -55,36 +55,36 @@ class User extends Component {
         <button type="button" className="delete-btn" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
         <button type="button" className="refresh-btn" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
 
-      <TopLevelFolderList
-      fileList={fileList}
-      fileContainerStyles={fileContainerStyles}
-      userId={userId}
-      copyFunc={copyFunc}
-      topLevelFolderList={topLevelFolderList}
-      openChildrenFunc={openChildrenFunc}
+        <TopLevelFolderList
+          fileList={fileList}
+          fileContainerStyles={fileContainerStyles}
+          userId={userId}
+          copyFunc={copyFunc}
+          topLevelFolderList={topLevelFolderList}
+          openChildrenFunc={openChildrenFunc}
         />
 
-      <OpenFolderList
-      fileList={fileList}
-      fileContainerStyles={fileContainerStyles}
-      userId={userId}
-      copyFunc={copyFunc}
-      openChildrenFunc={openChildrenFunc}
-      filepathTraceFunc={filepathTraceFunc}
-      openFolderList = {openFolderList}
-      buildChildrenArray = {buildChildrenArray}
-      closeFolderFunc = {closeFolderFunc}
-       />
-  
-      <LooseFileList
+        <OpenFolderList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
           openChildrenFunc={openChildrenFunc}
-          looseFileList = {looseFileList}
+          filepathTraceFunc={filepathTraceFunc}
+          openFolderList={openFolderList}
+          buildChildrenArray={buildChildrenArray}
+          closeFolderFunc={closeFolderFunc}
         />
-        
+
+        <LooseFileList
+          fileList={fileList}
+          fileContainerStyles={fileContainerStyles}
+          userId={userId}
+          copyFunc={copyFunc}
+          openChildrenFunc={openChildrenFunc}
+          looseFileList={looseFileList}
+        />
+
       </div>
     );
   }
