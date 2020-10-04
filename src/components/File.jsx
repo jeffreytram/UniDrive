@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import './File.css';
 
 class File extends Component {
@@ -22,19 +23,48 @@ class File extends Component {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
         return (
-          <div className="file-container">
-            <div className="file-image-container">
-              <a href={webViewLink} target="blank">
-                <img className="file-img" src={iconLink} alt="File icon" />
-              </a>
-            </div>
-            <div className="file-name">
-              <a href={webViewLink} target="blank">
-                {name}
-                {' '}
-              </a>
-            </div>
-            <button type="button" className="copy-btn" onClick={() => copyFunc(userId, id)}>Copy</button>
+          <div>
+            <ContextMenuTrigger className="file-container" id={id}>
+              <div className="file-container">
+                <div className="file-image-container">
+                  <a href={webViewLink} target="blank">
+                    <img className="file-img" src={iconLink} alt="File icon" />
+                  </a>
+                </div>
+                <div className="file-name">
+                  <a href={webViewLink} target="blank">
+                    {name}
+                    {' '}
+                  </a>
+                </div>
+              </div>
+            </ContextMenuTrigger>
+            <ContextMenu className="context-menu" id={id}>
+              <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
+                View
+              </MenuItem>
+              <MenuItem className="menu-item">
+                Share
+              </MenuItem>
+              <MenuItem className="menu-item">
+                Get link
+              </MenuItem>
+              <MenuItem className="menu-item">
+                Move to
+              </MenuItem>
+              <MenuItem className="menu-item">
+                Rename
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => copyFunc(userId, id)}>
+                Make a copy
+              </MenuItem>
+              <MenuItem className="menu-item">
+                Download
+              </MenuItem>
+              <MenuItem className="menu-item">
+                Delete
+              </MenuItem>
+            </ContextMenu>
           </div>
         );
       }
@@ -45,7 +75,7 @@ class File extends Component {
             <img className="file-img" src={iconLink} alt="File icon" />
           </div>
           <div className="file-name">
-            <a href={webViewLink} target="_blank">{name}</a>
+            <a href={webViewLink} target="blank">{name}</a>
           </div>
           <button type="button" className="copy-btn" onClick={() => openChildrenFunc(userId, fileObj, fId)}>Open</button>
         </div>
