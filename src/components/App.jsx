@@ -250,9 +250,9 @@ class App extends Component {
    * @param {*} email User info for getting account
    * @param {*} fileUpl File to be uploaded
    */
-  fileUpload = (email, fileUpl) => {
-    /* const index = this.getAccountIndex(userId);
-    const email = this.parseIDToken(userId); */
+  fileUpload = (idToken, fileUpl) => {
+    const parsedInfo = this.parseIDToken(idToken);
+    const { email } = parsedInfo;
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -275,8 +275,6 @@ class App extends Component {
         resumable.setRequestHeader('Content-Type', 'application/json');
         resumable.setRequestHeader('X-Upload-Content-Length', file.size);
         resumable.setRequestHeader('X-Upload-Content-Type', contentType);
-        console.log(resumable);
-        console.log("remsume");
         resumable.onreadystatechange = function() {
           if(resumable.readyState === XMLHttpRequest.DONE && resumable.status === 200) {
             const locationUrl = resumable.getResponseHeader('Location');
@@ -288,7 +286,6 @@ class App extends Component {
               uploadResumable.setRequestHeader('X-Upload-Content-Type', contentType);
               uploadResumable.onreadystatechange = function() {
                 if(uploadResumable.readyState === XMLHttpRequest.DONE && uploadResumable.status === 200) {
-                  console.log(uploadResumable.response);
                 }
               };
               uploadResumable.send(reader.result);

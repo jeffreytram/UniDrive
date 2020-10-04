@@ -19,12 +19,12 @@ class Upload extends Component {
     }));
   }
   
-  addFiles(target) {
+  addFiles(target, idToken) {
     const list = [];
     for (let i = 0; i < target.files.length; i++) {
       list[i] = {
         file: target.files[i],
-        user: this.props.parseIDToken(target.idToken)
+        user: idToken
       };
     }
     this.setState((prevState) => ({
@@ -35,6 +35,7 @@ class Upload extends Component {
     const { uploadFiles } = this.state;
     const { fileUpload } = this.props;
     for (let i = 0; i < uploadFiles.length; i++) {
+      console.log((uploadFiles[i].user));
       fileUpload((uploadFiles[i].user), uploadFiles[i].file);
     }
     this.setState({
@@ -64,8 +65,7 @@ class Upload extends Component {
                 <input 
                   type="file" 
                   className="button selectFile" 
-                  id={user.id}
-                  onChange={(e) => this.addFiles(e.target)} 
+                  onChange={(e) => this.addFiles(e.target, user.idToken)}
                   multiple/>
               </div>
             ))}
