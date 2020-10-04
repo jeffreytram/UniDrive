@@ -1,26 +1,27 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './Upload.css';
 
-//Next: Include User to Upload in list
+// Next: Include User to Upload in list
 
 class Upload extends Component {
   constructor() {
     super();
     this.state = {
       showUploadMenu: false,
-      uploadFiles: []
-    }
+      uploadFiles: [],
+    };
   }
 
   toggleUploadMenu = () => {
     this.setState((prevState) => ({
-      showUploadMenu: !prevState.showUploadMenu
+      showUploadMenu: !prevState.showUploadMenu,
     }));
   }
   
-  addFiles(target, idToken) {
+  addFiles = (target, idToken) => {
     const list = [];
+    const { parseIDToken } = this.props;
     for (let i = 0; i < target.files.length; i++) {
       list[i] = {
         file: target.files[i],
@@ -28,9 +29,10 @@ class Upload extends Component {
       };
     }
     this.setState((prevState) => ({
-      uploadFiles: [...prevState.uploadFiles, ...list]
+      uploadFiles: [...prevState.uploadFiles, ...list],
     }));
   }
+
   uploadFiles = () => {
     const { uploadFiles } = this.state;
     const { fileUpload } = this.props;
@@ -39,7 +41,7 @@ class Upload extends Component {
       fileUpload((uploadFiles[i].user), uploadFiles[i].file);
     }
     this.setState({
-      uploadFiles: []
+      uploadFiles: [],
     });
   }
 
@@ -48,19 +50,20 @@ class Upload extends Component {
     const uploadStyles = {
       display: showUploadMenu ? 'flex' : 'none',
     };
-    const {userList, parseIDToken} = this.props;
+    const { userList, parseIDToken } = this.props;
     return (
       <div>
-        <button 
-          type="button" 
+        <button
+          type="button"
           className="button selectUser"
-          id="upload-menu-btn" 
+          id="upload-menu-btn"
           onClick={() => this.toggleUploadMenu()}
           onKeyDown={() => this.toggleUploadMenu()}>
           Uploader
         </button>
-          <div className="menu" style={uploadStyles}>
-            {userList.map((user) => (
+        <div className="menu" style={uploadStyles}>
+          {userList.map((user) => (
+            <div>
               <div>
                 <input 
                   type="file" 
@@ -68,11 +71,20 @@ class Upload extends Component {
                   onChange={(e) => this.addFiles(e.target, user.idToken)}
                   multiple/>
               </div>
-            ))}
-          </div>
-          <button type="button" onClick={this.uploadFiles}>Upload</button>
+              <input
+                type="file"
+                className="button selectFile"
+                id={user.id}
+                onChange={(e) => this.addFiles(e.target)}
+                multiple
+              />
+              <button type="button" onClick={() => this.toggleUploadMenu()}>Close</button>
+            </div>
+          ))}
+        </div>
+        <button type="button" onClick={() => this.uploadFiles()}>Upload</button>
       </div>
-    )
+    );
   }
 }
 
