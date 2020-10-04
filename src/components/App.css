@@ -34,3 +34,13 @@
   background-color: white;
   color:black;
 }
+
+.main-container {
+  width: 85%;
+  float: right;
+  margin-top: 50px;
+}
+
+.main-content {
+  margin: 10px;
+}

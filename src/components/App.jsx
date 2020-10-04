@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import UserList from './UserList';
 import Header from './Header';
+import Sidebar from './Sidebar';
 import { config } from '../config';
 import './App.css';
 
@@ -691,22 +692,27 @@ findTopLevelFolders = (fileList) => {
     return (
       <div className="App">
         <Header />
-        <button type="button" className="button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-        <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
-          Refresh All
-        </button>
-        <UserList
-          userList={userList}
-          parseIDToken={this.parseIDToken}
-          removeFunc={this.signOutFunction}
-          refreshFunc={this.refreshFunction}
-          copyFunc={this.copyFile}
-          filepathTraceFunc={this.filepathTrace}
-          isChildFunc={this.checkIfChild}
-          openChildrenFunc={this.openChildren}
-          closeFolderFunc={this.closeFolder}
-          buildChildrenArray={this.buildChildrenArray}
-        />
+        <Sidebar />
+        <div className="main-container">
+          <div className="main-content">
+            <button type="button" className="button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
+            <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
+              Refresh All
+            </button>
+            <UserList
+              userList={userList}
+              parseIDToken={this.parseIDToken}
+              removeFunc={this.signOutFunction}
+              refreshFunc={this.refreshFunction}
+              copyFunc={this.copyFile}
+              filepathTraceFunc={this.filepathTrace}
+              isChildFunc={this.checkIfChild}
+              openChildrenFunc={this.openChildren}
+              closeFolderFunc={this.closeFolder}
+              buildChildrenArray={this.buildChildrenArray}
+            />
+          </div>
+        </div>
       </div>
     );
   }
