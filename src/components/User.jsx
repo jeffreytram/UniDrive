@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import FileList from './FileList';
+import LooseFileList from './LooseFileList';
+import TopLevelFolderList from './TopLevelFolderList';
+import OpenFolderList from './OpenFolderList';
 import './User.css';
 
 class User extends Component {
@@ -20,7 +22,8 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc,
+      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, isChildFunc, topLevelFolderList,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -51,12 +54,37 @@ class User extends Component {
         {' '}
         <button type="button" className="delete-btn" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
         <button type="button" className="refresh-btn" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
-        <FileList
+
+        <TopLevelFolderList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
+          topLevelFolderList={topLevelFolderList}
+          openChildrenFunc={openChildrenFunc}
         />
+
+        <OpenFolderList
+          fileList={fileList}
+          fileContainerStyles={fileContainerStyles}
+          userId={userId}
+          copyFunc={copyFunc}
+          openChildrenFunc={openChildrenFunc}
+          filepathTraceFunc={filepathTraceFunc}
+          openFolderList={openFolderList}
+          buildChildrenArray={buildChildrenArray}
+          closeFolderFunc={closeFolderFunc}
+        />
+
+        <LooseFileList
+          fileList={fileList}
+          fileContainerStyles={fileContainerStyles}
+          userId={userId}
+          copyFunc={copyFunc}
+          openChildrenFunc={openChildrenFunc}
+          looseFileList={looseFileList}
+        />
+
       </div>
     );
   }
@@ -69,6 +97,13 @@ User.propTypes = {
   userId: PropTypes.number.isRequired,
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
+  topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  openChildrenFunc: PropTypes.func.isRequired,
+  closeFolderFunc: PropTypes.func.isRequired,
+  filepathTraceFunc: PropTypes.func.isRequired,
+  openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  buildChildrenArray: PropTypes.func.isRequired,
 };
 
 export default User;
