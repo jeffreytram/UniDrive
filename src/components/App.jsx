@@ -19,8 +19,10 @@ class App extends Component {
     super();
     this.state = {
       userList: [],
+      lastRefreshTime: Date().substring(0, 21),
     };
   }
+
 
   componentDidMount() {
     const script = document.createElement('script');
@@ -701,6 +703,13 @@ findTopLevelFolders = (fileList) => {
         this.updateFiles(i, accessToken, idToken, email);
       }, 1000);
     }
+
+    const currentTimeDate = Date().substring(0, 21);
+    this.setState((prevState) => {
+      return {
+        lastRefreshTime: currentTimeDate,
+        };
+    });
   }
 
   /**
@@ -763,7 +772,8 @@ findTopLevelFolders = (fileList) => {
   }
 
   render() {
-    const { userList } = this.state;
+    //#const { userList } = this.state;
+    const { userList, lastRefreshTime } = this.state;
     return (
       <div className="App">
         <Header />
@@ -779,6 +789,7 @@ findTopLevelFolders = (fileList) => {
             <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
               Refresh All
             </button>
+            <><span className="sync-message"> Last Sync: {this.state.lastRefreshTime} </span></>
             <UserList
               userList={userList}
               parseIDToken={this.parseIDToken}
