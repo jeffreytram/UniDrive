@@ -744,20 +744,6 @@ findTopLevelFolders = (fileList) => {
     return (
       <div className="App">
         <Header />
-<<<<<<< HEAD
-        <button type="button" className="button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-        <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
-          Refresh All
-        </button>
-        <UserList
-          userList={userList}
-          parseIDToken={this.parseIDToken}
-          removeFunc={this.signOutFunction}
-          refreshFunc={this.refreshFunction}
-          copyFunc={this.copyFile}
-          deleteFunc={this.deleteFile}
-        />
-=======
         <Sidebar />
         <div className="main-container">
           <div className="main-content">
@@ -771,6 +757,7 @@ findTopLevelFolders = (fileList) => {
               removeFunc={this.signOutFunction}
               refreshFunc={this.refreshFunction}
               copyFunc={this.copyFile}
+              deleteFunc={this.deleteFile}
               filepathTraceFunc={this.filepathTrace}
               isChildFunc={this.checkIfChild}
               openChildrenFunc={this.openChildren}
@@ -779,7 +766,6 @@ findTopLevelFolders = (fileList) => {
             />
           </div>
         </div>
->>>>>>> 876416f27092af4d1d8236855d29164489cb1936
       </div>
     );
   }

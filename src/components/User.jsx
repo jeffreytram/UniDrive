@@ -22,12 +22,8 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-<<<<<<< HEAD
-      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, deleteFunc,
-=======
-      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, isChildFunc, topLevelFolderList,
+      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
->>>>>>> 876416f27092af4d1d8236855d29164489cb1936
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -64,12 +60,9 @@ class User extends Component {
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
-<<<<<<< HEAD
           deleteFunc={deleteFunc}
-=======
           topLevelFolderList={topLevelFolderList}
           openChildrenFunc={openChildrenFunc}
->>>>>>> 876416f27092af4d1d8236855d29164489cb1936
         />
 
         <OpenFolderList
@@ -77,6 +70,7 @@ class User extends Component {
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
           openChildrenFunc={openChildrenFunc}
           filepathTraceFunc={filepathTraceFunc}
           openFolderList={openFolderList}
@@ -89,6 +83,7 @@ class User extends Component {
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
           openChildrenFunc={openChildrenFunc}
           looseFileList={looseFileList}
         />
@@ -105,6 +100,8 @@ User.propTypes = {
   userId: PropTypes.number.isRequired,
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
+  copyFunc: PropTypes.func.isRequired,
+  deleteFunc: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   openChildrenFunc: PropTypes.func.isRequired,

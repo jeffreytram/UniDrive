@@ -3,28 +3,6 @@ import PropTypes from 'prop-types';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import './File.css';
 
-<<<<<<< HEAD
-/* Props contains: Name, Link, Image */
-export default function File(props) {
-  const { userId, data, copyFunc, deleteFunc } = props;
-  const {
-    id, webViewLink, iconLink, name,
-  } = data;
-  return (
-    <div className="file-container">
-      <div className="file-image-container">
-        <a href={webViewLink}>
-          <img className="file-img" src={iconLink} alt="File icon" />
-        </a>
-      </div>
-      <div className="file-name">
-        <a href={webViewLink}>{name}</a>
-      </div>
-      <button type="button" className="copy-btn" onClick={() => copyFunc(userId, id)}>Copy</button>
-      <button type="button" className="deletefile-btn" onClick={() => {if(window.confirm('This item will become unrecoverable. Proceed?')){deleteFunc(userId, id)};}}>Delete</button>
-    </div>
-  );
-=======
 class File extends Component {
   constructor() {
     super();
@@ -36,7 +14,7 @@ class File extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, data, copyFunc, fId, displayed, openChildrenFunc, fileObj,
+      userId, data, copyFunc, deleteFunc, fId, displayed, openChildrenFunc, fileObj,
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -83,7 +61,7 @@ class File extends Component {
               <MenuItem className="menu-item">
                 Download
               </MenuItem>
-              <MenuItem className="menu-item">
+              <MenuItem className="menu-item" onClick={() => {if(window.confirm('This item will become unrecoverable. Proceed?')){deleteFunc(userId, id)};}}>
                 Delete
               </MenuItem>
             </ContextMenu>
@@ -100,20 +78,18 @@ class File extends Component {
             <a href={webViewLink} target="blank">{name}</a>
           </div>
           <button type="button" className="copy-btn" onClick={() => openChildrenFunc(userId, fileObj, fId)}>Open</button>
+          <button type="button" className="deletefile-btn" onClick={() => {if(window.confirm('This item will become unrecoverable. Proceed?')){deleteFunc(userId, id)};}}>Delete</button>
         </div>
       );
     } return null;
   }
->>>>>>> 876416f27092af4d1d8236855d29164489cb1936
 }
 
 File.propTypes = {
   userId: PropTypes.number.isRequired,
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
   copyFunc: PropTypes.func.isRequired,
-<<<<<<< HEAD
   deleteFunc: PropTypes.func.isRequired,
-=======
   fId: PropTypes.number.isRequired,
   displayed: PropTypes.bool.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
@@ -122,7 +98,6 @@ File.propTypes = {
 
 File.defaultProps = {
   fileObj: {},
->>>>>>> 876416f27092af4d1d8236855d29164489cb1936
 };
 
 export default File;
