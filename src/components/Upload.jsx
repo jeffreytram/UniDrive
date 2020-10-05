@@ -71,14 +71,6 @@ class Upload extends Component {
                   onChange={(e) => this.addFiles(e.target, user.idToken)}
                   multiple/>
               </div>
-              <input
-                type="file"
-                className="button selectFile"
-                id={user.id}
-                onChange={(e) => this.addFiles(e.target)}
-                multiple
-              />
-              <button type="button" onClick={() => this.toggleUploadMenu()}>Close</button>
             </div>
           ))}
         </div>

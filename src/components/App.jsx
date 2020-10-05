@@ -814,14 +814,14 @@ findTopLevelFolders = (fileList) => {
     return (
       <div className="App">
         <Header />
-        <Upload
-          userList={userList}
-          parseIDToken={this.parseIDToken}
-          fileUpload={this.fileUpload}
-        />
         <Sidebar />
         <div className="main-container">
           <div className="main-content">
+            <Upload
+              userList={userList}
+              parseIDToken={this.parseIDToken}
+              fileUpload={this.fileUpload}
+            />
             <button type="button" className="button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
             <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
               Refresh All
