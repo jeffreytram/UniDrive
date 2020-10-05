@@ -59,6 +59,20 @@ a:hover {
   color: white;
 }
 
+.deletefile-btn {
+  background-color: #f7f7f7;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+}
+
+.deletefile-btn:hover {
+  cursor: pointer;
+  border-color: #303030;
+  background-color: #303030;
+  color: white;
+}
+
+
 .context-menu {
   background-color: #ffffff;
   border-radius: .25rem;

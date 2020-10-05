@@ -5,7 +5,7 @@ import './FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, openChildrenFunc, looseFileList,
+    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, openChildrenFunc, looseFileList,
   } = props;
 
   return (
@@ -15,6 +15,7 @@ export default function LooseFileList(props) {
           userId={userId}
           data={file}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
           childrenList={[]}
           fileList={fileList}
           displayed
@@ -30,6 +31,7 @@ LooseFileList.propTypes = {
   fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
   userId: PropTypes.number.isRequired,
   copyFunc: PropTypes.func.isRequired,
+  deleteFunc: PropTypes.func.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

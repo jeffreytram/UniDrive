@@ -656,6 +656,43 @@ findTopLevelFolders = (fileList) => {
   }
 
   /**
+   * Delete files from UniDrive and Google Drive and refreshes
+   * @param {*} userId
+   * @param {*} fileId
+   */
+  deleteFile = (userId, fileId) => {
+    const index = this.getAccountIndex(userId);
+    const { userList } = this.state;
+
+    const { accessToken, idToken } = userList[index];
+    const { email } = this.parseIDToken(idToken);
+    //boiler plate for accessing the API
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        if (response.error) {
+          console.log(response.error);
+          console.log('authorization error');
+        }
+        // the actual deleting
+        //note that files are deleted and not trashed and can not be recovered
+        window.gapi.client.drive.files.delete({
+          fileId,
+        }).then((response) => {
+          this.refreshFunction(userList[index].id);
+        });
+      });
+    });
+  }
+
+
+  /**
    * Refreshes all the files being displayed within an account
    * @param {Number} id the unique id granted to the user when placed within the userList
    *
@@ -796,6 +833,7 @@ findTopLevelFolders = (fileList) => {
               removeFunc={this.signOutFunction}
               refreshFunc={this.refreshFunction}
               copyFunc={this.copyFile}
+              deleteFunc={this.deleteFile}
               filepathTraceFunc={this.filepathTrace}
               isChildFunc={this.checkIfChild}
               openChildrenFunc={this.openChildren}
