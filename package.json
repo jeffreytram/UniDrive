@@ -10,6 +10,7 @@
     "eslint": "^6.8.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
+    "react-contextmenu": "^2.14.0",
     "react-dom": "^16.13.1",
     "react-google-login": "^5.1.21",
     "react-scripts": "3.4.3",
