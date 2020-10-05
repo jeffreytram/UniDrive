@@ -20,7 +20,7 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc,
+      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, deleteFunc,
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -57,6 +57,7 @@ class User extends Component {
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
         />
       </div>
     );

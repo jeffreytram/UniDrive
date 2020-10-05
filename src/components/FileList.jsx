@@ -5,7 +5,7 @@ import './FileList.css';
 
 export default function UserList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc,
+    fileList, fileContainerStyles, userId, copyFunc, deleteFunc
   } = props;
   return (
     <div className="file-list-container" style={fileContainerStyles}>
@@ -14,6 +14,7 @@ export default function UserList(props) {
           userId={userId}
           data={file}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
         />
       ))}
     </div>
@@ -25,4 +26,5 @@ UserList.propTypes = {
   fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
   userId: PropTypes.number.isRequired,
   copyFunc: PropTypes.func.isRequired,
+  deleteFunc: PropTypes.func.isRequired,
 };

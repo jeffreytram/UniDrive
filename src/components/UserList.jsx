@@ -5,7 +5,7 @@ import './UserList.css';
 
 export default function UserList(props) {
   const {
-    userList, parseIDToken, removeFunc, refreshFunc, copyFunc,
+    userList, parseIDToken, removeFunc, refreshFunc, copyFunc, deleteFunc
   } = props;
   return (
     <div className="user-list">
@@ -18,6 +18,7 @@ export default function UserList(props) {
           removeFunc={removeFunc}
           refreshFunc={refreshFunc}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
         />
       ))}
     </div>
@@ -30,4 +31,5 @@ UserList.propTypes = {
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
   copyFunc: PropTypes.func.isRequired,
+  deleteFunc: PropTypes.func.isRequired,
 };
