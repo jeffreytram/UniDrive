@@ -5,7 +5,7 @@ import './FileList.css';
 
 export default function TopLevelFolderList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, topLevelFolderList, openChildrenFunc,
+    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, topLevelFolderList, openChildrenFunc,
   } = props;
 
   return (
@@ -16,6 +16,7 @@ export default function TopLevelFolderList(props) {
           userId={userId}
           data={fileObj.file}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
           childrenList={fileObj.children}
           fileList={fileList}
           displayed
@@ -31,6 +32,7 @@ TopLevelFolderList.propTypes = {
   fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
   userId: PropTypes.number.isRequired,
   copyFunc: PropTypes.func.isRequired,
+  deleteFunc: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
 };

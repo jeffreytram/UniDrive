@@ -22,7 +22,7 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, isChildFunc, topLevelFolderList,
+      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
     } = this.props;
 
@@ -60,6 +60,7 @@ class User extends Component {
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
           topLevelFolderList={topLevelFolderList}
           openChildrenFunc={openChildrenFunc}
         />
@@ -69,6 +70,7 @@ class User extends Component {
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
           openChildrenFunc={openChildrenFunc}
           filepathTraceFunc={filepathTraceFunc}
           openFolderList={openFolderList}
@@ -81,6 +83,7 @@ class User extends Component {
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
           openChildrenFunc={openChildrenFunc}
           looseFileList={looseFileList}
         />
@@ -97,6 +100,8 @@ User.propTypes = {
   userId: PropTypes.number.isRequired,
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
+  copyFunc: PropTypes.func.isRequired,
+  deleteFunc: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   openChildrenFunc: PropTypes.func.isRequired,

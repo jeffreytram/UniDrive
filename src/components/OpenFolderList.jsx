@@ -5,7 +5,7 @@ import './FileList.css';
 
 export default function OpenFolderList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, openChildrenFunc,
+    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, openChildrenFunc,
     openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
   } = props;
 
@@ -17,6 +17,7 @@ export default function OpenFolderList(props) {
           userId={userId}
           data={fileObj.file}
           copyFunc={copyFunc}
+          deleteFunc={deleteFunc}
           childrenList={fileObj.children}
           fileList={fileList}
           displayed
@@ -37,6 +38,7 @@ OpenFolderList.propTypes = {
   fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
   userId: PropTypes.number.isRequired,
   copyFunc: PropTypes.func.isRequired,
+  deleteFunc: PropTypes.func.isRequired,
   filepathTraceFunc: PropTypes.func.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   closeFolderFunc: PropTypes.func.isRequired,
