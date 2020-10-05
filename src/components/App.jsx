@@ -711,8 +711,6 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
-  // <span className="sync-message"> Last Sync: {this.state.lastRefreshTime} </span>
-
   render() {
     //#const { userList } = this.state;
     const { userList, lastRefreshTime } = this.state;
@@ -726,7 +724,7 @@ findTopLevelFolders = (fileList) => {
             <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
               Refresh All
             </button>
-            <span className="sync-message"> Last Sync: {this.state.lastRefreshTime} </span>
+            <><span className="sync-message"> Last Sync: {this.state.lastRefreshTime} </span></>
             <UserList
               userList={userList}
               parseIDToken={this.parseIDToken}
