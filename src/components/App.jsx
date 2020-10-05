@@ -104,20 +104,35 @@ class App extends Component {
     * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   addUser = (accessToken, idToken, code) => {
-    this.setState((prevState) => ({
-      userList: [...prevState.userList, {
-        id: userId,
-        accessToken,
-        idToken,
-        code,
-        files: [],
-        topLevelFolders: [],
-        filesWithChildren: [],
-        looseFiles: [],
-        openFolders: [],
-      }],
-    }));
-    userId += 1;
+    const { email } = this.parseIDToken(idToken);
+    const { userList } = this.state;
+    if (!this.isDuplicateUser(email, userList)) {
+      this.setState((prevState) => ({
+        userList: [...prevState.userList, {
+          id: userId,
+          accessToken,
+          idToken,
+          code,
+          files: [],
+          topLevelFolders: [],
+          filesWithChildren: [],
+          looseFiles: [],
+          openFolders: [],
+        }],
+      }));
+      userId += 1;
+    } else {
+      console.log('Email is already in UserList');
+    }
+  }
+
+  isDuplicateUser = (email, userList) => {
+    for (let i = 0; i < userList.length; i++) {
+      if (email === this.parseIDToken(userList[i].idToken).email) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
