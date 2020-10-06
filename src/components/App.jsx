@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import UserList from './UserList';
+import Upload from './Upload'
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { config } from '../config';
@@ -748,6 +749,65 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
+  /**
+   * Uploads a file specified
+   * @param {*} email User info for getting account
+   * @param {*} fileUpl File to be uploaded
+   */
+  fileUpload = (idToken, fileUpl) => {
+    const parsedInfo = this.parseIDToken(idToken);
+    const { email } = parsedInfo;
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        if (response.error) {
+          console.log(response.error);
+          console.log('Auth error.');
+        }
+        const file = fileUpl;
+        // new File(['Hello, world!'], 'hello world.txt', { type: 'text/plain;charset=utf-8' });
+        const contentType = file.type || 'application/octet-stream';
+        const resumable = new XMLHttpRequest();
+        resumable.open('POST', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', true);
+        resumable.setRequestHeader('Authorization', `Bearer ${response.access_token}`);
+        resumable.setRequestHeader('Content-Type', 'application/json');
+        resumable.setRequestHeader('X-Upload-Content-Length', file.size);
+        resumable.setRequestHeader('X-Upload-Content-Type', contentType);
+        resumable.onreadystatechange = function () {
+          if (resumable.readyState === XMLHttpRequest.DONE && resumable.status === 200) {
+            const locationUrl = resumable.getResponseHeader('Location');
+            const reader = new FileReader();
+            reader.onload = () => {
+              const uploadResumable = new XMLHttpRequest();
+              uploadResumable.open('PUT', locationUrl, true);
+              uploadResumable.setRequestHeader('Content-Type', contentType);
+              uploadResumable.setRequestHeader('X-Upload-Content-Type', contentType);
+              uploadResumable.onreadystatechange = function () {
+                if (uploadResumable.readyState === XMLHttpRequest.DONE && uploadResumable.status === 200) {
+                  console.log(uploadResumable.response);
+                }
+              };
+              uploadResumable.send(reader.result);
+            };
+            reader.readAsArrayBuffer(file);
+          }
+        };
+        resumable.send(JSON.stringify({
+          name: file.name,
+          mimeType: contentType,
+          'Content-Type': contentType,
+          'Content-Length': file.size,
+        }));
+      });
+    });
+  }
+
   render() {
     //#const { userList } = this.state;
     const { userList, lastRefreshTime } = this.state;
@@ -757,6 +817,11 @@ findTopLevelFolders = (fileList) => {
         <Sidebar />
         <div className="main-container">
           <div className="main-content">
+            <Upload
+              userList={userList}
+              parseIDToken={this.parseIDToken}
+              fileUpload={this.fileUpload}
+            />
             <button type="button" className="button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
             <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
               Refresh All
