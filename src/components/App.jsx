@@ -84,7 +84,7 @@ class App extends Component {
   /**
    *  Handles user sign out.
    *  Removes the specified user from the userList array, then updates the State
-   * @param {number} id attribute of the specific User tp be removed in the UserList array
+   * @param {number} id attribute of the specific User to be removed in the UserList array
    */
   signOutFunction = (id) => {
     if (ready) {
@@ -818,17 +818,16 @@ findTopLevelFolders = (fileList) => {
               parseIDToken={this.parseIDToken}
               fileUpload={this.fileUpload}
             />
-            <button type="button" className="button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-            <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
+            <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
+            <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
               Refresh All
             </button>
             <>
               <span className="sync-message">
                 {' '}
                 Last Sync:
-                {this.state.lastRefreshTime}
                 {' '}
-
+                {this.state.lastRefreshTime}
               </span>
             </>
             <UserList
