@@ -22,7 +22,7 @@
 
 .refresh:hover {
   background-color: white;
-  color:black;
+  color: black;
 }
 
 .add {
@@ -33,13 +33,13 @@
 
 .add:hover {
   background-color: white;
-  color:black;
+  color: black;
 }
 
 .main-container {
   width: 85%;
   float: right;
-  margin-top: 50px;
+  margin-top: 45px;
 }
 
 .main-content {
@@ -49,4 +49,16 @@
 .sync-message {
   font-style: italic;
   color: gray;
+}
+
+.getting-started-container {
+  width: 50vw;
+  margin: auto;
+  border-radius: 10px;
+  border: 1px solid gray;
+  padding: 30px 15px;
+  text-align: center;
+  -webkit-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
 }

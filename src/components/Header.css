@@ -1,9 +1,8 @@
 .header-container {
-    height: 50px;
+    height: 45px;
     width: 100%;
     background-color: white;
-    border-bottom-style: solid;
-    border-color: grey;
+    border-bottom: 2px solid gray;
     position: fixed;
     z-index: 2;
 }

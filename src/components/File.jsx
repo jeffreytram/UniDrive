@@ -38,13 +38,7 @@ class File extends Component {
             </ContextMenuTrigger>
             <ContextMenu className="context-menu" id={id}>
               <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
-                View
-              </MenuItem>
-              <MenuItem className="menu-item">
-                Share
-              </MenuItem>
-              <MenuItem className="menu-item">
-                Get link
+                Open
               </MenuItem>
               <MenuItem className="menu-item">
                 Move to
