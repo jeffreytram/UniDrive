@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
@@ -13,10 +15,15 @@ class User extends Component {
     };
   }
 
-  viewToggle() {
+  viewToggle = () => {
     this.setState((prevState) => ({
       isDisplayed: !prevState.isDisplayed,
     }));
+  }
+
+  handleIconClick = (event, func) => {
+    event.stopPropagation();
+    func();
   }
 
   render() {
@@ -50,10 +57,10 @@ class User extends Component {
               )
             </span>
           </span>
+          <FontAwesomeIcon className="fa-trash" icon={faTrash} size="lg" onClick={(event) => this.handleIconClick(event, () => removeFunc(userId))} />
+          <FontAwesomeIcon className="fa-sync" icon={faSyncAlt} size="lg" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))} />
         </button>
         {' '}
-        <button type="button" className="delete-btn" id="remove-btn" onClick={() => removeFunc(userId)}> Remove Account </button>
-        <button type="button" className="refresh-btn" id="refresh-btn" onClick={() => refreshFunc(userId)}> Refresh Account </button>
 
         <TopLevelFolderList
           fileList={fileList}

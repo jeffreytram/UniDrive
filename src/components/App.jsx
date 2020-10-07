@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import UserList from './UserList';
-import Upload from './Upload'
+import Upload from './Upload';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { config } from '../config';
@@ -22,7 +22,6 @@ class App extends Component {
       lastRefreshTime: Date().substring(0, 21),
     };
   }
-
 
   componentDidMount() {
     const script = document.createElement('script');
@@ -666,7 +665,7 @@ findTopLevelFolders = (fileList) => {
 
     const { accessToken, idToken } = userList[index];
     const { email } = this.parseIDToken(idToken);
-    //boiler plate for accessing the API
+    // boiler plate for accessing the API
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -681,7 +680,7 @@ findTopLevelFolders = (fileList) => {
           console.log('authorization error');
         }
         // the actual deleting
-        //note that files are deleted and not trashed and can not be recovered
+        // note that files are deleted and not trashed and can not be recovered
         window.gapi.client.drive.files.delete({
           fileId,
         }).then((response) => {
@@ -690,7 +689,6 @@ findTopLevelFolders = (fileList) => {
       });
     });
   }
-
 
   /**
    * Refreshes all the files being displayed within an account
@@ -742,11 +740,9 @@ findTopLevelFolders = (fileList) => {
     }
 
     const currentTimeDate = Date().substring(0, 21);
-    this.setState((prevState) => {
-      return {
-        lastRefreshTime: currentTimeDate,
-        };
-    });
+    this.setState((prevState) => ({
+      lastRefreshTime: currentTimeDate,
+    }));
   }
 
   /**
@@ -809,7 +805,7 @@ findTopLevelFolders = (fileList) => {
   }
 
   render() {
-    //#const { userList } = this.state;
+    // #const { userList } = this.state;
     const { userList, lastRefreshTime } = this.state;
     return (
       <div className="App">
@@ -826,7 +822,15 @@ findTopLevelFolders = (fileList) => {
             <button type="button" className="button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
               Refresh All
             </button>
-            <><span className="sync-message"> Last Sync: {this.state.lastRefreshTime} </span></>
+            <>
+              <span className="sync-message">
+                {' '}
+                Last Sync:
+                {this.state.lastRefreshTime}
+                {' '}
+
+              </span>
+            </>
             <UserList
               userList={userList}
               parseIDToken={this.parseIDToken}
