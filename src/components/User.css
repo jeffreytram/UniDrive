@@ -17,6 +17,7 @@
 
 .user-banner:hover {
   cursor: pointer;
+  border-color: #4285F4;
 }
 
 .profile-picture {
