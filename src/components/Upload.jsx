@@ -55,7 +55,7 @@ class Upload extends Component {
       <div>
         <button
           type="button"
-          className="button selectUser"
+          className="selectUser"
           id="upload-menu-btn"
           onClick={() => this.toggleUploadMenu()}
           onKeyDown={() => this.toggleUploadMenu()}>
@@ -67,7 +67,7 @@ class Upload extends Component {
               <div>
                 <input 
                   type="file" 
-                  className="button selectFile" 
+                  className="selectFile" 
                   onChange={(e) => this.addFiles(e.target, user.idToken)}
                   multiple/>
               </div>

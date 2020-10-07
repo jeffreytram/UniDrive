@@ -3,7 +3,7 @@
   height: 20px;
 }
 
-.button {
+.main-button {
   border-radius: 3px;
   padding: 5px 10px;
   height: 30px;
@@ -11,7 +11,7 @@
   color: white;
 }
 
-.button:hover {
+.main-button:hover {
   cursor: pointer;
 }
 
@@ -28,6 +28,7 @@
 .add {
   border: 2px solid #0F9D58;
   background-color: #0F9D58;
+  margin-right: 5px;
 }
 
 .add:hover {

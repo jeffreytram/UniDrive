@@ -34,32 +34,17 @@
   color: gray;
 }
 
-.delete-btn {
-  border: 2px solid #DB4437;
-  border-radius: 5px;
-  background-color: white;
+/* icon CSS */
+.fa-trash, .fa-sync {
+  float: right;
+  margin: 0px 6px;
+  color: gray;
+}
+
+.fa-trash:hover {
   color: #DB4437;
-  font-weight: bold;
-  padding: 3px 5px;
 }
 
-.delete-btn:hover {
-  cursor: pointer;
-  background-color: #DB4437;
-  color: white;
-}
-
-.refresh-btn {
-  border: 2px solid #4285F4;
-  border-radius: 5px;
-  background-color: white;
+.fa-sync:hover {
   color: #4285F4;
-  font-weight: bold;
-  padding: 3px 5px;
-}
-
-.refresh-btn:hover {
-  cursor: pointer;
-  background-color: #4285F4;
-  color: white;
 }
