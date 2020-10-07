@@ -28,9 +28,9 @@ class App extends Component {
     script.onload = this.handleClientLoad;
     script.src = 'https://apis.google.com/js/api.js';
     document.body.appendChild(script);
-    // this.interval = setInterval(() => {
-    // this.refreshAllFunction();
-    // },5000);
+    this.interval = setInterval(() => {
+      this.refreshAllFunction();
+    }, 300000);
   }
 
   handleClientLoad = () => {
@@ -731,14 +731,7 @@ findTopLevelFolders = (fileList) => {
       const userInfo = this.parseIDToken(userList[i].idToken);
       const { email } = userInfo;
       this.updateFiles(i, accessToken, idToken, email);
-
-      // refreshes every 10 seconds after refresh button is clicked
-      // if you set to a time too low, the browser gets locked up in GET requests, and no other messages can get through(e.g. copyfunc won't work anymore)
-      this.interval = setInterval(() => {
-        this.updateFiles(i, accessToken, idToken, email);
-      }, 1000);
     }
-
     const currentTimeDate = Date().substring(0, 21);
     this.setState((prevState) => ({
       lastRefreshTime: currentTimeDate,
@@ -807,42 +800,55 @@ findTopLevelFolders = (fileList) => {
   render() {
     // #const { userList } = this.state;
     const { userList, lastRefreshTime } = this.state;
+    const addedAccount = userList.length > 0;
     return (
       <div className="App">
         <Header />
         <Sidebar />
         <div className="main-container">
           <div className="main-content">
-            <Upload
-              userList={userList}
-              parseIDToken={this.parseIDToken}
-              fileUpload={this.fileUpload}
-            />
-            <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-            <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
-              Refresh All
-            </button>
-            <>
-              <span className="sync-message">
-                {' '}
-                Last Sync:
-                {' '}
-                {this.state.lastRefreshTime}
-              </span>
-            </>
-            <UserList
-              userList={userList}
-              parseIDToken={this.parseIDToken}
-              removeFunc={this.signOutFunction}
-              refreshFunc={this.refreshFunction}
-              copyFunc={this.copyFile}
-              deleteFunc={this.deleteFile}
-              filepathTraceFunc={this.filepathTrace}
-              isChildFunc={this.checkIfChild}
-              openChildrenFunc={this.openChildren}
-              closeFolderFunc={this.closeFolder}
-              buildChildrenArray={this.buildChildrenArray}
-            />
+            {addedAccount
+              ? (
+                <div>
+                  <Upload
+                    userList={userList}
+                    parseIDToken={this.parseIDToken}
+                    fileUpload={this.fileUpload}
+                  />
+                  <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
+                  <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
+                    Refresh All
+                  </button>
+                  <>
+                    <span className="sync-message">
+                      {' '}
+                      Last Sync:
+                      {' '}
+                      {this.state.lastRefreshTime}
+                    </span>
+                  </>
+                  <UserList
+                    userList={userList}
+                    parseIDToken={this.parseIDToken}
+                    removeFunc={this.signOutFunction}
+                    refreshFunc={this.refreshFunction}
+                    copyFunc={this.copyFile}
+                    deleteFunc={this.deleteFile}
+                    filepathTraceFunc={this.filepathTrace}
+                    isChildFunc={this.checkIfChild}
+                    openChildrenFunc={this.openChildren}
+                    closeFolderFunc={this.closeFolder}
+                    buildChildrenArray={this.buildChildrenArray}
+                  />
+                </div>
+              )
+              : (
+                <div className="getting-started-container">
+                  <h2>Welcome to UniDrive!</h2>
+                  <h3>Get started by adding an account.</h3>
+                  <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
+                </div>
+              )}
           </div>
         </div>
       </div>
