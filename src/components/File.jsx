@@ -52,7 +52,7 @@ class File extends Component {
               <MenuItem className="menu-item">
                 Download
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
+              <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(userId, id); } }}>
                 Delete
               </MenuItem>
             </ContextMenu>
@@ -76,7 +76,7 @@ class File extends Component {
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
               View on Google Drive
             </MenuItem>
-            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
+            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(userId, id); } }}>
               Delete
             </MenuItem>
           </ContextMenu>
