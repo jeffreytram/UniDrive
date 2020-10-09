@@ -36,7 +36,7 @@
 }
 
 /* icon CSS */
-.fa-trash, .fa-sync {
+.fa-trash, .fa-sync, .fa-eye , .fa-eye-slash{
   float: right;
   margin: 0px 6px;
   color: gray;
@@ -49,3 +49,9 @@
 .fa-sync:hover {
   color: #4285F4;
 }
+
+.fa-eye:hover , .fa-eye-slash:hover {
+  color: #F633FF 
+  ;
+}
+

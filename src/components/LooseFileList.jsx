@@ -5,9 +5,10 @@ import './FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, openChildrenFunc, looseFileList,
+    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, openChildrenFunc, looseFileList, isDisplayed
   } = props;
 
+  if(isDisplayed) {
   return (
     <div className="file-list-container" style={fileContainerStyles}>
       {looseFileList.map((file) => (
@@ -18,13 +19,18 @@ export default function LooseFileList(props) {
           deleteFunc={deleteFunc}
           childrenList={[]}
           fileList={fileList}
-          displayed
           openChildrenFunc={openChildrenFunc}
+          displayed
         />
       ))}
     </div>
   );
+} else {
+  return(null);
 }
+
+}
+
 
 LooseFileList.propTypes = {
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -34,4 +40,5 @@ LooseFileList.propTypes = {
   deleteFunc: PropTypes.func.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isDisplayed: PropTypes.bool.isRequired
 };
