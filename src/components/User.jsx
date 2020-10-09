@@ -23,11 +23,14 @@ class User extends Component {
 
   handleIconClick = (event, func) => {
     event.stopPropagation();
-    func();
+    if (func !== undefined) {
+      func();
+    }
   }
 
-  uploadController = (target, idToken) => {
-    const uploadedFiles = this.addFiles(target, idToken);
+  uploadController = (event, idToken) => {
+    event.stopPropagation();
+    const uploadedFiles = this.addFiles(event.target, idToken);
     this.uploadFiles(uploadedFiles);
   }
 
@@ -82,12 +85,13 @@ class User extends Component {
           </span>
           <FontAwesomeIcon className="fa-trash" icon={faTrash} size="lg" onClick={(event) => this.handleIconClick(event, () => removeFunc(userId))} />
           <FontAwesomeIcon className="fa-sync" icon={faSyncAlt} size="lg" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))} />
-          <label htmlFor="file-input">
+          <label htmlFor={email}>
             <FontAwesomeIcon className="fa-upload" icon={faUpload} size="lg" />
             <input
               type="file"
-              id="file-input"
-              onChange={(e) => this.uploadController(e.target, idToken)}
+              id={email}
+              className="file-input"
+              onChange={(e) => this.uploadController(e, idToken)}
               multiple
             />
           </label>

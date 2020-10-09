@@ -51,9 +51,9 @@
 }
 
 .fa-upload:hover {
-  color: green;
+  color: #0F9D58;
 }
 
-#file-input {
+.file-input {
   display: none;
 }

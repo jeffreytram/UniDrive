@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import UserList from './UserList';
-import Upload from './Upload';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { config } from '../config';
@@ -810,11 +809,6 @@ findTopLevelFolders = (fileList) => {
             {addedAccount
               ? (
                 <div>
-                  <Upload
-                    userList={userList}
-                    parseIDToken={this.parseIDToken}
-                    fileUpload={this.fileUpload}
-                  />
                   <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
                   <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
                     Refresh All
