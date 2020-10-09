@@ -832,6 +832,7 @@ findTopLevelFolders = (fileList) => {
                     parseIDToken={this.parseIDToken}
                     removeFunc={this.signOutFunction}
                     refreshFunc={this.refreshFunction}
+                    fileUpload={this.fileUpload}
                     copyFunc={this.copyFile}
                     deleteFunc={this.deleteFile}
                     filepathTraceFunc={this.filepathTrace}

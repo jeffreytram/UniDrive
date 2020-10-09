@@ -65,11 +65,12 @@ class Upload extends Component {
           {userList.map((user) => (
             <div>
               <div>
-                <input 
-                  type="file" 
-                  className="selectFile" 
+                <input
+                  type="file"
+                  className="selectFile"
                   onChange={(e) => this.addFiles(e.target, user.idToken)}
-                  multiple/>
+                  multiple
+                />
               </div>
             </div>
           ))}

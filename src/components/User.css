@@ -36,7 +36,7 @@
 }
 
 /* icon CSS */
-.fa-trash, .fa-sync {
+.fa-trash, .fa-sync, .fa-upload {
   float: right;
   margin: 0px 6px;
   color: gray;
@@ -48,4 +48,12 @@
 
 .fa-sync:hover {
   color: #4285F4;
+}
+
+.fa-upload:hover {
+  color: green;
+}
+
+#file-input {
+  display: none;
 }
