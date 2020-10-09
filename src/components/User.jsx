@@ -30,7 +30,7 @@ class User extends Component {
     const { isDisplayed } = this.state;
     const {
       infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, accessToken
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -70,6 +70,7 @@ class User extends Component {
           deleteFunc={deleteFunc}
           topLevelFolderList={topLevelFolderList}
           openChildrenFunc={openChildrenFunc}
+          accessToken = {accessToken}
         />
 
         <OpenFolderList
@@ -83,6 +84,7 @@ class User extends Component {
           openFolderList={openFolderList}
           buildChildrenArray={buildChildrenArray}
           closeFolderFunc={closeFolderFunc}
+          accessToken = {accessToken}
         />
 
         <LooseFileList
@@ -93,6 +95,7 @@ class User extends Component {
           deleteFunc={deleteFunc}
           openChildrenFunc={openChildrenFunc}
           looseFileList={looseFileList}
+          accessToken = {accessToken}
         />
 
       </div>

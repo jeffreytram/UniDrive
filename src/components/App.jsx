@@ -180,6 +180,7 @@ class App extends Component {
           allFilepaths.push(newUserList[index].openFolders[i].filepath);
         }
         newUserList[index].files = result;
+        console.log(result)
         newUserList[index].filesWithChildren = this.assignChildren(newUserList[index].files);
         newUserList[index].topLevelFolders = this.findTopLevelFolders(newUserList[index].filesWithChildren);
         let childFolderList = newUserList[index].files.filter((file) => file.mimeType === 'application/vnd.google-apps.folder' || file.parents !== undefined);

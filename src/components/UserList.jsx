@@ -29,6 +29,7 @@ export default function UserList(props) {
           openFolderList={user.openFolders}
           buildChildrenArray = {buildChildrenArray}
           closeFolderFunc = {closeFolderFunc}
+          accessToken = {user.accessToken}
         />
       ))}
     </div>
