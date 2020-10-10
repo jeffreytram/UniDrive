@@ -689,6 +689,52 @@ findTopLevelFolders = (fileList) => {
       });
     });
   }
+  /**
+   * Moves a file from one folder to anothe
+   * @param {*} idToken 
+   * @param {*} fileId 
+   * @param {*} parentId Id of the current folder it is in
+   * @param {*} newParentId Id of the folder to move to
+   */
+  moveFile = (idToken, fileId, parentId, newParentId) => {
+    const { email } = this.parseIDToken(idToken);
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({          
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        if (response.error) {
+          console.log(response.error);
+          console.log('authorization error');
+        }
+        // If moving within same account
+        // Deleting parent from file
+        gapi.client.drive.parents.delete({
+          'parentId': parentId,
+          'fileId': fileId
+        }).then((response) => {
+          //Adding new Parent to file
+          const newFolder = {'id': newParentId}
+          gapi.client.drive.parents.insert({
+            'fileId': fileId,
+            'resource': newFolder
+          });
+        });
+      });
+    });
+  }
+
+  /**
+   * Downloads a file from google drive
+   * @param {*} fileId 
+   */
+  downloadFile = (fileId) => {
+    
+  }
 
   /**
    * Refreshes all the files being displayed within an account
