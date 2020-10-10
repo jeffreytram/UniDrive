@@ -6,7 +6,7 @@ import './UserList.css';
 export default function UserList(props) {
   const {
     userList, parseIDToken, removeFunc, refreshFunc, copyFunc, deleteFunc, isChildFunc, openChildrenFunc,
-     buildChildrenArray, filepathTraceFunc, closeFolderFunc
+     buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload
   } = props;
   return (
     <div className="user-list">
@@ -16,8 +16,10 @@ export default function UserList(props) {
           parseIDToken={parseIDToken}
           fileList={user.filesWithChildren}
           userId={user.id}
+          idToken={user.idToken}
           removeFunc={removeFunc}
           refreshFunc={refreshFunc}
+          fileUpload={fileUpload}
           copyFunc={copyFunc}
           deleteFunc={deleteFunc}
           isChildFunc={isChildFunc}
@@ -40,6 +42,7 @@ UserList.propTypes = {
   parseIDToken: PropTypes.func.isRequired,
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
+  fileUpload: PropTypes.func.isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
   filepathTraceFunc: PropTypes.func.isRequired,
