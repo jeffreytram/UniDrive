@@ -5,7 +5,7 @@ import './FileList.css';
 
 export default function TopLevelFolderList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, topLevelFolderList, openChildrenFunc, accessToken
+    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, topLevelFolderList, openChildrenFunc, accessToken, shareFunc
   } = props;
 
   return (
@@ -22,6 +22,7 @@ export default function TopLevelFolderList(props) {
           displayed
           openChildrenFunc={openChildrenFunc}
           accessToken = {accessToken}
+          shareFunc = {shareFunc}
         />
       ))}
     </div>

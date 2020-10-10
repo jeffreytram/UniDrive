@@ -34,7 +34,7 @@ class App extends Component {
   }
 
   handleClientLoad = () => {
-    window.gapi.load('client:auth');
+    window.gapi.load('client:auth2');
   }
 
   /**
@@ -42,7 +42,7 @@ class App extends Component {
    * Returns an idToken, an AccessToken, and a Code, all unique to the user in a Response object
    */
   authorizeUser = () => {
-    window.gapi.load('client:auth', () => {
+    window.gapi.load('client:auth2', () => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
@@ -690,6 +690,40 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
+  share = (userId, fileId) => {
+    
+    const index = this.getAccountIndex(userId);
+    const { userList } = this.state;
+
+    const { accessToken, idToken } = userList[index];
+    const { email } = this.parseIDToken(idToken);
+    window.gapi.load('drive-share', () => {
+      window.gapi.auth.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        if (response.error) {
+          console.log(response.error);
+          console.log('authorization error');
+
+        }
+        // the actual sharing
+     
+          let s = new window.gapi.drive.share.ShareClient()
+          console.log(s)
+          s.setOAuthToken(accessToken)
+          s.setItemIds(fileId);
+          console.log(s.showSettingsDialog())
+
+      })
+    })
+  }
+
+
   /**
    * Refreshes all the files being displayed within an account
    * @param {Number} id the unique id granted to the user when placed within the userList
@@ -838,6 +872,7 @@ findTopLevelFolders = (fileList) => {
                     openChildrenFunc={this.openChildren}
                     closeFolderFunc={this.closeFolder}
                     buildChildrenArray={this.buildChildrenArray}
+                    shareFunc = {this.share}
                   />
                 </div>
               )

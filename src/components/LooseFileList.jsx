@@ -5,7 +5,7 @@ import './FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, openChildrenFunc, looseFileList, accessToken
+    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, openChildrenFunc, looseFileList, accessToken, shareFunc
   } = props;
 
   return (
@@ -21,6 +21,7 @@ export default function LooseFileList(props) {
           displayed
           openChildrenFunc={openChildrenFunc}
           accessToken = {accessToken}
+          shareFunc = {shareFunc}
         />
       ))}
     </div>

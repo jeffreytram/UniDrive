@@ -11,24 +11,8 @@ class File extends Component {
     };
   }
 
-  
-  componentDidMount() {
-    const script = document.createElement('script');
-    script.src = 'https://apis.google.com/js/api.js';
-    document.body.appendChild(script);
-  }
 
-  
 
- share = function(accessToken, id) {
-  window.gapi.load('drive-share', () => {
-    let s = new window.gapi.drive.share.ShareClient();
-     s.setOAuthToken(accessToken);
-     s.setItemIds(id);
-     s.showSettingsDialog()
-
-  })
-}
 
 
   /* Props contains: Name, Link, Image */
@@ -36,7 +20,7 @@ class File extends Component {
   render() {
     
     const {
-      userId, data, copyFunc, deleteFunc, fId, displayed, openChildrenFunc, fileObj, accessToken,
+      userId, data, copyFunc, deleteFunc, fId, displayed, openChildrenFunc, fileObj, accessToken, shareFunc
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -71,7 +55,7 @@ class File extends Component {
               <MenuItem className="menu-item">
                 Rename
               </MenuItem>
-              <MenuItem className="menu-item" onClick= {() => this.share(accessToken, id)} >
+              <MenuItem className="menu-item" onClick= {() => shareFunc(userId, id)} >
                 Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc(userId, id)}>
@@ -108,7 +92,7 @@ class File extends Component {
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
               View on Google Drive
             </MenuItem>
-            <MenuItem className="menu-item" onClick={() =>  this.share(accessToken, id)} >
+            <MenuItem className="menu-item" onClick={() =>  shareFunc(userId, id)} >
               Share
             </MenuItem>
             <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
