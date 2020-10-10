@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faSyncAlt, faUpload } from '@fortawesome/free-solid-svg-icons';
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
@@ -23,14 +23,40 @@ class User extends Component {
 
   handleIconClick = (event, func) => {
     event.stopPropagation();
-    func();
+    if (func !== undefined) {
+      func();
+    }
+  }
+
+  uploadController = (event, idToken) => {
+    event.stopPropagation();
+    const uploadedFiles = this.addFiles(event.target, idToken);
+    this.uploadFiles(uploadedFiles);
+  }
+
+  addFiles = (target, idToken) => {
+    const list = [];
+    for (let i = 0; i < target.files.length; i++) {
+      list[i] = {
+        file: target.files[i],
+        user: idToken,
+      };
+    }
+    return list;
+  }
+
+  uploadFiles = (filesList) => {
+    const { fileUpload } = this.props;
+    for (let i = 0; i < filesList.length; i++) {
+      fileUpload((filesList[i].user), filesList[i].file);
+    }
   }
 
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, parseIDToken, removeFunc, userId, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
+      infoData, parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload,
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -59,9 +85,17 @@ class User extends Component {
           </span>
           <FontAwesomeIcon className="fa-trash" icon={faTrash} size="lg" onClick={(event) => this.handleIconClick(event, () => removeFunc(userId))} />
           <FontAwesomeIcon className="fa-sync" icon={faSyncAlt} size="lg" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))} />
+          <label htmlFor={email}>
+            <FontAwesomeIcon className="fa-upload" icon={faUpload} size="lg" />
+            <input
+              type="file"
+              id={email}
+              className="file-input"
+              onChange={(e) => this.uploadController(e, idToken)}
+              multiple
+            />
+          </label>
         </button>
-        {' '}
-
         <TopLevelFolderList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
@@ -105,8 +139,10 @@ User.propTypes = {
   parseIDToken: PropTypes.func.isRequired,
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   userId: PropTypes.number.isRequired,
+  idToken: PropTypes.string.isRequired,
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
+  fileUpload: PropTypes.func.isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
