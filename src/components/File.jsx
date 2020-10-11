@@ -14,7 +14,7 @@ class File extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, data, copyFunc, deleteFunc, displayed, openChildrenFunc, fileObj, moveExternal, shareFile
+      userId, data, copyFunc, deleteFunc, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -41,7 +41,10 @@ class File extends Component {
                 Open
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, window.prompt("Number to go to? (Starts from 1)"))}>
-                Move to
+                MoveExternal
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
+                MoveInternal
               </MenuItem>
               <MenuItem className="menu-item">
                 Rename

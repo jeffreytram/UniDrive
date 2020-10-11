@@ -695,7 +695,7 @@ findTopLevelFolders = (fileList) => {
    * @param {*} parentId Id of the current folder it is in
    * @param {*} newParentId Id of the folder to move to
    */
-  moveWithin = (userId, fileId, parentId, newParentId) => {
+  moveWithin = (userId, file, newParentId) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken
     const email = this.parseIDToken(userToken).email;
@@ -712,18 +712,16 @@ findTopLevelFolders = (fileList) => {
           console.log(response.error);
           console.log('authorization error');
         }
-        // If moving within same account
-        // Deleting parent from file
-        gapi.client.drive.parents.delete({
-          'parentId': parentId,
-          'fileId': fileId
+        const preParents = file.parents.join(',');
+        gapi.client.drive.file.update({
+          fileId: file.id,
+          addParents: newParentId,
+          removeParents: preParents,
+          fields: 'id, parents'
         }).then((response) => {
-          //Adding new Parent to file
-          const newFolder = {'id': newParentId}
-          gapi.client.drive.parents.insert({
-            'fileId': fileId,
-            'resource': newFolder
-          });
+          if (response.error) {
+            console.log(response.error);
+          }
         });
       });
     });
@@ -981,6 +979,7 @@ findTopLevelFolders = (fileList) => {
                     buildChildrenArray={this.buildChildrenArray}
                     moveExternal={this.moveExternal}
                     shareFile={this.shareFile}
+                    moveWithin={this.moveWithin}
                   />
                 </div>
               )

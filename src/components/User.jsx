@@ -57,7 +57,7 @@ class User extends Component {
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, moveExternal,
-      shareFile
+      shareFile, moveWithin
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -106,6 +106,7 @@ class User extends Component {
           openChildrenFunc={openChildrenFunc}
           shareFile={shareFile}
           moveExternal={moveExternal}
+          moveWithin={moveWithin}
         />
 
         <OpenFolderList
@@ -121,6 +122,7 @@ class User extends Component {
           closeFolderFunc={closeFolderFunc}
           shareFile={shareFile}
           moveExternal={moveExternal}
+          moveWithin={moveWithin}
         />
 
         <LooseFileList
@@ -133,6 +135,7 @@ class User extends Component {
           looseFileList={looseFileList}
           shareFile={shareFile}
           moveExternal={moveExternal}
+          moveWithin={moveWithin}
         />
 
       </div>

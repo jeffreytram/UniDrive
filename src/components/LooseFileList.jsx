@@ -21,6 +21,7 @@ export default function LooseFileList(props) {
           displayed
           moveExternal={moveExternal}
           shareFile={shareFile}
+          moveWithin={moveWithin}
           openChildrenFunc={openChildrenFunc}
         />
       ))}

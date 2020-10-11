@@ -48,6 +48,7 @@ class OpenFolder extends Component {
               openChildrenFunc={openChildrenFunc}
               moveExternal={moveExternal}
               shareFile={shareFile}
+              moveWithin={moveWithin}
               fileObj={file}
             />
           ))}

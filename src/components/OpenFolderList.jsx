@@ -29,6 +29,7 @@ export default function OpenFolderList(props) {
           closeFolderFunc={closeFolderFunc}
           shareFile={shareFile}
           moveExternal={moveExternal}
+          moveWithin={moveWithin}
         />
       ))}
     </div>
