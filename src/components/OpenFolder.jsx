@@ -17,7 +17,7 @@ class OpenFolder extends Component {
   render() {
     const {
       userId, copyFunc, deleteFunc, fileList, openChildrenFunc,
-      fileObj, filePath, filepathTraceFunc, closeFolderFunc, moveExternal,
+      fileObj, filePath, filepathTraceFunc, closeFolderFunc, moveExternal, moveWithin,
       shareFile
     } = this.props;
 

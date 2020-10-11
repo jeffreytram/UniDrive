@@ -10,7 +10,7 @@ class RequestProgrssElement extends Component {
     }
     componentDidMount() {
         console.log("Did Mount");
-        const { request } = this.props;
+        const { request } = this.props.requested;
         request.upload.addEventListener('load', this.handler);
         request.upload.addEventListener('error', this.handler);
         request.upload.addEventListener('abort', this.handler);
@@ -34,16 +34,21 @@ class RequestProgrssElement extends Component {
     }
 
     render() {
+        const { requested } = this.props;
+        const { name } = requested;
         return (
             <div>
                 <div>
-                    {this.props.name}
+                    {name}
                 </div>
                 <progress id="progressBar" value={this.state.percent} max="100" style={{width: '300px'}}></progress>
-                {/* <button type="button" onClick={this.props.removeRequest(this.props.id)}></button> */}
             </div>
         );
     }
+}
+
+File.propTypes = {
+    requested: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.object, PropTypes.string])).isRequired
 }
 
 export default RequestProgrssElement;

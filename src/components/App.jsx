@@ -890,23 +890,6 @@ findTopLevelFolders = (fileList) => {
   }
 
   /**
-   * Clear one request from bar
-   */
-  removeRequest = (id) => {
-    const newList = [];
-    this.setState((prevState) => {
-      for(let i = 0; i < prevState.uploadRequests.length; i++) {
-        if(prevState.uploadRequests[i].id !== id) {
-          newList.push(prevState.uploadRequests[i]);
-        }
-      }
-      return {
-        uploadRequests: newList
-      };
-    })
-  }
-
-  /**
    * Uploads a file specified
    * @param {*} email User info for getting account
    * @param {*} fileUpl File to be uploaded
@@ -958,7 +941,6 @@ findTopLevelFolders = (fileList) => {
           uploadRequests: [...prevState.uploadRequests, {
             request: resumable, 
             name: file.name,
-            //id: prevState.uploadRequests.length
           }]
         }));
         resumable.send(JSON.stringify({
@@ -1017,10 +999,7 @@ findTopLevelFolders = (fileList) => {
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
                     {uploadRequests.map((requested) => (
                       <RequestProgressElement
-                        request={requested.request}
-                        name={requested.name}
-                        //id={requested.id}
-                        //removeRequest={this.removeRequest}
+                        requested={requested}
                       />
                     ))}
                   </div>
