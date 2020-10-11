@@ -662,7 +662,7 @@ findTopLevelFolders = (fileList) => {
     const index = this.getAccountIndex(userId);
     const { userList } = this.state;
 
-    const { accessToken, idToken } = userList[index];
+    const { idToken } = userList[index];
     const { email } = this.parseIDToken(idToken);
     // boiler plate for accessing the API
     window.gapi.client.load('drive', 'v3').then(() => {
@@ -689,14 +689,16 @@ findTopLevelFolders = (fileList) => {
     });
   }
   /**
-   * Moves a file from one folder to anothe
+   * Moves a file from one folder to another
    * @param {*} idToken 
    * @param {*} fileId 
    * @param {*} parentId Id of the current folder it is in
    * @param {*} newParentId Id of the folder to move to
    */
-  moveFile = (idToken, fileId, parentId, newParentId) => {
-    const { email } = this.parseIDToken(idToken);
+  moveWithin = (userId, fileId, parentId, newParentId) => {
+    const userIndex = this.getAccountIndex(userId);
+    const userToken = this.state.userList[userIndex].idToken
+    const email = this.parseIDToken(userToken).email;
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({          
         apiKey: API_KEY,
@@ -721,6 +723,104 @@ findTopLevelFolders = (fileList) => {
           gapi.client.drive.parents.insert({
             'fileId': fileId,
             'resource': newFolder
+          });
+        });
+      });
+    });
+  }
+
+
+  /**
+   * Gets email for auth from a user Id
+   * @param {*} userId 
+   */
+  getEmailFromUserId(userId) {
+    let userIndex = this.getAccountIndex(userId);
+    let userToken = this.state.userList[userIndex].idToken
+    return this.parseIDToken(userToken).email;
+  }
+
+    /**
+   * Shares a file with another user
+   * @param {*} userId 
+   * @param {*} fileId 
+   * @param {*} newUserId 
+   */
+  shareFile = (userId, fileId, newUserId) => {
+    const email = this.getEmailFromUserId(userId);
+    const newEmail = this.getEmailFromUserId(newUserId);
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        if(response.error) {
+          console.log(response.error);
+        }
+        window.gapi.client.drive.permissions.create({
+          fileId: fileId,
+          resource: {
+            type: 'user',
+            role: 'writer',
+            emailAddress: newEmail
+          }
+        }).then((response) => {
+          if(response.error) {
+            console.log(response.error);
+          }
+        });
+      });
+    });
+  }
+
+  /**
+   * Move file from one drive to another
+   * @param {*} userId 
+   * @param {*} fileId 
+   * @param {*} newUserId 
+   */
+  moveExternal = (userId, fileId, newUserId) => {
+    const email = this.getEmailFromUserId(userId);
+    const newEmail = this.getEmailFromUserId(newUserId);
+    //let permissionId;
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        console.log(response);
+        window.gapi.client.drive.permissions.create({
+          fileId: fileId,
+          //moveToNewOwnersRoot: true,
+          //transferOwnership: true,
+          resource: {
+            type: 'user',
+            role: 'writer',
+            emailAddress: newEmail
+          }
+        }).then((response) => {
+          if(response.error) {
+            console.log(response.error);
+          }
+          window.gapi.client.drive.permissions.update({
+            fileId: fileId,
+            permissionId: response.id,
+            transferOwnership: true,
+            resource: {
+              role: 'owner'
+            }
+          }).then((response) => {
+            if(response.error) {
+              console.log(response.error);
+            }
           });
         });
       });
@@ -880,6 +980,7 @@ findTopLevelFolders = (fileList) => {
                     openChildrenFunc={this.openChildren}
                     closeFolderFunc={this.closeFolder}
                     buildChildrenArray={this.buildChildrenArray}
+                    moveExternal={this.moveExternal}
                   />
                 </div>
               )

@@ -14,7 +14,7 @@ class File extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, data, copyFunc, deleteFunc, fId, displayed, openChildrenFunc, fileObj,
+      userId, data, copyFunc, deleteFunc, displayed, openChildrenFunc, fileObj, moveExternal
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -40,7 +40,7 @@ class File extends Component {
               <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
                 Open
               </MenuItem>
-              <MenuItem className="menu-item">
+              <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, 1)}>
                 Move to
               </MenuItem>
               <MenuItem className="menu-item">
@@ -63,7 +63,7 @@ class File extends Component {
       return (
         <div>
           <ContextMenuTrigger className="file-container" id={id}>
-            <div className="file-container" onClick={() => openChildrenFunc(userId, fileObj, fId)}>
+            <div className="file-container" onClick={() => openChildrenFunc(userId, fileObj, fileObj.fId)}>
               <div className="file-image-container">
                 <img className="file-img" src={iconLink} alt="File icon" />
               </div>
@@ -91,7 +91,6 @@ File.propTypes = {
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
-  fId: PropTypes.number.isRequired,
   displayed: PropTypes.bool.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   fileObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf()])),

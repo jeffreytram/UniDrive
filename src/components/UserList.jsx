@@ -6,7 +6,7 @@ import './UserList.css';
 export default function UserList(props) {
   const {
     userList, parseIDToken, removeFunc, refreshFunc, copyFunc, deleteFunc, isChildFunc, openChildrenFunc,
-     buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload
+     buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, moveExternal
   } = props;
   return (
     <div className="user-list">
@@ -31,6 +31,7 @@ export default function UserList(props) {
           openFolderList={user.openFolders}
           buildChildrenArray = {buildChildrenArray}
           closeFolderFunc = {closeFolderFunc}
+          moveExternal={moveExternal}
         />
       ))}
     </div>

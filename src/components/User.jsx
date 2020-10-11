@@ -55,12 +55,11 @@ class User extends Component {
   render() {
     const { isDisplayed } = this.state;
     const {
-      infoData, parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload,
+      parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, moveExternal
     } = this.props;
 
-    const parsedInfo = parseIDToken(infoData);
-    const { name, email, picture } = parsedInfo;
+    const { name, email, picture } = parseIDToken(idToken);
     const fileContainerStyles = {
       display: isDisplayed ? 'flex' : 'none',
     };
@@ -104,6 +103,7 @@ class User extends Component {
           deleteFunc={deleteFunc}
           topLevelFolderList={topLevelFolderList}
           openChildrenFunc={openChildrenFunc}
+          moveExternal={moveExternal}
         />
 
         <OpenFolderList
@@ -117,6 +117,7 @@ class User extends Component {
           openFolderList={openFolderList}
           buildChildrenArray={buildChildrenArray}
           closeFolderFunc={closeFolderFunc}
+          moveExternal={moveExternal}
         />
 
         <LooseFileList
@@ -127,6 +128,7 @@ class User extends Component {
           deleteFunc={deleteFunc}
           openChildrenFunc={openChildrenFunc}
           looseFileList={looseFileList}
+          moveExternal={moveExternal}
         />
 
       </div>
@@ -135,7 +137,6 @@ class User extends Component {
 }
 
 User.propTypes = {
-  infoData: PropTypes.string.isRequired,
   parseIDToken: PropTypes.func.isRequired,
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   userId: PropTypes.number.isRequired,
