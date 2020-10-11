@@ -13,7 +13,7 @@ class File extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, data, copyFunc, deleteFunc, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin
+      userId, data, copyFunc, deleteFunc, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin, downloadFile
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -54,7 +54,7 @@ class File extends Component {
               <MenuItem className="menu-item" onClick={() => copyFunc(userId, id)}>
                 Make a copy
               </MenuItem>
-              <MenuItem className="menu-item">
+              <MenuItem className="menu-item" onClick={() => downloadFile(userId, id)}>
                 Download
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>

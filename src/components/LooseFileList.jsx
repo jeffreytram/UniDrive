@@ -5,7 +5,7 @@ import './FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, openChildrenFunc, looseFileList, moveExternal, shareFile, moveWithin
+    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, openChildrenFunc, looseFileList, moveExternal, shareFile, moveWithin, downloadFile
   } = props;
 
   return (
@@ -22,6 +22,7 @@ export default function LooseFileList(props) {
           moveExternal={moveExternal}
           shareFile={shareFile}
           moveWithin={moveWithin}
+          downloadFile={downloadFile}
           openChildrenFunc={openChildrenFunc}
         />
       ))}
