@@ -742,9 +742,9 @@ findTopLevelFolders = (fileList) => {
 
     /**
    * Shares a file with another user
-   * @param {*} userId 
-   * @param {*} fileId 
-   * @param {*} newUserId 
+   * @param {*} userId Id of the user that owns the file
+   * @param {*} fileId Id of the file being shared
+   * @param {*} newUserId Id of the user to share with
    */
   shareFile = (userId, fileId, newUserId) => {
     const email = this.getEmailFromUserId(userId);
@@ -778,10 +778,10 @@ findTopLevelFolders = (fileList) => {
   }
 
   /**
-   * Move file from one drive to another
-   * @param {*} userId 
-   * @param {*} fileId 
-   * @param {*} newUserId 
+   * Move file from one drive to another. Currently only works on files that UniDrive did not upload
+   * @param {*} userId Id of current owner of file
+   * @param {*} fileId Id of the file being moved
+   * @param {*} newUserId Id of the new owner of the file
    */
   moveExternal = (userId, fileId, newUserId) => {
     const email = this.getEmailFromUserId(userId);
@@ -799,8 +799,6 @@ findTopLevelFolders = (fileList) => {
         console.log(response);
         window.gapi.client.drive.permissions.create({
           fileId: fileId,
-          //moveToNewOwnersRoot: true,
-          //transferOwnership: true,
           resource: {
             type: 'user',
             role: 'writer',
@@ -810,9 +808,10 @@ findTopLevelFolders = (fileList) => {
           if(response.error) {
             console.log(response.error);
           }
+          console.log(response);
           window.gapi.client.drive.permissions.update({
             fileId: fileId,
-            permissionId: response.id,
+            permissionId: response.result.id,
             transferOwnership: true,
             resource: {
               role: 'owner'
@@ -821,6 +820,7 @@ findTopLevelFolders = (fileList) => {
             if(response.error) {
               console.log(response.error);
             }
+            console.log(response);
           });
         });
       });
@@ -981,6 +981,7 @@ findTopLevelFolders = (fileList) => {
                     closeFolderFunc={this.closeFolder}
                     buildChildrenArray={this.buildChildrenArray}
                     moveExternal={this.moveExternal}
+                    shareFile={this.shareFile}
                   />
                 </div>
               )
