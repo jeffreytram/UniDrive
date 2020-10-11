@@ -40,6 +40,7 @@ class RequestProgrssElement extends Component {
                     {this.props.name}
                 </div>
                 <progress id="progressBar" value={this.state.percent} max="100" style={{width: '300px'}}></progress>
+                {/* <button type="button" onClick={this.props.removeRequest(this.props.id)}></button> */}
             </div>
         );
     }
