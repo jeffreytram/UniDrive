@@ -746,9 +746,8 @@ findTopLevelFolders = (fileList) => {
    * @param {*} fileId Id of the file being shared
    * @param {*} newUserId Id of the user to share with
    */
-  shareFile = (userId, fileId, newUserId) => {
+  shareFile = (userId, fileId, newEmail) => {
     const email = this.getEmailFromUserId(userId);
-    const newEmail = this.getEmailFromUserId(newUserId);
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,

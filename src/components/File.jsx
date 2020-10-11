@@ -14,7 +14,7 @@ class File extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, data, copyFunc, deleteFunc, displayed, openChildrenFunc, fileObj, moveExternal
+      userId, data, copyFunc, deleteFunc, displayed, openChildrenFunc, fileObj, moveExternal, shareFile
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -40,11 +40,14 @@ class File extends Component {
               <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
                 Open
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, 1)}>
+              <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, window.prompt("Number to go to? (Starts from 1)"))}>
                 Move to
               </MenuItem>
               <MenuItem className="menu-item">
                 Rename
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => shareFile(userId, id, window.prompt("Email Address of sharee: "))}>
+                Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc(userId, id)}>
                 Make a copy

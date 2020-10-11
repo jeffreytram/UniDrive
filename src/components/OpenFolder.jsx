@@ -17,7 +17,8 @@ class OpenFolder extends Component {
   render() {
     const {
       userId, copyFunc, deleteFunc, fileList, openChildrenFunc,
-      fileObj, filePath, filepathTraceFunc, closeFolderFunc, moveExternal
+      fileObj, filePath, filepathTraceFunc, closeFolderFunc, moveExternal,
+      shareFile
     } = this.props;
 
     return (
@@ -46,6 +47,7 @@ class OpenFolder extends Component {
               displayed
               openChildrenFunc={openChildrenFunc}
               moveExternal={moveExternal}
+              shareFile={shareFile}
               fileObj={file}
             />
           ))}
