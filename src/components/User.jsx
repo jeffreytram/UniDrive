@@ -56,7 +56,7 @@ class User extends Component {
     const { isDisplayed } = this.state;
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, moveExternal,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, moveExternal,
       shareFile, moveWithin
     } = this.props;
 

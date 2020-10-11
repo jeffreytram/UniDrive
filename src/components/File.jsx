@@ -6,8 +6,7 @@ import './File.css';
 class File extends Component {
   constructor() {
     super();
-    this.state = {
-    };
+    this.state = {};
   }
 
   /* Props contains: Name, Link, Image */

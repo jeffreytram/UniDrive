@@ -12,7 +12,6 @@ export default function UserList(props) {
     <div className="user-list">
       {userList.map((user) => (
         <User
-          infoData={user.idToken}
           parseIDToken={parseIDToken}
           fileList={user.filesWithChildren}
           userId={user.id}

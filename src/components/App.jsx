@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import UserList from './UserList';
+import RequestProgressElement from './RequestProgressElement';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { config } from '../config';
@@ -18,6 +19,7 @@ class App extends Component {
     super();
     this.state = {
       userList: [],
+      uploadRequests: [],
       lastRefreshTime: Date().substring(0, 21),
     };
   }
@@ -842,9 +844,7 @@ findTopLevelFolders = (fileList) => {
   refreshFunction = (id) => {
     // ready = false;
     const index = this.getAccountIndex(id);
-
     const { userList } = this.state;
-
     const { idToken } = userList[index];
     const { accessToken } = userList[index];
     const userInfo = this.parseIDToken(userList[index].idToken);
@@ -881,11 +881,20 @@ findTopLevelFolders = (fileList) => {
   }
 
   /**
+   * Clears requests
+   */
+  clearRequests = () => {
+    this.setState({
+      uploadRequests: []
+    });
+  }
+
+  /**
    * Uploads a file specified
    * @param {*} email User info for getting account
    * @param {*} fileUpl File to be uploaded
    */
-  fileUpload = (idToken, fileUpl) => {
+  fileUpload = (idToken, file) => {
     const parsedInfo = this.parseIDToken(idToken);
     const { email } = parsedInfo;
     window.gapi.client.load('drive', 'v3').then(() => {
@@ -901,8 +910,6 @@ findTopLevelFolders = (fileList) => {
           console.log(response.error);
           console.log('Auth error.');
         }
-        const file = fileUpl;
-        // new File(['Hello, world!'], 'hello world.txt', { type: 'text/plain;charset=utf-8' });
         const contentType = file.type || 'application/octet-stream';
         const resumable = new XMLHttpRequest();
         resumable.open('POST', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', true);
@@ -929,6 +936,13 @@ findTopLevelFolders = (fileList) => {
             reader.readAsArrayBuffer(file);
           }
         };
+        //Add resumable
+        this.setState((prevState) => ({
+          uploadRequests: [...prevState.uploadRequests, {
+            request: resumable, 
+            name: file.name,
+          }]
+        }));
         resumable.send(JSON.stringify({
           name: file.name,
           mimeType: contentType,
@@ -941,7 +955,7 @@ findTopLevelFolders = (fileList) => {
 
   render() {
     // #const { userList } = this.state;
-    const { userList, lastRefreshTime } = this.state;
+    const { userList, lastRefreshTime, uploadRequests } = this.state;
     const addedAccount = userList.length > 0;
     return (
       <div className="App">
@@ -981,6 +995,15 @@ findTopLevelFolders = (fileList) => {
                     shareFile={this.shareFile}
                     moveWithin={this.moveWithin}
                   />
+                  <div>
+                    <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
+                    {uploadRequests.map((requested) => (
+                      <RequestProgressElement
+                        request={requested.request}
+                        name={requested.name}
+                      />
+                    ))}
+                  </div>
                 </div>
               )
               : (
