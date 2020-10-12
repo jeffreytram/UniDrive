@@ -76,6 +76,9 @@ class File extends Component {
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
               View on Google Drive
             </MenuItem>
+            <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+              Rename
+            </MenuItem>
             <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
               Delete
             </MenuItem>
