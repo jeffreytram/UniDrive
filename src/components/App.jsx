@@ -74,7 +74,10 @@ class App extends Component {
     // ready = false;
     const userInfo = this.parseIDToken(idToken);
     const { email } = userInfo;
-    this.addUser(accessToken, idToken, code);
+    let isDup = this.addUser(accessToken, idToken, code);
+    if (isDup) {
+      return;
+    }
     const { userList } = this.state;
     const newUserIndex = userList.length - 1;
     this.updateFiles(newUserIndex, accessToken, idToken, email);
@@ -107,7 +110,8 @@ class App extends Component {
   addUser = (accessToken, idToken, code) => {
     const { email } = this.parseIDToken(idToken);
     const { userList } = this.state;
-    if (!this.isDuplicateUser(email, userList)) {
+    let isDup = this.isDuplicateUser(email, userList)
+    if (!isDup) {
       this.setState((prevState) => ({
         userList: [...prevState.userList, {
           id: userId,
@@ -125,6 +129,7 @@ class App extends Component {
     } else {
       console.log('Email is already in UserList');
     }
+    return isDup;
   }
 
   isDuplicateUser = (email, userList) => {
@@ -716,12 +721,18 @@ findTopLevelFolders = (fileList) => {
          }
 
          var newName = prompt('Enter New File Name')
+        
+        
          window.gapi.client.drive.files.update({
            fileId: fileId,
            resource: { name: newName }}
          ).then((response) => {
            this.refreshFunction(userList[index].id);
+         }, (error) => {
+           console.log(error)
+           alert("Can't Rename: User has Invalid Permsission")
          });
+       
        });
      });
    }
