@@ -97,7 +97,7 @@ class User extends Component {
           <FontAwesomeIcon className="fa-sync" icon={faSyncAlt} size="lg" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))} title="Refresh Account" />
           <FontAwesomeIcon className="fas fa-eye-slash" icon={(looseFilesIsDisplayed) ? faEye : faEyeSlash} size="lg" onClick={(event) => this.handleIconClick(event, () => this.toggleLoose())} title="Toggle folders-only view" />
           <label htmlFor={email}>
-            <FontAwesomeIcon className="fa-upload" icon={faUpload} size="lg" />
+            <FontAwesomeIcon className="fa-upload" icon={faUpload} size="lg" title="Upload file" />
             <input
               type="file"
               id={email}
@@ -107,7 +107,7 @@ class User extends Component {
             />
           </label>
           <ContextMenuTrigger className="context-menu" id={userId} holdToDisplay={0}>
-            <FontAwesomeIcon className="fa-plus" icon={faPlus} size="lg" onClick={(event) => this.handleIconClick(event, () => {})} />
+            <FontAwesomeIcon className="fa-plus" icon={faPlus} size="lg" onClick={(event) => this.handleIconClick(event, () => {})}  title="Create New Folder/File"/>
           </ContextMenuTrigger>
         </button>
         <ContextMenu className="context-menu" id={userId}>
