@@ -91,4 +91,5 @@
 
 .fa-upload:hover, .fa-plus:hover {
   color: #0F9D58;
+  cursor: pointer
 }

@@ -871,12 +871,19 @@ create = (id, fileType) => {
         console.log(response.error);
         console.log('authorization error');
       }
+      
+     
       var newName = prompt('Enter a Name')
+      if (newName === null) 
+      {return};
+      if (newName === "") {
+        newName = null
+      }
       let reqBody = JSON.stringify({
         "mimeType" : fileType,
         'name' : newName
       })
-
+      
       window.gapi.client.drive.files.create({
           resource: reqBody,
       }).then((response) => {
