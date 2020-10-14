@@ -71,10 +71,22 @@
 }
 
 /* icon CSS */
-.fa-trash, .fa-sync, .fa-eye , .fa-eye-slash, .fa-upload, .fa-plus{
-  float: right;
-  margin: 0px 6px;
+
+.fa-trash, .fa-sync, .fa-eye, .fa-eye-slash, .fa-upload, .fa-plus, .fa-ellipsis {
+  margin: 0px 10px;
   color: gray;
+}
+
+.fa-ellipsis {
+  float: right;
+}
+
+.fa-plus {
+  display: inline-block;
+}
+
+.fa-ellipsis:hover {
+  color: black;
 }
 
 .fa-trash:hover {
@@ -85,7 +97,7 @@
   color: #4285F4;
 }
 
-.fa-eye:hover , .fa-eye-slash:hover {
+.fa-eye:hover, .fa-eye-slash:hover {
   color: #F633FF;
 }
 
