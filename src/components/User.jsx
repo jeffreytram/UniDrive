@@ -106,22 +106,22 @@ class User extends Component {
               title={
               (
                 <span>
-                  <FontAwesomeIcon className="fa-plus" icon={faPlus} size="sm" onClick={(event) => this.handleIconClick(event, () => {})} title="Create New Folder/File" />  
+                  <FontAwesomeIcon className="fa-plus" icon={faPlus} size="sm" onClick={(event) => this.handleIconClick(event, () => {})} title="Create New Folder/File" />
                   Create New...
                 </span>
               )
             }
             >
-              <MenuItem className="menu-item sub-upload" onClick={() => createFunc(userId, 'application/vnd.google-apps.folder', 'New Folder')}>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.folder', 'New Folder')}>
                 New Folder
               </MenuItem>
-              <MenuItem className="menu-item sub-upload" onClick={() => createFunc(userId, 'application/vnd.google-apps.document', 'New Doc')}>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.document', 'New Doc')}>
                 New Google Doc
               </MenuItem>
-              <MenuItem className="menu-item sub-upload" onClick={() => createFunc(userId, 'application/vnd.google-apps.spreadsheet', 'New Sheet')}>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.spreadsheet', 'New Sheet')}>
                 New Google Sheets
               </MenuItem>
-              <MenuItem className="menu-item sub-upload" onClick={() => createFunc(userId, 'application/vnd.google-apps.presentation', 'New Presentation')}>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.presentation', 'New Presentation')}>
                 New Google Slides
               </MenuItem>
             </SubMenu>

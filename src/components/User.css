@@ -81,27 +81,23 @@
   float: right;
 }
 
-.fa-plus {
-  display: inline-block;
-}
-
 .fa-ellipsis:hover {
   color: black;
 }
 
-.fa-trash:hover {
+.menu-item:hover > .fa-trash {
   color: #DB4437;
 }
 
-.fa-sync:hover {
+.menu-item:hover > .fa-sync {
   color: #4285F4;
 }
 
-.fa-eye:hover, .fa-eye-slash:hover {
+.menu-item:hover > .fa-eye, .menu-item:hover > .fa-eye-slash {
   color: #F633FF;
 }
 
-.fa-upload:hover, .fa-plus:hover {
+.menu-item:hover > .fa-upload, .menu-item:hover > nav > div > span > .fa-plus {
   color: #0F9D58;
   cursor: pointer
 }
