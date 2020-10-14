@@ -36,7 +36,7 @@
 }
 
 /* icon CSS */
-.fa-trash, .fa-sync, .fa-eye , .fa-eye-slash{
+.fa-trash, .fa-sync, .fa-eye , .fa-eye-slash, .fa-upload{
   float: right;
   margin: 0px 6px;
   color: gray;
