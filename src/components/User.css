@@ -35,8 +35,43 @@
   color: gray;
 }
 
+.react-contextmenu-wrapper {
+  display: inline
+}
+
+.context-menu {
+  float: right;
+  margin: 0px 6px;
+  background-color: #ffffff;
+  border-radius: .25rem;
+  -webkit-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
+  -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
+  box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
+  color: #303030;
+  font-size: 16px;
+  min-width: 160px;
+  text-align: left;
+  transition: opacity 250ms ease;
+  z-index: 2;
+}
+
+.menu-item {
+  padding: 5px 5px;
+  border: 1px solid #ffffff;
+}
+
+.menu-item:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+.file-input {
+  display: none;
+}
+
 /* icon CSS */
-.fa-trash, .fa-sync, .fa-eye , .fa-eye-slash, .fa-upload{
+.fa-trash, .fa-sync, .fa-eye , .fa-eye-slash, .fa-upload, .fa-plus{
   float: right;
   margin: 0px 6px;
   color: gray;
@@ -51,14 +86,10 @@
 }
 
 .fa-eye:hover , .fa-eye-slash:hover {
-  color: #F633FF 
-  ;
+  color: #F633FF;
 }
 
-.fa-upload:hover {
+.fa-upload:hover, .fa-plus:hover {
   color: #0F9D58;
-}
-
-.file-input {
-  display: none;
+  cursor: pointer
 }

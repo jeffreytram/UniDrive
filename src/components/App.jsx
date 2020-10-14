@@ -683,13 +683,14 @@ findTopLevelFolders = (fileList) => {
           console.log(response.error);
           console.log('authorization error');
         }
-        // the actual deleting
-        // note that files are deleted and not trashed and can not be recovered
-        window.gapi.client.drive.files.delete({
-          fileId,
-        }).then((response) => {
-          this.refreshFunction(userList[index].id);
-        });
+        // the actual trashing
+        // note that files are trashed and not deleted and can be recovered
+      window.gapi.client.drive.files.update({
+        "fileId" : fileId,
+        "trashed" :  true
+      }).then((response) => {
+        this.refreshFunction(userList[index].id);
+      });
       });
     });
   }
@@ -844,6 +845,55 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
+
+ /**
+   *Creates a new, empty file of the type chosen
+   * @param {*} id User id for getting account
+   * @param {*} fileType the mimeType of the file being created
+   * @param {*} name the default name of the file being created
+   */
+create = (id, fileType) => {
+  const index = this.getAccountIndex(id);
+  const { userList } = this.state;
+  const userInfo = this.parseIDToken(userList[index].idToken);
+  const { email } = userInfo;
+  // boiler plate for accessing the API
+  window.gapi.client.load('drive', 'v3').then(() => {
+    window.gapi.auth2.authorize({
+      apiKey: API_KEY,
+      clientId: CLIENT_ID,
+      scope: SCOPE,
+      prompt: 'none',
+      login_hint: email,
+      discoveryDocs: [discoveryUrl],
+    }, (response) => {
+      if (response.error) {
+        console.log(response.error);
+        console.log('authorization error');
+      }
+      
+     
+      var newName = prompt('Enter a Name')
+      if (newName === null) 
+      {return};
+      if (newName === "") {
+        newName = null
+      }
+      let reqBody = JSON.stringify({
+        "mimeType" : fileType,
+        'name' : newName
+      })
+      
+      window.gapi.client.drive.files.create({
+          resource: reqBody,
+      }).then((response) => {
+        this.refreshFunction(id)
+      })
+  })
+  })
+}
+
+
   render() {
     // #const { userList } = this.state;
     const { userList, lastRefreshTime } = this.state;
@@ -883,6 +933,7 @@ findTopLevelFolders = (fileList) => {
                     openChildrenFunc={this.openChildren}
                     closeFolderFunc={this.closeFolder}
                     buildChildrenArray={this.buildChildrenArray}
+                    createFunc = {this.create}
                   />
                 </div>
               )
