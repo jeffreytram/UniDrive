@@ -5,8 +5,8 @@ import './UserList.css';
 
 export default function UserList(props) {
   const {
-    userList, parseIDToken, removeFunc, refreshFunc, copyFunc, deleteFunc, isChildFunc, openChildrenFunc,
-     buildChildrenArray, filepathTraceFunc, closeFolderFunc, createFunc
+    userList, parseIDToken, removeFunc, refreshFunc, copyFunc, deleteFunc, renameFunc, isChildFunc, openChildrenFunc,
+    buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, createFunc,
   } = props;
   return (
     <div className="user-list">
@@ -16,10 +16,13 @@ export default function UserList(props) {
           parseIDToken={parseIDToken}
           fileList={user.filesWithChildren}
           userId={user.id}
+          idToken={user.idToken}
           removeFunc={removeFunc}
           refreshFunc={refreshFunc}
+          fileUpload={fileUpload}
           copyFunc={copyFunc}
           deleteFunc={deleteFunc}
+          renameFunc={renameFunc}
           isChildFunc={isChildFunc}
           topLevelFolderList={user.topLevelFolders}
           looseFileList={user.looseFiles}
@@ -27,9 +30,9 @@ export default function UserList(props) {
           openChildrenFunc={openChildrenFunc}
           filepathTraceFunc={filepathTraceFunc}
           openFolderList={user.openFolders}
-          buildChildrenArray = {buildChildrenArray}
-          closeFolderFunc = {closeFolderFunc}
-          createFunc = {createFunc}
+          buildChildrenArray={buildChildrenArray}
+          closeFolderFunc={closeFolderFunc}
+          createFunc={createFunc}
         />
       ))}
     </div>
@@ -41,13 +44,14 @@ UserList.propTypes = {
   parseIDToken: PropTypes.func.isRequired,
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
+  fileUpload: PropTypes.func.isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
+  renameFunc: PropTypes.func.isRequired,
   filepathTraceFunc: PropTypes.func.isRequired,
   isChildFunc: PropTypes.func.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   closeFolderFunc: PropTypes.func.isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
-  createFunc: PropTypes.func.isRequired
-
+  createFunc: PropTypes.func.isRequired,
 };

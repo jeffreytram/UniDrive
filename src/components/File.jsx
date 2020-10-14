@@ -14,7 +14,7 @@ class File extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, data, copyFunc, deleteFunc, fId, displayed, openChildrenFunc, fileObj,
+      userId, data, copyFunc, deleteFunc, renameFunc, fId, displayed, openChildrenFunc, fileObj,
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -43,7 +43,7 @@ class File extends Component {
               <MenuItem className="menu-item">
                 Move to
               </MenuItem>
-              <MenuItem className="menu-item">
+              <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
                 Rename
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc(userId, id)}>
@@ -76,7 +76,10 @@ class File extends Component {
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
               View on Google Drive
             </MenuItem>
-            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(userId, id); } }}>
+            <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+              Rename
+            </MenuItem>
+            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
               Delete
             </MenuItem>
           </ContextMenu>
@@ -91,6 +94,7 @@ File.propTypes = {
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
+  renameFunc: PropTypes.func.isRequired,
   fId: PropTypes.number.isRequired,
   displayed: PropTypes.bool.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,

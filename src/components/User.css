@@ -35,30 +35,9 @@
   color: gray;
 }
 
-/* icon CSS */
-.fa-trash, .fa-sync, .fa-plus {
-  float: right;
-  margin: 0px 6px;
-  color: gray;
-}
-
-.fa-trash:hover {
-  color: #DB4437;
-}
-
-.fa-sync:hover {
-  color: #4285F4;
-}
-
-.fa-plus:hover {
-  color: #FFFF00;
-}
-
-
 .react-contextmenu-wrapper {
   display: inline
 }
-
 
 .context-menu {
   float: right;
@@ -85,4 +64,31 @@
   background-color: #f0f0f0;
   cursor: pointer;
   border: 1px solid black;
+}
+
+.file-input {
+  display: none;
+}
+
+/* icon CSS */
+.fa-trash, .fa-sync, .fa-eye , .fa-eye-slash, .fa-upload, .fa-plus{
+  float: right;
+  margin: 0px 6px;
+  color: gray;
+}
+
+.fa-trash:hover {
+  color: #DB4437;
+}
+
+.fa-sync:hover {
+  color: #4285F4;
+}
+
+.fa-eye:hover , .fa-eye-slash:hover {
+  color: #F633FF;
+}
+
+.fa-upload:hover, .fa-plus:hover {
+  color: #0F9D58;
 }
