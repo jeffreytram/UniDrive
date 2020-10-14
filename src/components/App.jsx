@@ -805,10 +805,11 @@ findTopLevelFolders = (fileList) => {
    * @param {*} fileType the mimeType of the file being created
    * @param {*} name the default name of the file being created
    */
-create = (id, fileType, name) => {
-  let index = this.getAccountIndex(userId);
-  let idToken = this.state.userList[index];
-  let  email = this.parseIDToken(idToken);
+create = (id, fileType) => {
+  const index = this.getAccountIndex(id);
+  const { userList } = this.state;
+  const userInfo = this.parseIDToken(userList[index].idToken);
+  const { email } = userInfo;
   // boiler plate for accessing the API
   window.gapi.client.load('drive', 'v3').then(() => {
     window.gapi.auth2.authorize({
