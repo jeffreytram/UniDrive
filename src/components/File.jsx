@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faFolderOpen, faArrowRight, faPencilAlt, faCopy, faFileDownload, faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import './File.css';
 
@@ -38,21 +43,27 @@ class File extends Component {
             </ContextMenuTrigger>
             <ContextMenu className="context-menu" id={id}>
               <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
+                <FontAwesomeIcon className="menu-icon" icon={faFolderOpen} />
                 Open
               </MenuItem>
               <MenuItem className="menu-item">
+                <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
                 Move to
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+                <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
                 Rename
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc(userId, id)}>
+                <FontAwesomeIcon className="menu-icon" icon={faCopy} />
                 Make a copy
               </MenuItem>
               <MenuItem className="menu-item">
+                <FontAwesomeIcon className="menu-icon" icon={faFileDownload} />
                 Download
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(userId, id); } }}>
+                <FontAwesomeIcon className="menu-icon" icon={faTrash} />
                 Delete
               </MenuItem>
             </ContextMenu>
@@ -74,12 +85,15 @@ class File extends Component {
           </ContextMenuTrigger>
           <ContextMenu className="context-menu" id={id}>
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
+              <FontAwesomeIcon className="menu-icon" icon={faGoogleDrive} />
               View on Google Drive
             </MenuItem>
             <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+              <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
               Rename
             </MenuItem>
             <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
+              <FontAwesomeIcon className="menu-icon" icon={faTrash} />
               Delete
             </MenuItem>
           </ContextMenu>

@@ -101,3 +101,8 @@ a:hover {
   cursor: pointer;
   border: 1px solid black;
 }
+
+.menu-icon {
+  margin: 0px 10px;
+  color: gray;
+}

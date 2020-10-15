@@ -50,7 +50,7 @@
   box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
   color: #303030;
   font-size: 16px;
-  min-width: 160px;
+  min-width: 190px;
   text-align: left;
   transition: opacity 250ms ease;
   z-index: 2;
@@ -67,13 +67,21 @@
   border: 1px solid black;
 }
 
+.sub-menu-upload {
+  display: none;
+}
+
+.menu-item.upload:hover > nav > .sub-menu-upload {
+  display: inline-block;
+}
+
 .file-input {
   display: none;
 }
 
 /* icon CSS */
 
-.fa-trash, .fa-sync, .fa-eye, .fa-eye-slash, .fa-upload, .fa-plus, .fa-ellipsis {
+.menu-icon {
   margin: 0px 10px;
   color: gray;
 }
