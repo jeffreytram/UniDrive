@@ -79,6 +79,12 @@
   display: none;
 }
 
+.divider {
+  outline: 1px solid lightgray;
+  margin: 2px 10px;
+  border: none;
+}
+
 /* icon CSS */
 
 .menu-icon {

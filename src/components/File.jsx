@@ -5,7 +5,9 @@ import {
   faFolderOpen, faArrowRight, faPencilAlt, faCopy, faFileDownload, faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import {
+  ContextMenu, MenuItem, ContextMenuTrigger, SubMenu,
+} from 'react-contextmenu';
 import './File.css';
 
 class File extends Component {
@@ -46,9 +48,29 @@ class File extends Component {
                 <FontAwesomeIcon className="menu-icon" icon={faFolderOpen} />
                 Open
               </MenuItem>
-              <MenuItem className="menu-item">
-                <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
-                Move to
+              <hr className="divider" />
+              <MenuItem className="menu-item move-to">
+                <SubMenu
+                  className="context-menu sub-menu-move-to"
+                  title={
+                    (
+                      <span>
+                        <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
+                        Move to...
+                      </span>
+                    )
+                  }
+                >
+                  <MenuItem className="menu-item">
+                    Account 1
+                  </MenuItem>
+                  <MenuItem className="menu-item">
+                    Account 2
+                  </MenuItem>
+                  <MenuItem className="menu-item">
+                    Account 3
+                  </MenuItem>
+                </SubMenu>
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
                 <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
@@ -62,6 +84,7 @@ class File extends Component {
                 <FontAwesomeIcon className="menu-icon" icon={faFileDownload} />
                 Download
               </MenuItem>
+              <hr className="divider" />
               <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(userId, id); } }}>
                 <FontAwesomeIcon className="menu-icon" icon={faTrash} />
                 Delete

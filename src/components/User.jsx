@@ -116,6 +116,7 @@ class User extends Component {
                 <FontAwesomeIcon className="fa-folder menu-icon" icon={faFolderPlus} />
                 Folder
               </MenuItem>
+              <hr className="divider" />
               <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.document', 'New Doc')}>
                 <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.document" alt="Google Doc icon" />
                 Google Doc

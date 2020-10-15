@@ -91,6 +91,12 @@ a:hover {
   z-index: 2;
 }
 
+.divider {
+  outline: 1px solid lightgray;
+  margin: 2px 10px;
+  border: none;
+}
+
 .menu-item {
   padding: 5px 5px;
   border: 1px solid #ffffff;
@@ -105,4 +111,12 @@ a:hover {
 .menu-icon {
   margin: 0px 10px;
   color: gray;
+}
+
+.sub-menu-move-to {
+  display: none;
+}
+
+.menu-item.move-to:hover > nav > .sub-menu-move-to {
+  display: inline-block;
 }
