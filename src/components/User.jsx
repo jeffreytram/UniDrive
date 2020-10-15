@@ -106,7 +106,7 @@ class User extends Component {
               title={
               (
                 <span>
-                  <FontAwesomeIcon className="fa-plus" icon={faPlus} size="sm" onClick={(event) => this.handleIconClick(event, () => {})} title="Create New Folder/File" />
+                  <FontAwesomeIcon className="fa-plus" icon={faPlus} onClick={(event) => this.handleIconClick(event, () => {})} title="Create New Folder/File" />
                   Create New...
                 </span>
               )
@@ -128,7 +128,7 @@ class User extends Component {
           </MenuItem>
           <label htmlFor={email}>
             <MenuItem className="menu-item">
-              <FontAwesomeIcon className="fa-upload" icon={faUpload} size="sm" title="Upload file" />
+              <FontAwesomeIcon className="fa-upload" icon={faUpload} title="Upload file" />
               <input
                 type="file"
                 id={email}
@@ -139,16 +139,16 @@ class User extends Component {
               Upload
             </MenuItem>
           </label>
-          <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.document', 'New Doc')}>
-            <FontAwesomeIcon className="fas fa-eye-slash" icon={(looseFilesIsDisplayed) ? faEye : faEyeSlash} size="sm" onClick={(event) => this.handleIconClick(event, () => this.toggleLoose())} title="Toggle folders-only view" />
+          <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => this.toggleLoose())}>
+            <FontAwesomeIcon className="fas fa-eye-slash" icon={(looseFilesIsDisplayed) ? faEye : faEyeSlash} title="Toggle folders-only view" />
             Toggle Folder View
           </MenuItem>
-          <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.spreadsheet', 'New Sheet')}>
-            <FontAwesomeIcon className="fa-sync" icon={faSyncAlt} size="sm" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))} title="Refresh Account" />
+          <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))}>
+            <FontAwesomeIcon className="fa-sync" icon={faSyncAlt} title="Refresh Account" />
             Refresh Account
           </MenuItem>
-          <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.presentation', 'New Presentation')}>
-            <FontAwesomeIcon className="fa-trash" icon={faTrash} size="sm" onClick={(event) => this.handleIconClick(event, () => removeFunc(userId))} title="Remove Account" />
+          <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => removeFunc(userId))}>
+            <FontAwesomeIcon className="fa-trash" icon={faTrash} title="Remove Account" />
             Remove Account
           </MenuItem>
         </ContextMenu>

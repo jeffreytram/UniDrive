@@ -10,9 +10,10 @@
   border: 1px solid #cccccc;
   border-radius: 5px;
 }
+
 .file-container:hover {
   cursor: pointer;
-  border-color: #4285F4;;
+  border-color: #4285F4;
 }
 
 .file-img {
@@ -75,7 +76,6 @@ a:hover {
   background-color: #303030;
   color: white;
 }
-
 
 .context-menu {
   background-color: #ffffff;
