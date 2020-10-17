@@ -16,7 +16,7 @@ class OpenFolder extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, copyFunc, deleteFunc, fileList, openChildrenFunc,
+      userId, copyFunc, deleteFunc, renameFunc, fileList, openChildrenFunc,
       fileObj, filePath, filepathTraceFunc, closeFolderFunc, moveExternal, moveWithin,
       shareFile
     } = this.props;
@@ -43,6 +43,7 @@ class OpenFolder extends Component {
               data={file}
               copyFunc={copyFunc}
               deleteFunc={deleteFunc}
+              renameFunc={renameFunc}
               fileList={fileList}
               displayed
               openChildrenFunc={openChildrenFunc}
@@ -64,6 +65,7 @@ OpenFolder.propTypes = {
   userId: PropTypes.number.isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
+  renameFunc: PropTypes.func.isRequired,
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   closeFolderFunc: PropTypes.func.isRequired,

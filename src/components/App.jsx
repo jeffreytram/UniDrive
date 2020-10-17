@@ -76,7 +76,10 @@ class App extends Component {
     // ready = false;
     const userInfo = this.parseIDToken(idToken);
     const { email } = userInfo;
-    this.addUser(accessToken, idToken, code);
+    let isDup = this.addUser(accessToken, idToken, code);
+    if (isDup) {
+      return;
+    }
     const { userList } = this.state;
     const newUserIndex = userList.length - 1;
     this.updateFiles(newUserIndex, accessToken, idToken, email);
@@ -109,7 +112,8 @@ class App extends Component {
   addUser = (accessToken, idToken, code) => {
     const { email } = this.parseIDToken(idToken);
     const { userList } = this.state;
-    if (!this.isDuplicateUser(email, userList)) {
+    let isDup = this.isDuplicateUser(email, userList)
+    if (!isDup) {
       this.setState((prevState) => ({
         userList: [...prevState.userList, {
           id: userId,
@@ -127,6 +131,7 @@ class App extends Component {
     } else {
       console.log('Email is already in UserList');
     }
+    return isDup;
   }
 
   isDuplicateUser = (email, userList) => {
@@ -680,13 +685,14 @@ findTopLevelFolders = (fileList) => {
           console.log(response.error);
           console.log('authorization error');
         }
-        // the actual deleting
-        // note that files are deleted and not trashed and can not be recovered
-        window.gapi.client.drive.files.delete({
-          fileId,
-        }).then((response) => {
-          this.refreshFunction(userList[index].id);
-        });
+        // the actual trashing
+        // note that files are trashed and not deleted and can be recovered
+      window.gapi.client.drive.files.update({
+        "fileId" : fileId,
+        "trashed" :  true
+      }).then((response) => {
+        this.refreshFunction(userList[index].id);
+      });
       });
     });
   }
@@ -829,6 +835,49 @@ findTopLevelFolders = (fileList) => {
   }
 
   /**
+   * Renames a file in google drive
+   * @param {*} userId
+   * @param {*} fileId
+   */
+   renameFile = (userId, fileId) => {
+     const index = this.getAccountIndex(userId);
+     const { userList } = this.state;
+
+     const { accessToken, idToken } = userList[index];
+     const { email } = this.parseIDToken(idToken);
+     // boiler plate for accessing the API
+     window.gapi.client.load('drive', 'v3').then(() => {
+       window.gapi.auth2.authorize({
+         apiKey: API_KEY,
+         clientId: CLIENT_ID,
+         scope: SCOPE,
+         prompt: 'none',
+         login_hint: email,
+         discoveryDocs: [discoveryUrl],
+       }, (response) => {
+         if (response.error) {
+           console.log(response.error);
+           console.log('authorization error');
+         }
+
+         var newName = prompt('Enter New File Name')
+        
+        
+         window.gapi.client.drive.files.update({
+           fileId: fileId,
+           resource: { name: newName }}
+         ).then((response) => {
+           this.refreshFunction(userList[index].id);
+         }, (error) => {
+           console.log(error)
+           alert("Can't Rename: User has Invalid Permsission")
+         });
+       
+       });
+     });
+   }
+
+  /**
    * Refreshes all the files being displayed within an account
    * @param {Number} id the unique id granted to the user when placed within the userList
    *
@@ -947,6 +996,55 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
+
+ /**
+   *Creates a new, empty file of the type chosen
+   * @param {*} id User id for getting account
+   * @param {*} fileType the mimeType of the file being created
+   * @param {*} name the default name of the file being created
+   */
+create = (id, fileType) => {
+  const index = this.getAccountIndex(id);
+  const { userList } = this.state;
+  const userInfo = this.parseIDToken(userList[index].idToken);
+  const { email } = userInfo;
+  // boiler plate for accessing the API
+  window.gapi.client.load('drive', 'v3').then(() => {
+    window.gapi.auth2.authorize({
+      apiKey: API_KEY,
+      clientId: CLIENT_ID,
+      scope: SCOPE,
+      prompt: 'none',
+      login_hint: email,
+      discoveryDocs: [discoveryUrl],
+    }, (response) => {
+      if (response.error) {
+        console.log(response.error);
+        console.log('authorization error');
+      }
+      
+     
+      var newName = prompt('Enter a Name')
+      if (newName === null) 
+      {return};
+      if (newName === "") {
+        newName = null
+      }
+      let reqBody = JSON.stringify({
+        "mimeType" : fileType,
+        'name' : newName
+      })
+      
+      window.gapi.client.drive.files.create({
+          resource: reqBody,
+      }).then((response) => {
+        this.refreshFunction(id)
+      })
+  })
+  })
+}
+
+
   render() {
     // #const { userList } = this.state;
     const { userList, lastRefreshTime, uploadRequests } = this.state;
@@ -980,6 +1078,7 @@ findTopLevelFolders = (fileList) => {
                     fileUpload={this.fileUpload}
                     copyFunc={this.copyFile}
                     deleteFunc={this.deleteFile}
+                    renameFunc={this.renameFile}
                     filepathTraceFunc={this.filepathTrace}
                     isChildFunc={this.checkIfChild}
                     openChildrenFunc={this.openChildren}
@@ -988,6 +1087,7 @@ findTopLevelFolders = (fileList) => {
                     moveExternal={this.moveExternal}
                     shareFile={this.shareFile}
                     moveWithin={this.moveWithin}
+                    createFunc = {this.create}
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>

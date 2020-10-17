@@ -5,8 +5,8 @@ import './UserList.css';
 
 export default function UserList(props) {
   const {
-    userList, parseIDToken, removeFunc, refreshFunc, copyFunc, deleteFunc, isChildFunc, openChildrenFunc,
-     buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, moveExternal, shareFile, moveWithin,
+    userList, parseIDToken, removeFunc, refreshFunc, copyFunc, deleteFunc, isChildFunc, openChildrenFunc, renameFunc,
+     buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, moveExternal, shareFile, moveWithin, createFunc
   } = props;
   return (
     <div className="user-list">
@@ -21,6 +21,7 @@ export default function UserList(props) {
           fileUpload={fileUpload}
           copyFunc={copyFunc}
           deleteFunc={deleteFunc}
+          renameFunc={renameFunc}
           isChildFunc={isChildFunc}
           topLevelFolderList={user.topLevelFolders}
           looseFileList={user.looseFiles}
@@ -33,6 +34,7 @@ export default function UserList(props) {
           moveWithin={moveWithin}
           shareFile={shareFile}
           moveExternal={moveExternal}
+          createFunc={createFunc}
         />
       ))}
     </div>
@@ -47,10 +49,11 @@ UserList.propTypes = {
   fileUpload: PropTypes.func.isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
+  renameFunc: PropTypes.func.isRequired,
   filepathTraceFunc: PropTypes.func.isRequired,
   isChildFunc: PropTypes.func.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   closeFolderFunc: PropTypes.func.isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
-
+  createFunc: PropTypes.func.isRequired,
 };

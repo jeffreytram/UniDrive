@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faSyncAlt, faUpload } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTrash, faSyncAlt, faEye, faEyeSlash, faUpload, faPlus, faEllipsisV, faFolderPlus,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  ContextMenu, MenuItem, ContextMenuTrigger, SubMenu,
+} from 'react-contextmenu';
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
@@ -12,6 +17,7 @@ class User extends Component {
     super();
     this.state = {
       isDisplayed: false,
+      looseFilesIsDisplayed: true,
     };
   }
 
@@ -52,21 +58,27 @@ class User extends Component {
     }
   }
 
+  toggleLoose = () => {
+    this.setState((prevState) => ({
+      looseFilesIsDisplayed: !prevState.looseFilesIsDisplayed,
+    }));
+  }
+
   render() {
-    const { isDisplayed } = this.state;
+    const { isDisplayed, looseFilesIsDisplayed } = this.state;
+
     const {
-      parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, copyFunc, deleteFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, moveExternal,
-      shareFile, moveWithin
+      parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, copyFunc, deleteFunc, renameFunc, isChildFunc, topLevelFolderList,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, createFunc,
+      shareFile, moveWithin, moveExternal
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
     const fileContainerStyles = {
       display: isDisplayed ? 'flex' : 'none',
     };
-
     return (
-      <div className="user">
+      <ContextMenuTrigger className="user" id={userId}>
         <button
           type="button"
           className="user-banner"
@@ -83,25 +95,79 @@ class User extends Component {
               )
             </span>
           </span>
-          <FontAwesomeIcon className="fa-trash" icon={faTrash} size="lg" onClick={(event) => this.handleIconClick(event, () => removeFunc(userId))} />
-          <FontAwesomeIcon className="fa-sync" icon={faSyncAlt} size="lg" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))} />
-          <label htmlFor={email}>
-            <FontAwesomeIcon className="fa-upload" icon={faUpload} size="lg" />
-            <input
-              type="file"
-              id={email}
-              className="file-input"
-              onChange={(e) => this.uploadController(e, idToken)}
-              multiple
-            />
-          </label>
+          <ContextMenuTrigger className="context-menu" id={userId} holdToDisplay={0}>
+            <FontAwesomeIcon className="fa-ellipsis menu-icon" icon={faEllipsisV} size="lg" onClick={(event) => this.handleIconClick(event, () => {})} title="Options" />
+          </ContextMenuTrigger>
         </button>
+        <ContextMenu className="context-menu" id={userId}>
+          <MenuItem className="menu-item upload">
+            <SubMenu
+              className="context-menu sub-menu-upload"
+              title={
+              (
+                <span>
+                  <FontAwesomeIcon className="fa-plus menu-icon" icon={faPlus} onClick={(event) => this.handleIconClick(event, () => {})} />
+                  Create New...
+                </span>
+              )
+            }
+            >
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.folder', 'New Folder')}>
+                <FontAwesomeIcon className="fa-folder menu-icon" icon={faFolderPlus} />
+                Folder
+              </MenuItem>
+              <hr className="divider" />
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.document', 'New Doc')}>
+                <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.document" alt="Google Doc icon" />
+                Google Doc
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.spreadsheet', 'New Sheet')}>
+                <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet" alt="Google Speardsheet icon" />
+                Google Sheets
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.presentation', 'New Presentation')}>
+                <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.presentation" alt="Google Slides icon" />
+                Google Slides
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.form', 'New Form')}>
+                <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.form" alt="Google Forms icon" />
+                Google Forms
+              </MenuItem>
+            </SubMenu>
+          </MenuItem>
+          <label htmlFor={email}>
+            <MenuItem className="menu-item">
+              <FontAwesomeIcon className="fa-upload menu-icon" icon={faUpload} />
+              <input
+                type="file"
+                id={email}
+                className="file-input"
+                onChange={(e) => this.uploadController(e, idToken)}
+                multiple
+              />
+              Upload
+            </MenuItem>
+          </label>
+          <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => this.toggleLoose())}>
+            <FontAwesomeIcon className="fa-eye-slash menu-icon" icon={(looseFilesIsDisplayed) ? faEye : faEyeSlash} />
+            Toggle Folder View
+          </MenuItem>
+          <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))}>
+            <FontAwesomeIcon className="fa-sync menu-icon" icon={faSyncAlt} />
+            Refresh Account
+          </MenuItem>
+          <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => removeFunc(userId))}>
+            <FontAwesomeIcon className="fa-trash menu-icon" icon={faTrash} />
+            Remove Account
+          </MenuItem>
+        </ContextMenu>
         <TopLevelFolderList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
           deleteFunc={deleteFunc}
+          renameFunc={renameFunc}
           topLevelFolderList={topLevelFolderList}
           openChildrenFunc={openChildrenFunc}
           shareFile={shareFile}
@@ -115,6 +181,7 @@ class User extends Component {
           userId={userId}
           copyFunc={copyFunc}
           deleteFunc={deleteFunc}
+          renameFunc={renameFunc}
           openChildrenFunc={openChildrenFunc}
           filepathTraceFunc={filepathTraceFunc}
           openFolderList={openFolderList}
@@ -124,21 +191,21 @@ class User extends Component {
           moveExternal={moveExternal}
           moveWithin={moveWithin}
         />
-
         <LooseFileList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
           copyFunc={copyFunc}
           deleteFunc={deleteFunc}
+          renameFunc={renameFunc}
           openChildrenFunc={openChildrenFunc}
           looseFileList={looseFileList}
           shareFile={shareFile}
           moveExternal={moveExternal}
           moveWithin={moveWithin}
+          isDisplayed={looseFilesIsDisplayed}
         />
-
-      </div>
+      </ContextMenuTrigger>
     );
   }
 }
@@ -153,6 +220,7 @@ User.propTypes = {
   fileUpload: PropTypes.func.isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
+  renameFunc: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
@@ -160,6 +228,7 @@ User.propTypes = {
   filepathTraceFunc: PropTypes.func.isRequired,
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
+  createFunc: PropTypes.func.isRequired,
 };
 
 export default User;

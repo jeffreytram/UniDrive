@@ -5,10 +5,11 @@ import './FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, openChildrenFunc,
-    looseFileList, moveExternal, shareFile, moveWithin,
+    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, renameFunc, openChildrenFunc,
+    looseFileList, moveExternal, shareFile, moveWithin, isDisplayed
   } = props;
 
+  if(isDisplayed) {
   return (
     <div className="file-list-container" style={fileContainerStyles}>
       {looseFileList.map((file) => (
@@ -17,6 +18,7 @@ export default function LooseFileList(props) {
           data={file}
           copyFunc={copyFunc}
           deleteFunc={deleteFunc}
+          renameFunc={renameFunc}
           childrenList={[]}
           fileList={fileList}
           displayed
@@ -24,11 +26,17 @@ export default function LooseFileList(props) {
           shareFile={shareFile}
           moveWithin={moveWithin}
           openChildrenFunc={openChildrenFunc}
+          displayed
         />
       ))}
     </div>
   );
+} else {
+  return(null);
 }
+
+}
+
 
 LooseFileList.propTypes = {
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -36,6 +44,8 @@ LooseFileList.propTypes = {
   userId: PropTypes.number.isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
+  renameFunc: PropTypes.func.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isDisplayed: PropTypes.bool.isRequired
 };

@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faFolderOpen, faArrowRight, faPencilAlt, faCopy, faFileDownload, faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
+import {
+  ContextMenu, MenuItem, ContextMenuTrigger, SubMenu,
+} from 'react-contextmenu';
 import './File.css';
 
 class File extends Component {
@@ -13,7 +20,7 @@ class File extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, data, copyFunc, deleteFunc, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
+      userId, data, copyFunc, deleteFunc, renameFunc, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -37,27 +44,51 @@ class File extends Component {
             </ContextMenuTrigger>
             <ContextMenu className="context-menu" id={id}>
               <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
+                <FontAwesomeIcon className="menu-icon" icon={faFolderOpen} />
                 Open
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, window.prompt("Number to go to? (Starts from 1)"))}>
-                MoveExternal
+              <hr className="divider" />
+              <MenuItem className="menu-item move-to">
+                <SubMenu
+                  className="context-menu sub-menu-move-to"
+                  title={
+                    (
+                      <span>
+                        <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
+                        Move to...
+                      </span>
+                    )
+                  }
+                >
+                  <MenuItem className="menu-item">
+                    Account 1
+                  </MenuItem>
+                  <MenuItem className="menu-item">
+                    Account 2
+                  </MenuItem>
+                  <MenuItem className="menu-item">
+                    Account 3
+                  </MenuItem>
+                </SubMenu>
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
-                MoveInternal
-              </MenuItem>
-              <MenuItem className="menu-item">
+              <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+                <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
                 Rename
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => shareFile(userId, id, window.prompt("Email Address of sharee: "))}>
                 Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc(userId, id)}>
+                <FontAwesomeIcon className="menu-icon" icon={faCopy} />
                 Make a copy
               </MenuItem>
               <MenuItem className="menu-item">
+                <FontAwesomeIcon className="menu-icon" icon={faFileDownload} />
                 Download
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
+              <hr className="divider" />
+              <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(userId, id); } }}>
+                <FontAwesomeIcon className="menu-icon" icon={faTrash} />
                 Delete
               </MenuItem>
             </ContextMenu>
@@ -79,9 +110,15 @@ class File extends Component {
           </ContextMenuTrigger>
           <ContextMenu className="context-menu" id={id}>
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
+              <FontAwesomeIcon className="menu-icon" icon={faGoogleDrive} />
               View on Google Drive
             </MenuItem>
+            <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+              <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
+              Rename
+            </MenuItem>
             <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
+              <FontAwesomeIcon className="menu-icon" icon={faTrash} />
               Delete
             </MenuItem>
           </ContextMenu>
@@ -96,6 +133,8 @@ File.propTypes = {
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
   copyFunc: PropTypes.func.isRequired,
   deleteFunc: PropTypes.func.isRequired,
+  renameFunc: PropTypes.func.isRequired,
+  fId: PropTypes.number.isRequired,
   displayed: PropTypes.bool.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   fileObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf()])),
