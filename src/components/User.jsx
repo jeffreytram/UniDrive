@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faTrash, faSyncAlt, faEye, faEyeSlash, faUpload, faPlus,
+  faTrash, faSyncAlt, faEye, faEyeSlash, faUpload, faPlus, faEllipsisV, faFolderPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import {
+  ContextMenu, MenuItem, ContextMenuTrigger, SubMenu,
+} from 'react-contextmenu';
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
@@ -76,7 +78,7 @@ class User extends Component {
       display: isDisplayed ? 'flex' : 'none',
     };
     return (
-      <div className="user">
+      <ContextMenuTrigger className="user" id={userId}>
         <button
           type="button"
           className="user-banner"
@@ -93,37 +95,71 @@ class User extends Component {
               )
             </span>
           </span>
-          <FontAwesomeIcon className="fa-trash" icon={faTrash} size="lg" onClick={(event) => this.handleIconClick(event, () => removeFunc(userId))} title="Remove Account" />
-          <FontAwesomeIcon className="fa-sync" icon={faSyncAlt} size="lg" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))} title="Refresh Account" />
-          <FontAwesomeIcon className="fas fa-eye-slash" icon={(looseFilesIsDisplayed) ? faEye : faEyeSlash} size="lg" onClick={(event) => this.handleIconClick(event, () => this.toggleLoose())} title="Toggle folders-only view" />
-          <label htmlFor={email}>
-            <FontAwesomeIcon className="fa-upload" icon={faUpload} size="lg" title="Upload file" />
-            <input
-              type="file"
-              id={email}
-              className="file-input"
-              onChange={(e) => this.uploadController(e, idToken)}
-              multiple
-            />
-          </label>
           <ContextMenuTrigger className="context-menu" id={userId} holdToDisplay={0}>
-            <FontAwesomeIcon className="fa-plus" icon={faPlus} size="lg" onClick={(event) => this.handleIconClick(event, () => {})}  title="Create New Folder/File"/>
+            <FontAwesomeIcon className="fa-ellipsis menu-icon" icon={faEllipsisV} size="lg" onClick={(event) => this.handleIconClick(event, () => {})} title="Options" />
           </ContextMenuTrigger>
         </button>
         <ContextMenu className="context-menu" id={userId}>
-          <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.folder', 'New Folder')}>
-            New Folder
+          <MenuItem className="menu-item upload">
+            <SubMenu
+              className="context-menu sub-menu-upload"
+              title={
+              (
+                <span>
+                  <FontAwesomeIcon className="fa-plus menu-icon" icon={faPlus} onClick={(event) => this.handleIconClick(event, () => {})} />
+                  Create New...
+                </span>
+              )
+            }
+            >
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.folder', 'New Folder')}>
+                <FontAwesomeIcon className="fa-folder menu-icon" icon={faFolderPlus} />
+                Folder
+              </MenuItem>
+              <hr className="divider" />
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.document', 'New Doc')}>
+                <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.document" alt="Google Doc icon" />
+                Google Doc
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.spreadsheet', 'New Sheet')}>
+                <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet" alt="Google Speardsheet icon" />
+                Google Sheets
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.presentation', 'New Presentation')}>
+                <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.presentation" alt="Google Slides icon" />
+                Google Slides
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.form', 'New Form')}>
+                <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.form" alt="Google Forms icon" />
+                Google Forms
+              </MenuItem>
+            </SubMenu>
           </MenuItem>
-          <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.document', 'New Doc')}>
-            New Google Doc
+          <label htmlFor={email}>
+            <MenuItem className="menu-item">
+              <FontAwesomeIcon className="fa-upload menu-icon" icon={faUpload} />
+              <input
+                type="file"
+                id={email}
+                className="file-input"
+                onChange={(e) => this.uploadController(e, idToken)}
+                multiple
+              />
+              Upload
+            </MenuItem>
+          </label>
+          <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => this.toggleLoose())}>
+            <FontAwesomeIcon className="fa-eye-slash menu-icon" icon={(looseFilesIsDisplayed) ? faEye : faEyeSlash} />
+            Toggle Folder View
           </MenuItem>
-          <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.spreadsheet', 'New Sheet')}>
-            New Google Sheets
+          <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))}>
+            <FontAwesomeIcon className="fa-sync menu-icon" icon={faSyncAlt} />
+            Refresh Account
           </MenuItem>
-          <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.presentation', 'New Presentation')}>
-            New Google Slides
+          <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => removeFunc(userId))}>
+            <FontAwesomeIcon className="fa-trash menu-icon" icon={faTrash} />
+            Remove Account
           </MenuItem>
-
         </ContextMenu>
         <TopLevelFolderList
           fileList={fileList}
@@ -160,7 +196,7 @@ class User extends Component {
           looseFileList={looseFileList}
           isDisplayed={looseFilesIsDisplayed}
         />
-      </div>
+      </ContextMenuTrigger>
     );
   }
 }
