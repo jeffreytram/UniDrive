@@ -829,30 +829,6 @@ findTopLevelFolders = (fileList) => {
   }
 
   /**
-   * Downloads a file from google drive
-   * @param {*} fileId 
-   */
-  downloadFile = (userId, fileId) => {
-    const email = this.getEmailFromUserId(userId);
-    window.gapi.client.load('drive', 'v3').then(() => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        prompt: 'none',
-        login_hint: email,
-        discoveryDocs: [discoveryUrl],
-      }, (response) => {
-        window.gapi.client.drive.files.get({
-          fileId: fileId,
-          alt: 'Media' 
-        })
-          // .pipe(fs.createWriteStream())
-      });
-    });
-  }
-
-  /**
    * Refreshes all the files being displayed within an account
    * @param {Number} id the unique id granted to the user when placed within the userList
    *
@@ -1012,7 +988,6 @@ findTopLevelFolders = (fileList) => {
                     moveExternal={this.moveExternal}
                     shareFile={this.shareFile}
                     moveWithin={this.moveWithin}
-                    downloadFile={this.downloadFile}
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
