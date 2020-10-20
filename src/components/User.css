@@ -71,7 +71,7 @@
   display: none;
 }
 
-.menu-item.upload:hover > nav > .sub-menu-upload {
+.menu-item.upload:hover>nav>.sub-menu-upload {
   display: inline-block;
 }
 
@@ -102,14 +102,14 @@
   color: var(--text);
 }
 
-.menu-item:hover > .fa-trash {
+.menu-item:hover>.fa-trash {
   color: var(--red);
 }
 
-.menu-item:hover > .fa-upload, .menu-item:hover > .fa-sync {
+.menu-item:hover>.fa-upload, .menu-item:hover>.fa-sync {
   color: var(--blue);
 }
 
-.menu-item:hover > nav > div > span > .fa-plus, .menu-item:hover > .fa-eye, .menu-item:hover > .fa-eye-slash  {
+.menu-item:hover>nav>div>span>.fa-plus, .menu-item:hover>.fa-eye, .menu-item:hover>.fa-eye-slash {
   color: var(--green);
 }

@@ -9,11 +9,11 @@ export default function Sidebar() {
   return (
     <div className="sidebar">
       <div>
-        <FontAwesomeIcon style={{ color: 'gray' }} icon={faShareSquare} size="2x" />
+        <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faShareSquare} size="2x" />
         Shared with me
       </div>
       <div>
-        <FontAwesomeIcon style={{ color: 'gray' }} icon={faStar} size="2x" />
+        <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faStar} size="2x" />
         Starred
       </div>
     </div>
