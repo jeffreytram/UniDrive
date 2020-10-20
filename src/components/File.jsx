@@ -40,7 +40,7 @@ class File extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, data, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
+      userId, data, fId, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
       loadAuth,
     } = this.props;
     const {
@@ -124,7 +124,7 @@ class File extends Component {
       return (
         <div>
           <ContextMenuTrigger className="file-container" id={id}>
-            <div className="file-container" onClick={() => openChildrenFunc(userId, fileObj, fileObj.fId)}>
+            <div className="file-container" onClick={() => openChildrenFunc(userId, fileObj, fId)}>
               <div className="file-image-container">
                 <img className="file-img" src={iconLink} alt="File icon" />
               </div>
