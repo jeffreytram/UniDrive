@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faFolderOpen, faArrowRight, faPencilAlt, faShare, faCopy, faFileDownload, faTrash,
+  faFolderOpen, faArrowRight, faPencilAlt, faShare, faCopy, faTrash, faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -36,6 +36,11 @@ class File extends Component {
     });
   }
 
+  star = () => window.gapi.client.drive.files.update({
+    fileId: this.props.data.id,
+    starred: !this.props.data.starred,
+  })
+
   /* Props contains: Name, Link, Image */
   // export default function File(props) {
   render() {
@@ -49,6 +54,8 @@ class File extends Component {
     const copyFunc = loadAuth(userId, this.copy);
     const deleteFunc = loadAuth(userId, this.delete);
     const renameFunc = loadAuth(userId, this.rename);
+    const starFunc = loadAuth(userId, this.star);
+    const isStarred = this.props.data.starred;
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
@@ -107,9 +114,9 @@ class File extends Component {
                 <FontAwesomeIcon className="menu-icon" icon={faCopy} />
                 Make a copy
               </MenuItem>
-              <MenuItem className="menu-item">
-                <FontAwesomeIcon className="menu-icon" icon={faFileDownload} />
-                Download
+              <MenuItem className="menu-item" onClick={() => starFunc()}>
+                <FontAwesomeIcon className="menu-icon" icon={faStar} />
+                { (isStarred) ? 'Remove From Starred' : 'Star' }
               </MenuItem>
               <hr className="divider" />
               <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(); } }}>
@@ -145,6 +152,10 @@ class File extends Component {
             <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
               <FontAwesomeIcon className="menu-icon" icon={faShare} />
               Share
+            </MenuItem>
+            <MenuItem className="menu-item" onClick={() => starFunc()}>
+              <FontAwesomeIcon className="menu-icon" icon={faStar} />
+              { (isStarred) ? 'Remove From Starred' : 'Star' }
             </MenuItem>
             <hr className="divider" />
             <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
