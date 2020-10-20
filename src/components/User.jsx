@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faTrash, faSyncAlt, faEye, faEyeSlash, faUpload, faPlus, faEllipsisV, faFolderPlus,
+  faTrash, faSyncAlt, faEye, faEyeSlash, faUpload, faPlus, faEllipsisV, faFolderPlus, faSortNumericDown, faCheck
 } from '@fortawesome/free-solid-svg-icons';
 import {
   ContextMenu, MenuItem, ContextMenuTrigger, SubMenu,
@@ -69,7 +69,7 @@ class User extends Component {
 
     const {
       infoData, parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, copyFunc, deleteFunc, renameFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, createFunc,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, createFunc, sortFunc, currentSort
     } = this.props;
 
     const parsedInfo = parseIDToken(infoData);
@@ -152,6 +152,40 @@ class User extends Component {
             <FontAwesomeIcon className="fa-eye-slash menu-icon" icon={(looseFilesIsDisplayed) ? faEye : faEyeSlash} />
             Toggle Folder View
           </MenuItem>
+
+
+          <MenuItem className="menu-item sort">
+            <SubMenu
+              className="context-menu sub-menu-sort"
+              title={
+              (
+                <span>
+                  <FontAwesomeIcon className="fa-sort menu-icon" icon={faSortNumericDown} onClick={(event) => this.handleIconClick(event, () => {})} />
+                  Sort...
+                </span>
+              )
+            }
+            >
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, viewedByMeTime desc')}>
+                {"Last Opened by Me"}
+                <FontAwesomeIcon className="fa-check menu-icon" icon={currentSort === 'folder, viewedByMeTime desc'? faCheck : null} />
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, modifiedTime desc' )}>
+                {"Last Modified"}
+                <FontAwesomeIcon className="fa-check menu-icon" icon={currentSort === 'folder, modifiedTime desc'? faCheck : null} />
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, createdTime desc')}>
+                {"Newest"}
+                <FontAwesomeIcon className="fa-check menu-icon" icon={currentSort === 'folder, createdTime desc'? faCheck : null} />
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, createdTime')}>
+                {"Oldest"}
+                <FontAwesomeIcon className="fa-check menu-icon" icon={currentSort === 'folder, createdTime'? faCheck : null} />
+              </MenuItem>
+            </SubMenu>
+          </MenuItem>
+
+
           <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))}>
             <FontAwesomeIcon className="fa-sync menu-icon" icon={faSyncAlt} />
             Refresh Account
@@ -161,6 +195,7 @@ class User extends Component {
             Remove Account
           </MenuItem>
         </ContextMenu>
+  
         <TopLevelFolderList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}

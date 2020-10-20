@@ -75,6 +75,17 @@
   display: inline-block;
 }
 
+.sub-menu-sort {
+  display: none;
+}
+
+.menu-item.sort:hover > nav > .sub-menu-sort {
+  display: inline-block;
+}
+
+
+
+
 .file-input {
   display: none;
 }
@@ -106,6 +117,10 @@
   color: #DB4437;
 }
 
+.fa-check {
+  color: #008000;
+}
+
 .menu-item:hover > .fa-sync {
   color: #4285F4;
 }
@@ -116,5 +131,10 @@
 
 .menu-item:hover > .fa-upload, .menu-item:hover > nav > div > span > .fa-plus {
   color: #0F9D58;
+  cursor: pointer
+}
+
+ .menu-item:hover > nav > div > span > .fa-sort {
+  color:  #ffa500 ;;
   cursor: pointer
 }

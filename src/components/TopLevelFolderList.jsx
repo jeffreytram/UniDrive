@@ -9,6 +9,7 @@ export default function TopLevelFolderList(props) {
   } = props;
 
   return (
+    <div classname="topFolder">
     <div className="file-list-container" style={fileContainerStyles}>
       {topLevelFolderList.map((fileObj) => (
         <File
@@ -24,6 +25,7 @@ export default function TopLevelFolderList(props) {
           openChildrenFunc={openChildrenFunc}
         />
       ))}
+    </div>
     </div>
   );
 }
