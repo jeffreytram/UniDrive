@@ -7,7 +7,7 @@ export default function OpenFolderList(props) {
   const {
     fileList, fileContainerStyles, userId, copyFunc, deleteFunc, renameFunc, openChildrenFunc,
     openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, moveExternal, moveWithin, 
-    shareFile,
+    shareFile, loadAuth
   } = props;
 
   return (
@@ -31,6 +31,7 @@ export default function OpenFolderList(props) {
           shareFile={shareFile}
           moveExternal={moveExternal}
           moveWithin={moveWithin}
+          loadAuth={loadAuth}
         />
       ))}
     </div>

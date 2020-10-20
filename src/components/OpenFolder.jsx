@@ -18,7 +18,7 @@ class OpenFolder extends Component {
     const {
       userId, copyFunc, deleteFunc, renameFunc, fileList, openChildrenFunc,
       fileObj, filePath, filepathTraceFunc, closeFolderFunc, moveExternal, moveWithin,
-      shareFile
+      shareFile, loadAuth
     } = this.props;
 
     return (
@@ -50,6 +50,7 @@ class OpenFolder extends Component {
               moveExternal={moveExternal}
               shareFile={shareFile}
               moveWithin={moveWithin}
+              loadAuth={loadAuth}
               fileObj={file}
             />
           ))}

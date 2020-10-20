@@ -64,19 +64,72 @@ class User extends Component {
     }));
   }
 
+  shareFile = (fileId, newEmail) => {
+    return window.gapi.client.drive.permissions.create({
+      fileId: fileId,
+      emailMessage: 'Share Success!',
+      sendNotificationEmail: true,
+      resource: {
+        type: 'user',
+        role: 'writer',
+        emailAddress: newEmail
+      }
+    });
+  }
+
+  moveExternal = (fileId, newEmail) => {
+    window.gapi.client.drive.permissions.create({
+      fileId: fileId,
+      resource: {
+        type: 'user',
+        role: 'writer',
+        emailAddress: newEmail
+      }
+    }).then((response) => {
+      if(response.error) {
+        console.log(response.error);
+      }
+      console.log(response);
+      return window.gapi.client.drive.permissions.update({
+        fileId: fileId,
+        permissionId: response.result.id,
+        transferOwnership: true,
+        resource: {
+          role: 'owner'
+        }
+      });
+    });
+  }
+
+  create = (fileType) => {
+    let newName = prompt('Enter a Name')
+    if (newName === null) {return};
+    if (newName === "") {
+      newName = null
+    }
+    let reqBody = JSON.stringify({
+      "mimeType" : fileType,
+      'name' : newName
+    });
+    return window.gapi.client.drive.files.create({
+      resource: reqBody,
+    });
+  }
+
   render() {
     const { isDisplayed, looseFilesIsDisplayed } = this.state;
 
     const {
-      parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, copyFunc, deleteFunc, renameFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, createFunc,
-      shareFile, moveWithin, moveExternal
+      parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, 
+      fileUpload, moveWithin, loadAuth
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
     const fileContainerStyles = {
       display: isDisplayed ? 'flex' : 'none',
     };
+    const createFunc = loadAuth(userId, this.create);
     return (
       <ContextMenuTrigger className="user" id={userId}>
         <button
@@ -112,24 +165,24 @@ class User extends Component {
               )
             }
             >
-              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.folder', 'New Folder')}>
+              <MenuItem className="menu-item" onClick={() => createFunc('application/vnd.google-apps.folder', 'New Folder')}>
                 <FontAwesomeIcon className="fa-folder menu-icon" icon={faFolderPlus} />
                 Folder
               </MenuItem>
               <hr className="divider" />
-              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.document', 'New Doc')}>
+              <MenuItem className="menu-item" onClick={() => createFunc('application/vnd.google-apps.document', 'New Doc')}>
                 <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.document" alt="Google Doc icon" />
                 Google Doc
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.spreadsheet', 'New Sheet')}>
+              <MenuItem className="menu-item" onClick={() => createFunc('application/vnd.google-apps.spreadsheet', 'New Sheet')}>
                 <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet" alt="Google Speardsheet icon" />
                 Google Sheets
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.presentation', 'New Presentation')}>
+              <MenuItem className="menu-item" onClick={() => createFunc('application/vnd.google-apps.presentation', 'New Presentation')}>
                 <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.presentation" alt="Google Slides icon" />
                 Google Slides
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => createFunc(userId, 'application/vnd.google-apps.form', 'New Form')}>
+              <MenuItem className="menu-item" onClick={() => createFunc('application/vnd.google-apps.form', 'New Form')}>
                 <img className="menu-icon" src="https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.form" alt="Google Forms icon" />
                 Google Forms
               </MenuItem>
@@ -165,45 +218,48 @@ class User extends Component {
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
-          copyFunc={copyFunc}
-          deleteFunc={deleteFunc}
-          renameFunc={renameFunc}
+          copyFunc={loadAuth(userId, this.copyFile)}
+          deleteFunc={loadAuth(userId, this.deleteFile)}
+          renameFunc={loadAuth(userId, this.renameFile)}
           topLevelFolderList={topLevelFolderList}
           openChildrenFunc={openChildrenFunc}
-          shareFile={shareFile}
-          moveExternal={moveExternal}
+          shareFile={loadAuth(userId, this.shareFile)}
+          moveExternal={loadAuth(userId, this.moveExternal)}
           moveWithin={moveWithin}
+          loadAuth={loadAuth}
         />
 
         <OpenFolderList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
-          copyFunc={copyFunc}
-          deleteFunc={deleteFunc}
-          renameFunc={renameFunc}
+          copyFunc={loadAuth(userId, this.copyFile)}
+          deleteFunc={loadAuth(userId, this.deleteFile)}
+          renameFunc={loadAuth(userId, this.renameFile)}
           openChildrenFunc={openChildrenFunc}
           filepathTraceFunc={filepathTraceFunc}
           openFolderList={openFolderList}
           buildChildrenArray={buildChildrenArray}
           closeFolderFunc={closeFolderFunc}
-          shareFile={shareFile}
-          moveExternal={moveExternal}
+          shareFile={loadAuth(userId, this.shareFile)}
+          moveExternal={loadAuth(userId, this.moveExternal)}
           moveWithin={moveWithin}
+          loadAuth={loadAuth}
         />
         <LooseFileList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
-          copyFunc={copyFunc}
-          deleteFunc={deleteFunc}
-          renameFunc={renameFunc}
+          copyFunc={loadAuth(userId, this.copyFile)}
+          deleteFunc={loadAuth(userId, this.deleteFile)}
+          renameFunc={loadAuth(userId, this.renameFile)}
           openChildrenFunc={openChildrenFunc}
           looseFileList={looseFileList}
-          shareFile={shareFile}
-          moveExternal={moveExternal}
+          shareFile={loadAuth(userId, this.shareFile)}
+          moveExternal={loadAuth(userId, this.moveExternal)}
           moveWithin={moveWithin}
           isDisplayed={looseFilesIsDisplayed}
+          loadAuth={loadAuth}
         />
       </ContextMenuTrigger>
     );
