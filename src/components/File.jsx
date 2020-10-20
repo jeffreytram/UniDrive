@@ -17,22 +17,57 @@ class File extends Component {
   }
 
   copy = () => {
+    const userId = this.props.userId
     const fileId = this.props.data.id;
     return window.gapi.client.drive.files.copy({
       fileId,
+    }).then((response) => {
+      this.refreshFunction(userId);
     });
   }
 
-  delete = () => window.gapi.client.drive.files.update({
+  delete = (deletePermi) => {
+    const userId = this.props.userId
+    window.gapi.client.drive.files.update({
     fileId: this.props.data.id,
     trashed: true,
+  }).then((response) => {
+    this.refreshFunction(userId);
+    return "success";
+  }, (error) => {
+    console.log(error)
+    if (window.confirm("This item is shared with you, and won't be accessible unless shared with you again. Proceed?")) {
+    deletePermi();
+    }
   })
+}
+
+deletePermission = () => {
+  console.log("dleeet!");
+  window.gapi.client.drive.permissions.list({
+    fileId: this.props.data.id
+  }).then((response) => {
+    console.log(response)
+  });
+
+
+}
+
+
 
   rename = () => {
+    const fileId = this.props.data.id;
+    const userId = this.props.userId
+    const refreshFunction = this.props.refreshFunc
     const newName = prompt('Enter New File Name');
-    return window.gapi.client.drive.files.update({
-      fileId: this.props.data.id,
-      resource: { name: newName },
+     window.gapi.client.drive.files.update({
+      fileId: fileId,
+      resource: { name: newName }}
+    ).then((response) => {
+      refreshFunction(userId);
+    }, (error) => {
+      console.log(error)
+      alert("Can't Rename: User has Invalid Permsission. Either request write access from owner or add owner's account to UniDrive")
     });
   }
 
@@ -41,7 +76,7 @@ class File extends Component {
   render() {
     const {
       userId, data, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
-      loadAuth,
+      loadAuth, refreshFunc
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -49,6 +84,8 @@ class File extends Component {
     const copyFunc = loadAuth(userId, this.copy);
     const deleteFunc = loadAuth(userId, this.delete);
     const renameFunc = loadAuth(userId, this.rename);
+    const deletePermissionFunc = loadAuth(userId, this.deletePermission);
+    const share = loadAuth(userId, shareFile);
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
@@ -95,11 +132,11 @@ class File extends Component {
                   </MenuItem>
                 </SubMenu>
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => renameFunc()}>
+              <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
                 <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
                 Rename
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
+              <MenuItem className="menu-item" onClick={() => share(id, window.prompt('Email Address of sharee: '))}>
                 <FontAwesomeIcon className="menu-icon" icon={faShare} />
                 Share
               </MenuItem>
@@ -112,7 +149,7 @@ class File extends Component {
                 Download
               </MenuItem>
               <hr className="divider" />
-              <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(); } }}>
+              <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(deletePermissionFunc); } }}>
                 <FontAwesomeIcon className="menu-icon" icon={faTrash} />
                 Delete
               </MenuItem>
@@ -142,12 +179,12 @@ class File extends Component {
               <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
               Rename
             </MenuItem>
-            <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
+            <MenuItem className="menu-item" onClick={() => share(id, window.prompt('Email Address of sharee: '))}>
               <FontAwesomeIcon className="menu-icon" icon={faShare} />
               Share
             </MenuItem>
             <hr className="divider" />
-            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
+            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(deletePermissionFunc); } }}>
               <FontAwesomeIcon className="menu-icon" icon={faTrash} />
               Delete
             </MenuItem>

@@ -64,7 +64,9 @@ class User extends Component {
     }));
   }
 
-  shareFile = (fileId, newEmail) => window.gapi.client.drive.permissions.create({
+  shareFile = (fileId, newEmail) => {
+    console.log(fileId)
+    window.gapi.client.drive.permissions.create({
     fileId,
     emailMessage: 'Share Success!',
     sendNotificationEmail: true,
@@ -74,6 +76,8 @@ class User extends Component {
       emailAddress: newEmail,
     },
   })
+
+}
 
   // This is to be used with the decorator func in app
   moveExternal = (fileId, newEmail) => {
@@ -223,6 +227,7 @@ class User extends Component {
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
+          refreshFunc = {refreshFunc}
         />
 
         <OpenFolderList
@@ -238,6 +243,7 @@ class User extends Component {
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
+          refreshFunc = {refreshFunc}
         />
         <LooseFileList
           fileList={fileList}
@@ -250,6 +256,7 @@ class User extends Component {
           isDisplayed={looseFilesIsDisplayed}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
+          refreshFunc = {refreshFunc}
         />
       </ContextMenuTrigger>
     );
