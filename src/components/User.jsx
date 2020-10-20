@@ -75,6 +75,7 @@ class User extends Component {
     },
   })
 
+  // This is to be used with the decorator func in app
   moveExternal = (fileId, newEmail) => {
     window.gapi.client.drive.permissions.create({
       fileId,
@@ -120,7 +121,7 @@ class User extends Component {
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
-      fileUpload, moveWithin, loadAuth,
+      fileUpload, moveWithin, loadAuth, moveExternal,
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -216,48 +217,39 @@ class User extends Component {
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
-          copyFunc={loadAuth(userId, this.copyFile)}
-          deleteFunc={loadAuth(userId, this.deleteFile)}
-          renameFunc={loadAuth(userId, this.renameFile)}
           topLevelFolderList={topLevelFolderList}
           openChildrenFunc={openChildrenFunc}
           shareFile={loadAuth(userId, this.shareFile)}
-          moveExternal={loadAuth(userId, this.moveExternal)}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
+          moveExternal={moveExternal}
         />
 
         <OpenFolderList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
-          copyFunc={loadAuth(userId, this.copyFile)}
-          deleteFunc={loadAuth(userId, this.deleteFile)}
-          renameFunc={loadAuth(userId, this.renameFile)}
           openChildrenFunc={openChildrenFunc}
           filepathTraceFunc={filepathTraceFunc}
           openFolderList={openFolderList}
           buildChildrenArray={buildChildrenArray}
           closeFolderFunc={closeFolderFunc}
           shareFile={loadAuth(userId, this.shareFile)}
-          moveExternal={loadAuth(userId, this.moveExternal)}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
+          moveExternal={moveExternal}
         />
         <LooseFileList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
-          copyFunc={loadAuth(userId, this.copyFile)}
-          deleteFunc={loadAuth(userId, this.deleteFile)}
-          renameFunc={loadAuth(userId, this.renameFile)}
           openChildrenFunc={openChildrenFunc}
           looseFileList={looseFileList}
           shareFile={loadAuth(userId, this.shareFile)}
-          moveExternal={loadAuth(userId, this.moveExternal)}
           moveWithin={moveWithin}
           isDisplayed={looseFilesIsDisplayed}
           loadAuth={loadAuth}
+          moveExternal={moveExternal}
         />
       </ContextMenuTrigger>
     );
@@ -272,9 +264,6 @@ User.propTypes = {
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
   fileUpload: PropTypes.func.isRequired,
-  copyFunc: PropTypes.func.isRequired,
-  deleteFunc: PropTypes.func.isRequired,
-  renameFunc: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
@@ -282,7 +271,6 @@ User.propTypes = {
   filepathTraceFunc: PropTypes.func.isRequired,
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
-  createFunc: PropTypes.func.isRequired,
 };
 
 export default User;

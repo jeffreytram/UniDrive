@@ -6,7 +6,7 @@ import './UserList.css';
 export default function UserList(props) {
   const {
     userList, parseIDToken, removeFunc, refreshFunc, isChildFunc, openChildrenFunc,
-    buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, moveExternal, moveWithin, createFunc,
+    buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, moveExternal, moveWithin,
     loadAuth,
   } = props;
   return (
@@ -31,6 +31,7 @@ export default function UserList(props) {
           closeFolderFunc={closeFolderFunc}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
+          moveExternal={moveExternal}
         />
       ))}
     </div>
@@ -48,5 +49,4 @@ UserList.propTypes = {
   openChildrenFunc: PropTypes.func.isRequired,
   closeFolderFunc: PropTypes.func.isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
-  createFunc: PropTypes.func.isRequired,
 };
