@@ -6,7 +6,7 @@ import './UserList.css';
 export default function UserList(props) {
   const {
     userList, parseIDToken, removeFunc, refreshFunc, isChildFunc, openChildrenFunc,
-    buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, moveExternal, moveWithin,
+    buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, sortFunc, moveExternal, moveWithin,
     loadAuth,
   } = props;
   return (
@@ -29,6 +29,8 @@ export default function UserList(props) {
           openFolderList={user.openFolders}
           buildChildrenArray={buildChildrenArray}
           closeFolderFunc={closeFolderFunc}
+          sortFunc={sortFunc}
+          currentSort={user.sortedBy}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
@@ -49,4 +51,7 @@ UserList.propTypes = {
   openChildrenFunc: PropTypes.func.isRequired,
   closeFolderFunc: PropTypes.func.isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
+  sortFunc: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  loadAuth: PropTypes.func.isRequired,
 };

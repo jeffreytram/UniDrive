@@ -125,6 +125,7 @@ class App extends Component {
           filesWithChildren: [],
           looseFiles: [],
           openFolders: [],
+          sortedBy: 'folder, viewedByMeTime desc',
         }],
       }));
       userId += 1;
@@ -175,6 +176,7 @@ class App extends Component {
    */
 
   getfiles = (index, email) => {
+    const user = this.state.userList[index];
     this.retrieveAllFiles((result) => {
       this.setState((prevState) => {
         const newUserList = prevState.userList;
@@ -196,11 +198,12 @@ class App extends Component {
         for (let i = 0; i < allFilepaths.length; i++) {
           this.filepathTrace(newUserList[index].id, allFilepaths[i][allFilepaths[i].length - 1], allFilepaths[i], true);
         }
+        console.log(this.state);
         return {
           userList: newUserList,
         };
       }, () => { ready = true; });
-    }, email);
+    }, email, user);
   }
 
 /**
@@ -209,9 +212,10 @@ class App extends Component {
  * @param {Function} callback Function to call when the request is complete.
  * @param {String} email email of the user to keep automatically authenticating for each list request
  */
-retrieveAllFiles = (callback, email) => {
+retrieveAllFiles = (callback, email, user) => {
   let res = [];
-  const retrievePageOfFiles = function (email, response) {
+  const { sortedBy } = user;
+  const retrievePageOfFiles = function (email, response, user) {
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -227,7 +231,7 @@ retrieveAllFiles = (callback, email) => {
           window.gapi.client.drive.files.list({
             pageToken: nextPageToken,
             fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId), nextPageToken',
-            orderBy: 'folder',
+            orderBy: sortedBy,
             q: 'trashed = false',
             pageSize: 1000,
             // maxResults : 10,
@@ -235,7 +239,7 @@ retrieveAllFiles = (callback, email) => {
             includeItemsFromAllDrives: 'true',
             supportsAllDrives: 'true',
           }).then((response) => {
-            retrievePageOfFiles(email, response);
+            retrievePageOfFiles(email, response, user);
           });
         } else {
           callback(res);
@@ -260,7 +264,7 @@ retrieveAllFiles = (callback, email) => {
       }
       window.gapi.client.drive.files.list({
         fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId) , nextPageToken',
-        orderBy: 'folder',
+        orderBy: sortedBy,
         q: 'trashed = false',
         pageSize: 1000,
         // maxResults : 10,
@@ -268,10 +272,18 @@ retrieveAllFiles = (callback, email) => {
         includeItemsFromAllDrives: 'true',
         supportsAllDrives: 'true',
       }).then((response) => {
-        retrievePageOfFiles(email, response);
+        retrievePageOfFiles(email, response, user);
       });
     });
   });
+}
+
+changeSortedBy = (userId, newSort) => {
+  const index = this.getAccountIndex(userId);
+  const { userList } = this.state;
+  const { email } = this.parseIDToken(userList[index].idToken);
+  userList[index].sortedBy = newSort;
+  this.updateFiles(index, email);
 }
 
 // finds all of the files in the user's drive which are not held within a folder
@@ -281,12 +293,12 @@ retrieveAllFiles = (callback, email) => {
    * @param {Array} folders all of the folders belonging to the user
    */
 findLooseFiles = (files, folders) => {
-  let looseFiles = [];
+  const looseFiles = [];
   let check = true;
   files = files.filter((file) => file.mimeType !== 'application/vnd.google-apps.folder');
 
   // this gets all loosefiles in the shared drive
-  looseFiles = files.filter((file) => file.parents === undefined);
+  // looseFiles = files.filter((file) => file.parents === undefined);
 
   // loops to check for loosefiles in myDrive, or any other case where parents is defined,
   // but no parent folder actaully exists anywhere in the drive
@@ -301,6 +313,8 @@ findLooseFiles = (files, folders) => {
         looseFiles.push(files[i]);
       }
       check = true;
+    } else {
+      looseFiles.push(files[i]);
     }
   }
   return looseFiles;
@@ -878,6 +892,8 @@ findTopLevelFolders = (fileList) => {
                     openChildrenFunc={this.openChildren}
                     closeFolderFunc={this.closeFolder}
                     buildChildrenArray={this.buildChildrenArray}
+                    createFunc={this.create}
+                    sortFunc={this.changeSortedBy}
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}

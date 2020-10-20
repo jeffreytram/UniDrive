@@ -76,6 +76,17 @@
   display: inline-block;
 }
 
+.sub-menu-sort {
+  display: none;
+}
+
+.menu-item.sort:hover > nav > .sub-menu-sort {
+  display: inline-block;
+}
+
+
+
+
 .file-input {
   display: none;
 }
@@ -107,10 +118,10 @@
   color: var(--red);
 }
 
-.menu-item:hover>.fa-upload, .menu-item:hover>.fa-sync {
+.menu-item:hover>.fa-upload, .menu-item:hover > nav > div > span > .fa-sort {
   color: var(--blue);
 }
 
-.menu-item:hover>nav>div>span>.fa-plus, .menu-item:hover>.fa-eye, .menu-item:hover>.fa-eye-slash {
+.fa-check, .menu-item:hover>nav>div>span>.fa-plus, .menu-item:hover>.fa-eye, .menu-item:hover>.fa-eye-slash, .menu-item:hover>.fa-sync {
   color: var(--green);
 }
