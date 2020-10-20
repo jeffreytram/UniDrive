@@ -85,13 +85,13 @@ class File extends Component {
                     )
                   }
                 >
-                  <MenuItem className="menu-item">
+                  <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, 1)}>
                     Account 1
                   </MenuItem>
-                  <MenuItem className="menu-item">
+                  <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, 2)}>
                     Account 2
                   </MenuItem>
-                  <MenuItem className="menu-item">
+                  <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, 3)}>
                     Account 3
                   </MenuItem>
                 </SubMenu>

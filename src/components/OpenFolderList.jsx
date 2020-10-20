@@ -5,9 +5,9 @@ import './FileList.css';
 
 export default function OpenFolderList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, renameFunc, openChildrenFunc,
-    openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, moveExternal, moveWithin, 
-    shareFile, loadAuth
+    fileList, fileContainerStyles, userId, openChildrenFunc, openFolderList, 
+    buildChildrenArray, filepathTraceFunc, closeFolderFunc, moveExternal, 
+    moveWithin, shareFile, loadAuth
   } = props;
 
   return (
@@ -17,9 +17,6 @@ export default function OpenFolderList(props) {
           fileObj={fileObj}
           userId={userId}
           data={fileObj.file}
-          copyFunc={copyFunc}
-          deleteFunc={deleteFunc}
-          renameFunc={renameFunc}
           childrenList={fileObj.children}
           fileList={fileList}
           displayed

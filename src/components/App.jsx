@@ -737,10 +737,42 @@ findTopLevelFolders = (fileList) => {
    * Gets email for auth from a user Id
    * @param {*} userId 
    */
-  getEmailFromUserId(userId) {
+  getEmailFromUserId = (userId) => {
     let userIndex = this.getAccountIndex(userId);
     let userToken = this.state.userList[userIndex].idToken
     return this.parseIDToken(userToken).email;
+  }
+
+  moveExternal = (userId, fileId, newUserId) => {
+    const email = this.getEmailFromUserId(userId);
+    const newEmail = this.getEmailFromUserId(newUserId);
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        console.log(response);
+        const move_ex = new XMLHttpRequest();
+        move_ex.open('POST', `https://www.googleapis.com/drive/v3/files/${fileId}/permissions?moveToNewOwnersRoot=true&transferOwnership=true`, true);
+        move_ex.setRequestHeader('Authorization', `Bearer ${response.access_token}`);
+        move_ex.setRequestHeader('Accept', 'application/json');
+        move_ex.setRequestHeader('Content-Type', 'application/json');
+        move_ex.onreadystatechange = () => {
+          if (move_ex.readyState === XMLHttpRequest.DONE && move_ex.status === 200) {
+            console.log(move_ex.response);
+          }
+        };
+        move_ex.send(JSON.stringify({
+          type: 'user',
+          role: 'owner',
+          emailAddress: newEmail
+        }));
+      });
+    });
   }
 
   load_authorize = (id, func) => {
@@ -917,6 +949,7 @@ findTopLevelFolders = (fileList) => {
                     closeFolderFunc={this.closeFolder}
                     buildChildrenArray={this.buildChildrenArray}
                     moveWithin={this.moveWithin}
+                    moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}
                   />
                   <div>

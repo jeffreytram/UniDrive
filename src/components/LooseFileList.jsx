@@ -5,8 +5,9 @@ import './FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, renameFunc, openChildrenFunc,
-    looseFileList, moveExternal, shareFile, moveWithin, isDisplayed, loadAuth
+    fileList, fileContainerStyles, userId, openChildrenFunc,
+    looseFileList, moveExternal, shareFile, moveWithin, isDisplayed, 
+    loadAuth
   } = props;
 
   if(isDisplayed) {
@@ -16,9 +17,6 @@ export default function LooseFileList(props) {
         <File
           userId={userId}
           data={file}
-          copyFunc={copyFunc}
-          deleteFunc={deleteFunc}
-          renameFunc={renameFunc}
           childrenList={[]}
           fileList={fileList}
           displayed

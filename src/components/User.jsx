@@ -76,7 +76,7 @@ class User extends Component {
       }
     });
   }
-
+  
   moveExternal = (fileId, newEmail) => {
     window.gapi.client.drive.permissions.create({
       fileId: fileId,
@@ -122,7 +122,7 @@ class User extends Component {
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, 
-      fileUpload, moveWithin, loadAuth
+      fileUpload, moveWithin, loadAuth, moveExternal
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -218,48 +218,39 @@ class User extends Component {
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
-          copyFunc={loadAuth(userId, this.copyFile)}
-          deleteFunc={loadAuth(userId, this.deleteFile)}
-          renameFunc={loadAuth(userId, this.renameFile)}
           topLevelFolderList={topLevelFolderList}
           openChildrenFunc={openChildrenFunc}
           shareFile={loadAuth(userId, this.shareFile)}
-          moveExternal={loadAuth(userId, this.moveExternal)}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
+          moveExternal={moveExternal}
         />
 
         <OpenFolderList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
-          copyFunc={loadAuth(userId, this.copyFile)}
-          deleteFunc={loadAuth(userId, this.deleteFile)}
-          renameFunc={loadAuth(userId, this.renameFile)}
           openChildrenFunc={openChildrenFunc}
           filepathTraceFunc={filepathTraceFunc}
           openFolderList={openFolderList}
           buildChildrenArray={buildChildrenArray}
           closeFolderFunc={closeFolderFunc}
           shareFile={loadAuth(userId, this.shareFile)}
-          moveExternal={loadAuth(userId, this.moveExternal)}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
+          moveExternal={moveExternal}
         />
         <LooseFileList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
           userId={userId}
-          copyFunc={loadAuth(userId, this.copyFile)}
-          deleteFunc={loadAuth(userId, this.deleteFile)}
-          renameFunc={loadAuth(userId, this.renameFile)}
           openChildrenFunc={openChildrenFunc}
           looseFileList={looseFileList}
           shareFile={loadAuth(userId, this.shareFile)}
-          moveExternal={loadAuth(userId, this.moveExternal)}
           moveWithin={moveWithin}
           isDisplayed={looseFilesIsDisplayed}
           loadAuth={loadAuth}
+          moveExternal={moveExternal}
         />
       </ContextMenuTrigger>
     );
