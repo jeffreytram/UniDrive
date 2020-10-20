@@ -100,7 +100,7 @@ class File extends Component {
                 <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
                 Rename
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => shareFile(userId, id, window.prompt("Email Address of sharee: "))}>
+              <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt("Email Address of sharee: "))}>
                 Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc()}>
