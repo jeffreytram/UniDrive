@@ -11,6 +11,7 @@
   height: 40px;
   width: 100%;
   margin: 5px 0px;
+  color: var(--text);
   background-color: var(--main-bg);
   text-align: left;
   z-index: 1;

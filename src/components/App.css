@@ -51,6 +51,7 @@
   width: 50vw;
   margin: auto;
   border-radius: 10px;
+  color: var(--text);
   border: 1px solid var(--subtle2);
   padding: 30px 15px;
   text-align: center;

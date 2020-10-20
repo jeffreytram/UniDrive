@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   width: 15%;
+  color: var(--text);
   background-color: var(--sub-bg);
   position: fixed;
   height: 100%;
