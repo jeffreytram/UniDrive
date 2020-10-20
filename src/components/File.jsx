@@ -95,6 +95,9 @@ class File extends Component {
                   </MenuItem>
                 </SubMenu>
               </MenuItem>
+              <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
+                Move to Root
+              </MenuItem>
               <MenuItem className="menu-item" onClick={() => renameFunc()}>
                 <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
                 Rename

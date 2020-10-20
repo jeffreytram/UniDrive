@@ -641,14 +641,15 @@ findTopLevelFolders = (fileList) => {
 
   /**
    * Moves a file from one folder to another
-   * @param {*} userId
-   * @param {*} file Id of the current folder it is in
+   * @param {*} userId id of the user which owns the files
+   * @param {*} file file being moved
    * @param {*} newParentId Id of the folder to move to
    */
   moveWithin = (userId, file, newParentId) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
     const { email } = this.parseIDToken(userToken);
+    console.log(file);
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -662,8 +663,9 @@ findTopLevelFolders = (fileList) => {
           console.log(response.error);
           console.log('authorization error');
         }
+        console.log(response);
         const preParents = file.parents.join(',');
-        window.gapi.client.drive.file.update({
+        window.gapi.client.drive.files.update({
           fileId: file.id,
           addParents: newParentId,
           removeParents: preParents,
@@ -672,6 +674,7 @@ findTopLevelFolders = (fileList) => {
           if (response.error) {
             console.log(response.error);
           }
+          console.log(response);
         });
       });
     });
