@@ -863,7 +863,10 @@ findTopLevelFolders = (fileList) => {
     return (
       <div className="App">
         <Header />
-        <Sidebar />
+        <Sidebar
+          userList={userList}
+          parseIDToken={this.parseIDToken}
+        />
         <div className="main-container">
           <div className="main-content">
             {addedAccount

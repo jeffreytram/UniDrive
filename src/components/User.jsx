@@ -137,7 +137,7 @@ class User extends Component {
           onClick={() => this.viewToggle()}
           onKeyDown={() => this.viewToggle()}
         >
-          <img className="profile-picture" src={picture} alt="UniDrive logo" />
+          <img className="profile-picture" src={picture} alt="Account profile" />
           <span className="profile-text">
             <span className="profile-name">{name}</span>
             {' '}
