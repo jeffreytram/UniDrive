@@ -1,8 +1,8 @@
 .header-container {
-    height: 45px;
+    height: var(--header-margin);
     width: 100%;
-    background-color: white;
-    border-bottom: 2px solid gray;
+    background-color: var(--main-bg);
+    border-bottom: 2px solid var(--subtle2);
     position: fixed;
     z-index: 2;
 }
