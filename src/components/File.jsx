@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faFolderOpen, faArrowRight, faPencilAlt, faShare, faCopy, faFileDownload, faTrash,
+  faFolderOpen, faArrowRight, faPencilAlt, faShare, faCopy, faFileDownload, faTrash, faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -36,6 +36,11 @@ class File extends Component {
     });
   }
 
+  star = () => window.gapi.client.drive.files.update({
+    fileId: this.props.data.id,
+    starred: true,
+  })
+
   /* Props contains: Name, Link, Image */
   // export default function File(props) {
   render() {
@@ -49,6 +54,12 @@ class File extends Component {
     const copyFunc = loadAuth(userId, this.copy);
     const deleteFunc = loadAuth(userId, this.delete);
     const renameFunc = loadAuth(userId, this.rename);
+    const starFunc = loadAuth(userId, this.star);
+    // if (isLoggedIn) {
+    //   button = <LogoutButton onClick={this.handleLogoutClick} />;
+    // } else {
+    //   button = <LoginButton onClick={this.handleLoginClick} />;
+    // }
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
@@ -106,6 +117,10 @@ class File extends Component {
               <MenuItem className="menu-item" onClick={() => copyFunc()}>
                 <FontAwesomeIcon className="menu-icon" icon={faCopy} />
                 Make a copy
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => starFunc()}>
+                <FontAwesomeIcon className="menu-icon" icon={faStar} />
+                Star
               </MenuItem>
               <MenuItem className="menu-item">
                 <FontAwesomeIcon className="menu-icon" icon={faFileDownload} />
