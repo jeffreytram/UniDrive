@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faFolderOpen, faArrowRight, faPencilAlt, faCopy, faFileDownload, faTrash,
+  faFolderOpen, faArrowRight, faPencilAlt, faShare, faCopy, faFileDownload, faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -100,6 +100,7 @@ class File extends Component {
                 Rename
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
+                <FontAwesomeIcon className="menu-icon" icon={faShare} />
                 Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc()}>
@@ -141,6 +142,11 @@ class File extends Component {
               <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
               Rename
             </MenuItem>
+            <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
+              <FontAwesomeIcon className="menu-icon" icon={faShare} />
+              Share
+            </MenuItem>
+            <hr className="divider" />
             <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
               <FontAwesomeIcon className="menu-icon" icon={faTrash} />
               Delete
