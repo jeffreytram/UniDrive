@@ -3,34 +3,59 @@
   height: 20px;
 }
 
-.button {
+.main-button {
   border-radius: 3px;
   padding: 5px 10px;
   height: 30px;
   font-weight: bold;
-  color: white;
+  color: var(--main-bg);
 }
 
-.button:hover {
+.main-button:hover {
   cursor: pointer;
 }
 
-.refresh {
-  border: 2px solid #4285F4;
-  background-color: #4285F4;
+.main-button:hover {
+  background-color: var(--main-bg);
+  color: var(--text);
 }
 
-.refresh:hover {
-  background-color: white;
-  color:black;
+.refresh {
+  border: 2px solid var(--blue);
+  background-color: var(--blue);
 }
 
 .add {
-  border: 2px solid #0F9D58;
-  background-color: #0F9D58;
+  border: 2px solid var(--green);
+  background-color: var(--green);
+  margin-right: 5px;
 }
 
-.add:hover {
-  background-color: white;
-  color:black;
+
+.main-container {
+  width: 85%;
+  float: right;
+  margin-top: var(--header-margin);
+}
+
+.main-content {
+  margin: 10px;
+}
+
+.sync-message {
+  font-style: italic;
+  color: var(--subtle2);
+}
+
+.getting-started-container {
+  width: 50vw;
+  margin: auto;
+  border-radius: 10px;
+  color: var(--text);
+  border: 1px solid var(--subtle2);
+  padding: 30px 15px;
+  text-align: center;
+  -webkit-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
 }

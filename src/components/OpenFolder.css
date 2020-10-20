@@ -1,14 +1,13 @@
-.file-path-container{
-    
-    width: 100%;
-    margin: 15px 0px;
-   
-  }
+.open-folder {
+  margin: 20px 10px;
+}
 
-  .current-folder {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    width: 100vw;
-    margin: 10px 10px;
-  }
+.file-path-container {
+  width: 100%;
+}
+
+.current-folder {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}

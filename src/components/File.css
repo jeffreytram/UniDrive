@@ -7,8 +7,14 @@
   justify-content: center;
   align-content: center;
   flex-direction: column;
-  border: 1px solid #cccccc;
+  color: var(--text);
+  border: 1px solid var(--subtle1);
   border-radius: 5px;
+}
+
+.file-container:hover {
+  cursor: pointer;
+  border-color: var(--blue);
 }
 
 .file-img {
@@ -30,10 +36,6 @@
   /* Not doing its thing */
 }
 
-a {
-  color: black;
-}
-
 a:link {
   text-decoration: none;
 }
@@ -46,15 +48,46 @@ a:hover {
   text-decoration: underline;
 }
 
-.copy-btn {
-  background-color: #f7f7f7;
-  border: 1px solid lightgray;
-  border-radius: 5px;
+.context-menu {
+  background-color: var(--main-bg);
+  border-radius: .25rem;
+  -webkit-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
+  -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
+  box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
+  color: var(--text);
+  font-size: 16px;
+  min-width: 160px;
+  text-align: left;
+  transition: opacity 250ms ease;
+  z-index: 2;
 }
 
-.copy-btn:hover {
+.divider {
+  outline: 1px solid var(--subtle1);
+  margin: 2px 10px;
+  border: none;
+}
+
+.menu-item {
+  padding: 5px 5px;
+  border: 1px solid var(--main-bg);
+}
+
+.menu-item:hover {
+  background-color: var(--main-bg);
   cursor: pointer;
-  border-color: #303030;
-  background-color: #303030;
-  color: white;
+  border: 1px solid var(--text);
+}
+
+.menu-icon {
+  margin: 0px 10px;
+  color: var(--subtle2);
+}
+
+.sub-menu-move-to {
+  display: none;
+}
+
+.menu-item.move-to:hover>nav>.sub-menu-move-to {
+  display: inline-block;
 }
