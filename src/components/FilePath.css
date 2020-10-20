@@ -1,17 +1,20 @@
 .btn {
-    border: none;
-    background-color: inherit;
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    display: inline-block;
-  }
-  
-  /* On mouse-over */
-  .btn:hover {background: #eee;}
-  
-  .success {color: green;}
-  .info {color: dodgerblue;}
-  .warning {color: orange;}
-  .danger {color: red;}
-  .default {color: black;}
+  border: none;
+  background-color: inherit;
+  padding: 5px 5px;
+  margin: 10px 5px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* On mouse-over */
+
+.btn:hover {
+  outline: 1px solid var(--text);
+  background: var(--main-bg);
+}
+
+.info {
+  color: var(--blue);
+}

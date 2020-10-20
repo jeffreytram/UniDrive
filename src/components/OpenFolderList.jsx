@@ -5,8 +5,8 @@ import './FileList.css';
 
 export default function OpenFolderList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, renameFunc, openChildrenFunc,
-    openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
+    fileList, fileContainerStyles, userId, openChildrenFunc, openFolderList, buildChildrenArray, filepathTraceFunc,
+    closeFolderFunc, moveExternal, moveWithin, shareFile, loadAuth,
   } = props;
 
   return (
@@ -16,9 +16,6 @@ export default function OpenFolderList(props) {
           fileObj={fileObj}
           userId={userId}
           data={fileObj.file}
-          copyFunc={copyFunc}
-          deleteFunc={deleteFunc}
-          renameFunc={renameFunc}
           childrenList={fileObj.children}
           fileList={fileList}
           displayed
@@ -27,7 +24,10 @@ export default function OpenFolderList(props) {
           filePath={fileObj.filepath}
           buildChildrenArray={buildChildrenArray}
           closeFolderFunc={closeFolderFunc}
-
+          shareFile={shareFile}
+          moveExternal={moveExternal}
+          moveWithin={moveWithin}
+          loadAuth={loadAuth}
         />
       ))}
     </div>
@@ -38,9 +38,6 @@ OpenFolderList.propTypes = {
   fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
   userId: PropTypes.number.isRequired,
-  copyFunc: PropTypes.func.isRequired,
-  deleteFunc: PropTypes.func.isRequired,
-  renameFunc: PropTypes.func.isRequired,
   filepathTraceFunc: PropTypes.func.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   closeFolderFunc: PropTypes.func.isRequired,

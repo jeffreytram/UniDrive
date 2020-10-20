@@ -5,20 +5,21 @@
 
 .user-banner {
   border-radius: 5px;
-  border: 2px solid #929292;
+  border: 2px solid var(--subtle2);
   position: sticky;
-  top: 50px;
+  top: calc(var(--header-margin) + 5px);
   height: 40px;
   width: 100%;
   margin: 5px 0px;
-  background-color: white;
+  color: var(--text);
+  background-color: var(--main-bg);
   text-align: left;
   z-index: 1;
 }
 
 .user-banner:hover {
   cursor: pointer;
-  border-color: #4285F4;
+  border-color: var(--blue);
 }
 
 .profile-picture {
@@ -33,7 +34,7 @@
 
 .profile-email {
   font-style: italic;
-  color: gray;
+  color: var(--subtle2);
 }
 
 .react-contextmenu-wrapper {
@@ -43,35 +44,35 @@
 .context-menu {
   float: right;
   margin: 0px 6px;
-  background-color: #ffffff;
+  background-color: var(--main-bg);
   border-radius: .25rem;
   -webkit-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
   -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
   box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, .2);
-  color: #303030;
+  color: var(--text);
   font-size: 16px;
   min-width: 190px;
   text-align: left;
-  transition: opacity 250ms ease;
+  transition: opacity 200ms ease;
   z-index: 2;
 }
 
 .menu-item {
   padding: 5px 5px;
-  border: 1px solid #ffffff;
+  border: 1px solid var(--main-bg);
 }
 
 .menu-item:hover {
-  background-color: #f0f0f0;
+  background-color: var(--sub-bg);
   cursor: pointer;
-  border: 1px solid black;
+  border: 1px solid var(--text);
 }
 
 .sub-menu-upload {
   display: none;
 }
 
-.menu-item.upload:hover > nav > .sub-menu-upload {
+.menu-item.upload:hover>nav>.sub-menu-upload {
   display: inline-block;
 }
 
@@ -91,7 +92,7 @@
 }
 
 .divider {
-  outline: 1px solid lightgray;
+  outline: 1px solid var(--subtle1);
   margin: 2px 10px;
   border: none;
 }
@@ -100,7 +101,7 @@
 
 .menu-icon {
   margin: 0px 10px;
-  color: gray;
+  color: var(--subtle2);
 }
 
 .fa-ellipsis {
@@ -109,32 +110,18 @@
 }
 
 .fa-ellipsis:hover {
-  outline: 1px solid #4285F4;
-  color: black;
+  outline: 1px solid var(--blue);
+  color: var(--text);
 }
 
-.menu-item:hover > .fa-trash {
-  color: #DB4437;
+.menu-item:hover>.fa-trash {
+  color: var(--red);
 }
 
-.fa-check {
-  color: #008000;
+.menu-item:hover>.fa-upload, .menu-item:hover > nav > div > span > .fa-sort {
+  color: var(--blue);
 }
 
-.menu-item:hover > .fa-sync {
-  color: #4285F4;
-}
-
-.menu-item:hover > .fa-eye, .menu-item:hover > .fa-eye-slash {
-  color: #F633FF;
-}
-
-.menu-item:hover > .fa-upload, .menu-item:hover > nav > div > span > .fa-plus {
-  color: #0F9D58;
-  cursor: pointer
-}
-
- .menu-item:hover > nav > div > span > .fa-sort {
-  color:  #ffa500 ;;
-  cursor: pointer
+.fa-check, .menu-item:hover>nav>div>span>.fa-plus, .menu-item:hover>.fa-eye, .menu-item:hover>.fa-eye-slash, .menu-item:hover>.fa-sync {
+  color: var(--green);
 }

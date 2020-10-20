@@ -5,14 +5,14 @@ import './UserList.css';
 
 export default function UserList(props) {
   const {
-    userList, parseIDToken, removeFunc, refreshFunc, copyFunc, deleteFunc, renameFunc, isChildFunc, openChildrenFunc,
-    buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, createFunc, sortFunc
+    userList, parseIDToken, removeFunc, refreshFunc, isChildFunc, openChildrenFunc,
+    buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, sortFunc, moveExternal, moveWithin,
+    loadAuth,
   } = props;
   return (
     <div className="user-list">
       {userList.map((user) => (
         <User
-          infoData={user.idToken}
           parseIDToken={parseIDToken}
           fileList={user.filesWithChildren}
           userId={user.id}
@@ -20,9 +20,6 @@ export default function UserList(props) {
           removeFunc={removeFunc}
           refreshFunc={refreshFunc}
           fileUpload={fileUpload}
-          copyFunc={copyFunc}
-          deleteFunc={deleteFunc}
-          renameFunc={renameFunc}
           isChildFunc={isChildFunc}
           topLevelFolderList={user.topLevelFolders}
           looseFileList={user.looseFiles}
@@ -32,9 +29,11 @@ export default function UserList(props) {
           openFolderList={user.openFolders}
           buildChildrenArray={buildChildrenArray}
           closeFolderFunc={closeFolderFunc}
-          createFunc={createFunc}
-          sortFunc = {sortFunc}
-          currentSort = {user.sortedBy}
+          sortFunc={sortFunc}
+          currentSort={user.sortedBy}
+          moveWithin={moveWithin}
+          loadAuth={loadAuth}
+          moveExternal={moveExternal}
         />
       ))}
     </div>
@@ -47,13 +46,12 @@ UserList.propTypes = {
   removeFunc: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
   fileUpload: PropTypes.func.isRequired,
-  copyFunc: PropTypes.func.isRequired,
-  deleteFunc: PropTypes.func.isRequired,
-  renameFunc: PropTypes.func.isRequired,
   filepathTraceFunc: PropTypes.func.isRequired,
   isChildFunc: PropTypes.func.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,
   closeFolderFunc: PropTypes.func.isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
-  createFunc: PropTypes.func.isRequired,
+  sortFunc: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  loadAuth: PropTypes.func.isRequired,
 };
