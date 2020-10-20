@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import UserList from './UserList';
+import RequestProgressElement from './RequestProgressElement';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { config } from '../config';
@@ -18,6 +19,7 @@ class App extends Component {
     super();
     this.state = {
       userList: [],
+      uploadRequests: [],
       lastRefreshTime: Date().substring(0, 21),
     };
   }
@@ -74,13 +76,13 @@ class App extends Component {
     // ready = false;
     const userInfo = this.parseIDToken(idToken);
     const { email } = userInfo;
-    let isDup = this.addUser(accessToken, idToken, code);
+    const isDup = this.addUser(accessToken, idToken, code);
     if (isDup) {
       return;
     }
     const { userList } = this.state;
     const newUserIndex = userList.length - 1;
-    this.updateFiles(newUserIndex, accessToken, idToken, email);
+    this.updateFiles(newUserIndex, email);
   }
 
   /**
@@ -110,7 +112,7 @@ class App extends Component {
   addUser = (accessToken, idToken, code) => {
     const { email } = this.parseIDToken(idToken);
     const { userList } = this.state;
-    let isDup = this.isDuplicateUser(email, userList)
+    const isDup = this.isDuplicateUser(email, userList);
     if (!isDup) {
       this.setState((prevState) => ({
         userList: [...prevState.userList, {
@@ -146,7 +148,7 @@ class App extends Component {
    * @param {Number} index index of the user in the userList to update
    * @param {Object} files the file object to store
    */
-  updateFiles = (index, accessToken, idToken, email) => {
+  updateFiles = (index, email) => {
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -256,7 +258,6 @@ retrieveAllFiles = (callback, email) => {
         console.log('authorization error');
         return;
       }
-
       window.gapi.client.drive.files.list({
         fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId) , nextPageToken',
         orderBy: 'folder',
@@ -625,17 +626,15 @@ findTopLevelFolders = (fileList) => {
   }
 
   /**
-   * Makes a copy of the given file in the user's drive
-   * @param {Number} userId the id of the user
-   * @param {String} fileId the id of the file
+   * Moves a file from one folder to another
+   * @param {*} userId
+   * @param {*} file Id of the current folder it is in
+   * @param {*} newParentId Id of the folder to move to
    */
-  copyFile = (userId, fileId) => {
-    const index = this.getAccountIndex(userId);
-    const { userList } = this.state;
-
-    const { idToken } = userList[index];
-    const { email } = this.parseIDToken(idToken);
-
+  moveWithin = (userId, file, newParentId) => {
+    const userIndex = this.getAccountIndex(userId);
+    const userToken = this.state.userList[userIndex].idToken;
+    const { email } = this.parseIDToken(userToken);
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -649,27 +648,34 @@ findTopLevelFolders = (fileList) => {
           console.log(response.error);
           console.log('authorization error');
         }
-        window.gapi.client.drive.files.copy({
-          fileId,
+        const preParents = file.parents.join(',');
+        window.gapi.client.drive.file.update({
+          fileId: file.id,
+          addParents: newParentId,
+          removeParents: preParents,
+          fields: 'id, parents',
         }).then((response) => {
-          this.refreshFunction(userList[index].id);
+          if (response.error) {
+            console.log(response.error);
+          }
         });
       });
     });
   }
 
   /**
-   * Delete files from UniDrive and Google Drive and refreshes
+   * Gets email for auth from a user Id
    * @param {*} userId
-   * @param {*} fileId
    */
-  deleteFile = (userId, fileId) => {
-    const index = this.getAccountIndex(userId);
-    const { userList } = this.state;
+  getEmailFromUserId(userId) {
+    const userIndex = this.getAccountIndex(userId);
+    const userToken = this.state.userList[userIndex].idToken;
+    return this.parseIDToken(userToken).email;
+  }
 
-    const { accessToken, idToken } = userList[index];
-    const { email } = this.parseIDToken(idToken);
-    // boiler plate for accessing the API
+  moveExternal = (userId, fileId, newUserId) => {
+    const email = this.getEmailFromUserId(userId);
+    const newEmail = this.getEmailFromUserId(newUserId);
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -679,64 +685,48 @@ findTopLevelFolders = (fileList) => {
         login_hint: email,
         discoveryDocs: [discoveryUrl],
       }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-        }
-        // the actual trashing
-        // note that files are trashed and not deleted and can be recovered
-      window.gapi.client.drive.files.update({
-        "fileId" : fileId,
-        "trashed" :  true
-      }).then((response) => {
-        this.refreshFunction(userList[index].id);
-      });
+        console.log(response);
+        const move_ex = new XMLHttpRequest();
+        move_ex.open('POST', `https://www.googleapis.com/drive/v3/files/${fileId}/permissions?moveToNewOwnersRoot=true&transferOwnership=true`, true);
+        move_ex.setRequestHeader('Authorization', `Bearer ${response.access_token}`);
+        move_ex.setRequestHeader('Accept', 'application/json');
+        move_ex.setRequestHeader('Content-Type', 'application/json');
+        move_ex.onreadystatechange = () => {
+          if (move_ex.readyState === XMLHttpRequest.DONE && move_ex.status === 200) {
+            console.log(move_ex.response);
+          }
+        };
+        move_ex.send(JSON.stringify({
+          type: 'user',
+          role: 'owner',
+          emailAddress: newEmail,
+        }));
       });
     });
   }
 
-  /**
-   * Renames a file in google drive
-   * @param {*} userId
-   * @param {*} fileId
-   */
-   renameFile = (userId, fileId) => {
-     const index = this.getAccountIndex(userId);
-     const { userList } = this.state;
-
-     const { accessToken, idToken } = userList[index];
-     const { email } = this.parseIDToken(idToken);
-     // boiler plate for accessing the API
-     window.gapi.client.load('drive', 'v3').then(() => {
-       window.gapi.auth2.authorize({
-         apiKey: API_KEY,
-         clientId: CLIENT_ID,
-         scope: SCOPE,
-         prompt: 'none',
-         login_hint: email,
-         discoveryDocs: [discoveryUrl],
-       }, (response) => {
-         if (response.error) {
-           console.log(response.error);
-           console.log('authorization error');
-         }
-
-         var newName = prompt('Enter New File Name')
-        
-        
-         window.gapi.client.drive.files.update({
-           fileId: fileId,
-           resource: { name: newName }}
-         ).then((response) => {
-           this.refreshFunction(userList[index].id);
-         }, (error) => {
-           console.log(error)
-           alert("Can't Rename: User has Invalid Permsission")
-         });
-       
-       });
-     });
-   }
+  load_authorize = (id, func) => {
+    const email = this.getEmailFromUserId(id);
+    return (...args) => {
+      window.gapi.client.load('drive', 'v3').then(() => {
+        window.gapi.auth2.authorize({
+          apiKey: API_KEY,
+          clientId: CLIENT_ID,
+          scope: SCOPE,
+          prompt: 'none',
+          login_hint: email,
+          discoveryDocs: [discoveryUrl],
+        }, (response) => {
+          if (response.error) {
+            console.log(response.error);
+          }
+          func.call(this, ...args).then(() => {
+            this.refreshFunction(id);
+          });
+        });
+      });
+    };
+  }
 
   /**
    * Refreshes all the files being displayed within an account
@@ -748,14 +738,10 @@ findTopLevelFolders = (fileList) => {
   refreshFunction = (id) => {
     // ready = false;
     const index = this.getAccountIndex(id);
-
     const { userList } = this.state;
-
-    const { idToken } = userList[index];
-    const { accessToken } = userList[index];
     const userInfo = this.parseIDToken(userList[index].idToken);
     const { email } = userInfo;
-    this.updateFiles(index, accessToken, idToken, email);
+    this.updateFiles(index, email);
   }
 
   getAccountIndex = (id) => {
@@ -774,11 +760,9 @@ findTopLevelFolders = (fileList) => {
   refreshAllFunction = () => {
     const { userList } = this.state;
     for (let i = 0; i < userList.length; i++) {
-      const { idToken } = userList[i];
-      const { accessToken } = userList[i];
       const userInfo = this.parseIDToken(userList[i].idToken);
       const { email } = userInfo;
-      this.updateFiles(i, accessToken, idToken, email);
+      this.updateFiles(i, email);
     }
     const currentTimeDate = Date().substring(0, 21);
     this.setState((prevState) => ({
@@ -787,13 +771,21 @@ findTopLevelFolders = (fileList) => {
   }
 
   /**
+   * Clears requests
+   */
+  clearRequests = () => {
+    this.setState({
+      uploadRequests: [],
+    });
+  }
+
+  /**
    * Uploads a file specified
    * @param {*} email User info for getting account
    * @param {*} fileUpl File to be uploaded
    */
-  fileUpload = (idToken, fileUpl) => {
-    const parsedInfo = this.parseIDToken(idToken);
-    const { email } = parsedInfo;
+  fileUpload = (idToken, file) => {
+    const { email } = this.parseIDToken(idToken);
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -807,8 +799,6 @@ findTopLevelFolders = (fileList) => {
           console.log(response.error);
           console.log('Auth error.');
         }
-        const file = fileUpl;
-        // new File(['Hello, world!'], 'hello world.txt', { type: 'text/plain;charset=utf-8' });
         const contentType = file.type || 'application/octet-stream';
         const resumable = new XMLHttpRequest();
         resumable.open('POST', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', true);
@@ -835,6 +825,13 @@ findTopLevelFolders = (fileList) => {
             reader.readAsArrayBuffer(file);
           }
         };
+        // Add resumable
+        this.setState((prevState) => ({
+          uploadRequests: [...prevState.uploadRequests, {
+            request: resumable,
+            name: file.name,
+          }],
+        }));
         resumable.send(JSON.stringify({
           name: file.name,
           mimeType: contentType,
@@ -845,58 +842,9 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
-
- /**
-   *Creates a new, empty file of the type chosen
-   * @param {*} id User id for getting account
-   * @param {*} fileType the mimeType of the file being created
-   * @param {*} name the default name of the file being created
-   */
-create = (id, fileType) => {
-  const index = this.getAccountIndex(id);
-  const { userList } = this.state;
-  const userInfo = this.parseIDToken(userList[index].idToken);
-  const { email } = userInfo;
-  // boiler plate for accessing the API
-  window.gapi.client.load('drive', 'v3').then(() => {
-    window.gapi.auth2.authorize({
-      apiKey: API_KEY,
-      clientId: CLIENT_ID,
-      scope: SCOPE,
-      prompt: 'none',
-      login_hint: email,
-      discoveryDocs: [discoveryUrl],
-    }, (response) => {
-      if (response.error) {
-        console.log(response.error);
-        console.log('authorization error');
-      }
-      
-     
-      var newName = prompt('Enter a Name')
-      if (newName === null) 
-      {return};
-      if (newName === "") {
-        newName = null
-      }
-      let reqBody = JSON.stringify({
-        "mimeType" : fileType,
-        'name' : newName
-      })
-      
-      window.gapi.client.drive.files.create({
-          resource: reqBody,
-      }).then((response) => {
-        this.refreshFunction(id)
-      })
-  })
-  })
-}
-
-
   render() {
     // #const { userList } = this.state;
-    const { userList, lastRefreshTime } = this.state;
+    const { userList, uploadRequests } = this.state;
     const addedAccount = userList.length > 0;
     return (
       <div className="App">
@@ -925,16 +873,23 @@ create = (id, fileType) => {
                     removeFunc={this.signOutFunction}
                     refreshFunc={this.refreshFunction}
                     fileUpload={this.fileUpload}
-                    copyFunc={this.copyFile}
-                    deleteFunc={this.deleteFile}
-                    renameFunc={this.renameFile}
                     filepathTraceFunc={this.filepathTrace}
                     isChildFunc={this.checkIfChild}
                     openChildrenFunc={this.openChildren}
                     closeFolderFunc={this.closeFolder}
                     buildChildrenArray={this.buildChildrenArray}
-                    createFunc = {this.create}
+                    moveWithin={this.moveWithin}
+                    moveExternal={this.moveExternal}
+                    loadAuth={this.load_authorize}
                   />
+                  <div>
+                    <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
+                    {uploadRequests.map((requested) => (
+                      <RequestProgressElement
+                        requested={requested}
+                      />
+                    ))}
+                  </div>
                 </div>
               )
               : (
