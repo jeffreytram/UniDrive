@@ -76,7 +76,7 @@ class App extends Component {
     // ready = false;
     const userInfo = this.parseIDToken(idToken);
     const { email } = userInfo;
-    let isDup = this.addUser(accessToken, idToken, code);
+    const isDup = this.addUser(accessToken, idToken, code);
     if (isDup) {
       return;
     }
@@ -112,7 +112,7 @@ class App extends Component {
   addUser = (accessToken, idToken, code) => {
     const { email } = this.parseIDToken(idToken);
     const { userList } = this.state;
-    let isDup = this.isDuplicateUser(email, userList)
+    const isDup = this.isDuplicateUser(email, userList);
     if (!isDup) {
       this.setState((prevState) => ({
         userList: [...prevState.userList, {
@@ -626,76 +626,6 @@ findTopLevelFolders = (fileList) => {
   }
 
   /**
-   * Makes a copy of the given file in the user's drive
-   * @param {Number} userId the id of the user
-   * @param {String} fileId the id of the file
-   */
-  copyFile = (userId, fileId) => {
-    const index = this.getAccountIndex(userId);
-    const { userList } = this.state;
-
-    const { idToken } = userList[index];
-    const { email } = this.parseIDToken(idToken);
-
-    window.gapi.client.load('drive', 'v3').then(() => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        prompt: 'none',
-        login_hint: email,
-        discoveryDocs: [discoveryUrl],
-      }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-        }
-        window.gapi.client.drive.files.copy({
-          fileId,
-        }).then((response) => {
-          this.refreshFunction(userList[index].id);
-        });
-      });
-    });
-  }
-
-  /**
-   * Delete files from UniDrive and Google Drive and refreshes
-   * @param {*} userId
-   * @param {*} fileId
-   */
-  deleteFile = (userId, fileId) => {
-    const index = this.getAccountIndex(userId);
-    const { userList } = this.state;
-
-    const { idToken } = userList[index];
-    const { email } = this.parseIDToken(idToken);
-    // boiler plate for accessing the API
-    window.gapi.client.load('drive', 'v3').then(() => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        prompt: 'none',
-        login_hint: email,
-        discoveryDocs: [discoveryUrl],
-      }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-        }
-        // the actual trashing
-        // note that files are trashed and not deleted and can be recovered
-      window.gapi.client.drive.files.update({
-        "fileId" : fileId,
-        "trashed" :  true
-      }).then((response) => {
-        this.refreshFunction(userList[index].id);
-      });
-      });
-    });
-  }
-  /**
    * Moves a file from one folder to another
    * @param {*} userId
    * @param {*} file Id of the current folder it is in
@@ -703,10 +633,10 @@ findTopLevelFolders = (fileList) => {
    */
   moveWithin = (userId, file, newParentId) => {
     const userIndex = this.getAccountIndex(userId);
-    const userToken = this.state.userList[userIndex].idToken
-    const email = this.parseIDToken(userToken).email;
+    const userToken = this.state.userList[userIndex].idToken;
+    const { email } = this.parseIDToken(userToken);
     window.gapi.client.load('drive', 'v3').then(() => {
-      window.gapi.auth2.authorize({          
+      window.gapi.auth2.authorize({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
         scope: SCOPE,
@@ -719,11 +649,11 @@ findTopLevelFolders = (fileList) => {
           console.log('authorization error');
         }
         const preParents = file.parents.join(',');
-        gapi.client.drive.file.update({
+        window.gapi.client.drive.file.update({
           fileId: file.id,
           addParents: newParentId,
           removeParents: preParents,
-          fields: 'id, parents'
+          fields: 'id, parents',
         }).then((response) => {
           if (response.error) {
             console.log(response.error);
@@ -735,11 +665,11 @@ findTopLevelFolders = (fileList) => {
 
   /**
    * Gets email for auth from a user Id
-   * @param {*} userId 
+   * @param {*} userId
    */
   getEmailFromUserId(userId) {
-    let userIndex = this.getAccountIndex(userId);
-    let userToken = this.state.userList[userIndex].idToken
+    const userIndex = this.getAccountIndex(userId);
+    const userToken = this.state.userList[userIndex].idToken;
     return this.parseIDToken(userToken).email;
   }
 
@@ -813,7 +743,7 @@ findTopLevelFolders = (fileList) => {
    */
   clearRequests = () => {
     this.setState({
-      uploadRequests: []
+      uploadRequests: [],
     });
   }
 
@@ -823,7 +753,7 @@ findTopLevelFolders = (fileList) => {
    * @param {*} fileUpl File to be uploaded
    */
   fileUpload = (idToken, file) => {
-    const email = this.parseIDToken(idToken).email;
+    const { email } = this.parseIDToken(idToken);
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -863,12 +793,12 @@ findTopLevelFolders = (fileList) => {
             reader.readAsArrayBuffer(file);
           }
         };
-        //Add resumable
+        // Add resumable
         this.setState((prevState) => ({
           uploadRequests: [...prevState.uploadRequests, {
-            request: resumable, 
+            request: resumable,
             name: file.name,
-          }]
+          }],
         }));
         resumable.send(JSON.stringify({
           name: file.name,

@@ -23,26 +23,25 @@ class File extends Component {
     });
   }
 
-  delete = () => {
+  delete = () => window.gapi.client.drive.files.update({
+    fileId: this.props.data.id,
+    trashed: true,
+  })
+
+  rename = () => {
+    const newName = prompt('Enter New File Name');
     return window.gapi.client.drive.files.update({
-      "fileId" : this.props.data.id,
-      "trashed" :  true
+      fileId: this.props.data.id,
+      resource: { name: newName },
     });
   }
 
-  rename = () => {
-    const newName = prompt('Enter New File Name')
-    return window.gapi.client.drive.files.update({
-      fileId: this.props.data.id,
-      resource: { name: newName }
-    });
-  }
   /* Props contains: Name, Link, Image */
   // export default function File(props) {
   render() {
     const {
       userId, data, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
-      loadAuth
+      loadAuth,
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -100,7 +99,7 @@ class File extends Component {
                 <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
                 Rename
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => shareFile(userId, id, window.prompt("Email Address of sharee: "))}>
+              <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
                 Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc()}>
@@ -156,9 +155,6 @@ class File extends Component {
 File.propTypes = {
   userId: PropTypes.number.isRequired,
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
-  copyFunc: PropTypes.func.isRequired,
-  deleteFunc: PropTypes.func.isRequired,
-  renameFunc: PropTypes.func.isRequired,
   fId: PropTypes.number.isRequired,
   displayed: PropTypes.bool.isRequired,
   openChildrenFunc: PropTypes.func.isRequired,

@@ -64,52 +64,50 @@ class User extends Component {
     }));
   }
 
-  shareFile = (fileId, newEmail) => {
-    return window.gapi.client.drive.permissions.create({
-      fileId: fileId,
-      emailMessage: 'Share Success!',
-      sendNotificationEmail: true,
-      resource: {
-        type: 'user',
-        role: 'writer',
-        emailAddress: newEmail
-      }
-    });
-  }
+  shareFile = (fileId, newEmail) => window.gapi.client.drive.permissions.create({
+    fileId,
+    emailMessage: 'Share Success!',
+    sendNotificationEmail: true,
+    resource: {
+      type: 'user',
+      role: 'writer',
+      emailAddress: newEmail,
+    },
+  })
 
   moveExternal = (fileId, newEmail) => {
     window.gapi.client.drive.permissions.create({
-      fileId: fileId,
+      fileId,
       resource: {
         type: 'user',
         role: 'writer',
-        emailAddress: newEmail
-      }
+        emailAddress: newEmail,
+      },
     }).then((response) => {
-      if(response.error) {
+      if (response.error) {
         console.log(response.error);
       }
       console.log(response);
       return window.gapi.client.drive.permissions.update({
-        fileId: fileId,
+        fileId,
         permissionId: response.result.id,
         transferOwnership: true,
         resource: {
-          role: 'owner'
-        }
+          role: 'owner',
+        },
       });
     });
   }
 
   create = (fileType) => {
-    let newName = prompt('Enter a Name')
-    if (newName === null) {return};
-    if (newName === "") {
-      newName = null
+    let newName = prompt('Enter a Name');
+    if (newName === null) { return; }
+    if (newName === '') {
+      newName = null;
     }
-    let reqBody = JSON.stringify({
-      "mimeType" : fileType,
-      'name' : newName
+    const reqBody = JSON.stringify({
+      mimeType: fileType,
+      name: newName,
     });
     return window.gapi.client.drive.files.create({
       resource: reqBody,
@@ -121,8 +119,8 @@ class User extends Component {
 
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc, 
-      fileUpload, moveWithin, loadAuth
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
+      fileUpload, moveWithin, loadAuth,
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
