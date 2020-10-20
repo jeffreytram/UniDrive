@@ -76,7 +76,8 @@ class User extends Component {
       }
     });
   }
-  
+
+  //This is to be used with the decorator func in app
   moveExternal = (fileId, newEmail) => {
     window.gapi.client.drive.permissions.create({
       fileId: fileId,
