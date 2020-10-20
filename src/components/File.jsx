@@ -56,12 +56,6 @@ class File extends Component {
     const renameFunc = loadAuth(userId, this.rename);
     const starFunc = loadAuth(userId, this.star);
     const isStarred = this.props.data.starred;
-    let starbutton;
-    if (isStarred) {
-      starbutton = 'Unstar';
-    } else {
-      starbutton = 'Star';
-    }
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
@@ -122,7 +116,7 @@ class File extends Component {
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => starFunc()}>
                 <FontAwesomeIcon className="menu-icon" icon={faStar} />
-                {starbutton}
+                { (isStarred) ? 'Remove From Starred' : 'Star' }
               </MenuItem>
               <hr className="divider" />
               <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(); } }}>
@@ -161,7 +155,7 @@ class File extends Component {
             </MenuItem>
             <MenuItem className="menu-item" onClick={() => starFunc()}>
               <FontAwesomeIcon className="menu-icon" icon={faStar} />
-              {starbutton}
+              { (isStarred) ? 'Remove From Starred' : 'Star' }
             </MenuItem>
             <hr className="divider" />
             <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
