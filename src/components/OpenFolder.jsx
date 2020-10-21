@@ -17,7 +17,7 @@ class OpenFolder extends Component {
   render() {
     const {
       userId, fileList, openChildrenFunc, fileObj, filePath, filepathTraceFunc, closeFolderFunc, moveExternal, moveWithin,
-      shareFile, loadAuth,
+      shareFile, loadAuth, refreshFunc, email
     } = this.props;
 
     return (
@@ -48,6 +48,8 @@ class OpenFolder extends Component {
               moveWithin={moveWithin}
               loadAuth={loadAuth}
               fileObj={file}
+              refreshFunc = {refreshFunc}
+              email = {email}
             />
           ))}
         </div>

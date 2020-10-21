@@ -6,7 +6,7 @@ import './FileList.css';
 export default function OpenFolderList(props) {
   const {
     fileList, fileContainerStyles, userId, openChildrenFunc, openFolderList, buildChildrenArray, filepathTraceFunc,
-    closeFolderFunc, moveExternal, moveWithin, shareFile, loadAuth,
+    closeFolderFunc, moveExternal, moveWithin, shareFile, loadAuth, email,
   } = props;
 
   return (
@@ -28,6 +28,7 @@ export default function OpenFolderList(props) {
           moveExternal={moveExternal}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
+          email = {email}
         />
       ))}
     </div>

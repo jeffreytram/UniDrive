@@ -64,16 +64,24 @@ class User extends Component {
     }));
   }
 
-  shareFile = (fileId, newEmail) => window.gapi.client.drive.permissions.create({
-    fileId,
-    emailMessage: 'Share Success!',
-    sendNotificationEmail: true,
-    resource: {
-      type: 'user',
-      role: 'writer',
-      emailAddress: newEmail,
-    },
-  })
+  shareFile = (fileId, newEmail) => {
+    const { refreshFunc } = this.props;
+    const { userId } = this.props;
+    window.gapi.client.drive.permissions.create({
+      fileId,
+      emailMessage: 'Share Success!',
+      sendNotificationEmail: true,
+      resource: {
+        type: 'user',
+        role: 'writer',
+        emailAddress: newEmail,
+      },
+    }).then((response) => {
+      refreshFunc(userId);
+    }, (error) => {
+      alert('Insufficient Permission to Share This File');
+    });
+  }
 
   // This is to be used with the decorator func in app
   moveExternal = (fileId, newEmail) => {
@@ -268,6 +276,8 @@ class User extends Component {
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
+          refreshFunc={refreshFunc}
+          email={email}
         />
 
         <OpenFolderList
@@ -283,6 +293,8 @@ class User extends Component {
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
+          refreshFunc={refreshFunc}
+          email={email}
         />
         <LooseFileList
           fileList={fileList}
@@ -295,6 +307,8 @@ class User extends Component {
           isDisplayed={looseFilesIsDisplayed}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
+          refreshFunc={refreshFunc}
+          email={email}
         />
       </ContextMenuTrigger>
     );

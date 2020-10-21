@@ -17,22 +17,80 @@ class File extends Component {
   }
 
   copy = () => {
+    const { userId } = this.props;
     const fileId = this.props.data.id;
+    const refreshFunction = this.props.refreshFunc;
     return window.gapi.client.drive.files.copy({
       fileId,
+    }).then((response) => {
+      refreshFunction(userId);
     });
   }
 
-  delete = () => window.gapi.client.drive.files.update({
+  delete = (findPermi, findFilePermi, deletePermi) => {
+    const { userId } = this.props;
+    window.gapi.client.drive.files.update({
+      fileId: this.props.data.id,
+      trashed: true,
+    }).then((response) => {
+      const refreshFunction = this.props.refreshFunc;
+      refreshFunction(userId);
+    }, (error) => {
+      console.log(error);
+      if (window.confirm("This item is shared with you, and won't be accessible unless shared with you again. Proceed?")) {
+        findPermi(findFilePermi, deletePermi);
+      }
+    });
+  }
+
+findPermission = (findFilePermi, deletePermi) => {
+  window.gapi.client.drive.about.get({
+    fields: '*',
+  }).then((response) => {
+    console.log(response);
+    const permId = response.result.user.permissionId;
+    console.log(permId);
+    findFilePermi(permId, deletePermi);
+  });
+}
+
+findFilePermission = (permId, deletePermi) => {
+  console.log(permId);
+  window.gapi.client.drive.permissions.get({
     fileId: this.props.data.id,
-    trashed: true,
-  })
+    permissionId: permId,
+  }).then((response) => {
+    console.log(response);
+    deletePermi(response.result.id);
+  }, (error) => {
+    alert('Error: There is a permission error with this file. Try removing through Google Drive directly');
+  });
+}
+
+deletePermission = (permId) => {
+  const refreshFunction = this.props.refreshFunc;
+  const { userId } = this.props;
+  window.gapi.client.drive.permissions.delete({
+    fileId: this.props.data.id,
+    permissionId: permId,
+  }).then((response) => {
+    refreshFunction(userId);
+  });
+}
 
   rename = () => {
+    const fileId = this.props.data.id;
+    const { userId } = this.props;
+    const refreshFunction = this.props.refreshFunc;
     const newName = prompt('Enter New File Name');
-    return window.gapi.client.drive.files.update({
-      fileId: this.props.data.id,
+    window.gapi.client.drive.files.update({
+      fileId,
       resource: { name: newName },
+    }).then((response) => {
+      refreshFunction(userId);
+    }, (error) => {
+      console.log(error);
+      alert("Can't Rename: User has Invalid Permsission. Either request write access from owner or add owner's account to UniDrive");
     });
   }
 
@@ -46,7 +104,7 @@ class File extends Component {
   render() {
     const {
       userId, data, fId, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
-      loadAuth,
+      loadAuth, refreshFunc, email,
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
@@ -55,6 +113,9 @@ class File extends Component {
     const deleteFunc = loadAuth(userId, this.delete);
     const renameFunc = loadAuth(userId, this.rename);
     const starFunc = loadAuth(userId, this.star);
+    const findPermissionFunc = loadAuth(userId, this.findPermission);
+    const findFilePermissionFunc = loadAuth(userId, this.findFilePermission);
+    const deletePermissionFunc = loadAuth(userId, this.deletePermission);
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
@@ -86,7 +147,7 @@ class File extends Component {
                 <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
                 Move to Root
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => renameFunc()}>
+              <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
                 <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
                 Rename
               </MenuItem>
@@ -99,7 +160,7 @@ class File extends Component {
                 { (starred) ? 'Remove From Starred' : 'Add to Starred' }
               </MenuItem>
               <hr className="divider" />
-              <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(); } }}>
+              <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(findPermissionFunc, findFilePermissionFunc, deletePermissionFunc); } }}>
                 <FontAwesomeIcon className="menu-icon" icon={faTrash} />
                 Delete
               </MenuItem>
@@ -143,7 +204,7 @@ class File extends Component {
               { (starred) ? 'Remove From Starred' : 'Add to Starred' }
             </MenuItem>
             <hr className="divider" />
-            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
+            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(findPermissionFunc, findFilePermissionFunc, deletePermissionFunc); } }}>
               <FontAwesomeIcon className="menu-icon" icon={faTrash} />
               Delete
             </MenuItem>

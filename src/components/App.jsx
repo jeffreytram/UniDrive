@@ -699,7 +699,6 @@ findTopLevelFolders = (fileList) => {
         login_hint: email,
         discoveryDocs: [discoveryUrl],
       }, (response) => {
-        console.log(response);
         const move_ex = new XMLHttpRequest();
         move_ex.open('POST', `https://www.googleapis.com/drive/v3/files/${fileId}/permissions?moveToNewOwnersRoot=true&transferOwnership=true`, true);
         move_ex.setRequestHeader('Authorization', `Bearer ${response.access_token}`);
@@ -734,9 +733,7 @@ findTopLevelFolders = (fileList) => {
           if (response.error) {
             console.log(response.error);
           }
-          func.call(this, ...args).then(() => {
-            this.refreshFunction(id);
-          });
+          func.call(this, ...args)
         });
       });
     };
@@ -820,7 +817,7 @@ findTopLevelFolders = (fileList) => {
         resumable.setRequestHeader('Content-Type', 'application/json');
         resumable.setRequestHeader('X-Upload-Content-Length', file.size);
         resumable.setRequestHeader('X-Upload-Content-Type', contentType);
-        resumable.onreadystatechange = function () {
+        resumable.onreadystatechange =  () => {
           if (resumable.readyState === XMLHttpRequest.DONE && resumable.status === 200) {
             const locationUrl = resumable.getResponseHeader('Location');
             const reader = new FileReader();
@@ -829,9 +826,10 @@ findTopLevelFolders = (fileList) => {
               uploadResumable.open('PUT', locationUrl, true);
               uploadResumable.setRequestHeader('Content-Type', contentType);
               uploadResumable.setRequestHeader('X-Upload-Content-Type', contentType);
-              uploadResumable.onreadystatechange = function () {
+              uploadResumable.onreadystatechange = () => {
                 if (uploadResumable.readyState === XMLHttpRequest.DONE && uploadResumable.status === 200) {
                   console.log(uploadResumable.response);
+                  this.refreshAllFunction()
                 }
               };
               uploadResumable.send(reader.result);
@@ -900,6 +898,8 @@ findTopLevelFolders = (fileList) => {
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}
+                    refreshFunc = {this.refreshFunction}
+                 
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
