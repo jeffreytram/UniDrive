@@ -33,9 +33,13 @@
 
 
 .main-container {
-  width: 85%;
+  width: 100%;
   float: right;
   margin-top: var(--header-margin);
+  margin-left: var(--sidebar-margin);
+  background-image: url('./images/mascot.png');
+  position: fixed;
+  height: 100%;
 }
 
 .main-content {
@@ -58,4 +62,5 @@
   -webkit-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
   box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  background-color: white;
 }
