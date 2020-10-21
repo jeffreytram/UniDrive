@@ -198,7 +198,6 @@ class App extends Component {
         for (let i = 0; i < allFilepaths.length; i++) {
           this.filepathTrace(newUserList[index].id, allFilepaths[i][allFilepaths[i].length - 1], allFilepaths[i], true);
         }
-        console.log(this.state);
         return {
           userList: newUserList,
         };
@@ -641,8 +640,8 @@ findTopLevelFolders = (fileList) => {
 
   /**
    * Moves a file from one folder to another
-   * @param {*} userId
-   * @param {*} file Id of the current folder it is in
+   * @param {*} userId id of the user which owns the files
+   * @param {*} file file being moved
    * @param {*} newParentId Id of the folder to move to
    */
   moveWithin = (userId, file, newParentId) => {
@@ -663,7 +662,7 @@ findTopLevelFolders = (fileList) => {
           console.log('authorization error');
         }
         const preParents = file.parents.join(',');
-        window.gapi.client.drive.file.update({
+        window.gapi.client.drive.files.update({
           fileId: file.id,
           addParents: newParentId,
           removeParents: preParents,
@@ -672,6 +671,7 @@ findTopLevelFolders = (fileList) => {
           if (response.error) {
             console.log(response.error);
           }
+          console.log(response);
         });
       });
     });
