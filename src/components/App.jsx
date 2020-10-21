@@ -882,6 +882,7 @@ findTopLevelFolders = (fileList) => {
                     moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}
                     refreshFunc = {this.refreshFunction}
+                 
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
