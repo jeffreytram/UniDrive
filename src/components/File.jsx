@@ -17,9 +17,9 @@ class File extends Component {
   }
 
   copy = () => {
-    const userId = this.props.userId
+    const { userId } = this.props;
     const fileId = this.props.data.id;
-    const refreshFunction = this.props.refreshFunc
+    const refreshFunction = this.props.refreshFunc;
     return window.gapi.client.drive.files.copy({
       fileId,
     }).then((response) => {
@@ -28,79 +28,69 @@ class File extends Component {
   }
 
   delete = (findPermi, findFilePermi, deletePermi) => {
-    const userId = this.props.userId
+    const { userId } = this.props;
     window.gapi.client.drive.files.update({
-    fileId: this.props.data.id,
-    trashed: true,
-  }).then((response) => {
-    const refreshFunction = this.props.refreshFunc
-    refreshFunction(userId);
-    return;
-  }, (error) => {
-    console.log(error)
-    if (window.confirm("This item is shared with you, and won't be accessible unless shared with you again. Proceed?")) {
-    findPermi(findFilePermi, deletePermi);
-    }
-  })
-}
+      fileId: this.props.data.id,
+      trashed: true,
+    }).then((response) => {
+      const refreshFunction = this.props.refreshFunc;
+      refreshFunction(userId);
+    }, (error) => {
+      console.log(error);
+      if (window.confirm("This item is shared with you, and won't be accessible unless shared with you again. Proceed?")) {
+        findPermi(findFilePermi, deletePermi);
+      }
+    });
+  }
 
 findPermission = (findFilePermi, deletePermi) => {
   window.gapi.client.drive.about.get({
-    fields: '*'
+    fields: '*',
   }).then((response) => {
-    console.log(response)
-    let permId = response.result.user.permissionId
-    console.log(permId)
+    console.log(response);
+    const permId = response.result.user.permissionId;
+    console.log(permId);
     findFilePermi(permId, deletePermi);
   });
 }
 
 findFilePermission = (permId, deletePermi) => {
-  console.log(permId)
+  console.log(permId);
   window.gapi.client.drive.permissions.get({
     fileId: this.props.data.id,
-    permissionId: permId
+    permissionId: permId,
   }).then((response) => {
-    console.log(response)
-    deletePermi(response.result.id)
+    console.log(response);
+    deletePermi(response.result.id);
   }, (error) => {
-    alert("Error: There is a permission error with this file. Try removing through Google Drive directly")
-    return;
-    })
-  }
-
-
-
-deletePermission = (permId) => {
-  const refreshFunction = this.props.refreshFunc
-  const userId = this.props.userId
-  window.gapi.client.drive.permissions.delete({
-    fileId: this.props.data.id,
-    permissionId: permId
-  }).then((response) => {
-    refreshFunction(userId);
-  })
-
-
-
-
+    alert('Error: There is a permission error with this file. Try removing through Google Drive directly');
+  });
 }
 
-
+deletePermission = (permId) => {
+  const refreshFunction = this.props.refreshFunc;
+  const { userId } = this.props;
+  window.gapi.client.drive.permissions.delete({
+    fileId: this.props.data.id,
+    permissionId: permId,
+  }).then((response) => {
+    refreshFunction(userId);
+  });
+}
 
   rename = () => {
     const fileId = this.props.data.id;
-    const userId = this.props.userId
-    const refreshFunction = this.props.refreshFunc
+    const { userId } = this.props;
+    const refreshFunction = this.props.refreshFunc;
     const newName = prompt('Enter New File Name');
-     window.gapi.client.drive.files.update({
-      fileId: fileId,
-      resource: { name: newName }}
-    ).then((response) => {
+    window.gapi.client.drive.files.update({
+      fileId,
+      resource: { name: newName },
+    }).then((response) => {
       refreshFunction(userId);
     }, (error) => {
-      console.log(error)
-      alert("Can't Rename: User has Invalid Permsission. Either request write access from owner or add owner's account to UniDrive")
+      console.log(error);
+      alert("Can't Rename: User has Invalid Permsission. Either request write access from owner or add owner's account to UniDrive");
     });
   }
 
@@ -109,7 +99,7 @@ deletePermission = (permId) => {
   render() {
     const {
       userId, data, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
-      loadAuth, refreshFunc, email
+      loadAuth, refreshFunc, email,
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType,
@@ -218,7 +208,7 @@ deletePermission = (permId) => {
               Share
             </MenuItem>
             <hr className="divider" />
-            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(findPermissionFunc,findFilePermissionFunc, deletePermissionFunc); } }}>
+            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(findPermissionFunc, findFilePermissionFunc, deletePermissionFunc); } }}>
               <FontAwesomeIcon className="menu-icon" icon={faTrash} />
               Delete
             </MenuItem>

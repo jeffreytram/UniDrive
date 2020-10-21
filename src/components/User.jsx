@@ -66,26 +66,22 @@ class User extends Component {
 
   shareFile = (fileId, newEmail) => {
     const { refreshFunc } = this.props;
-    const { userId } = this.props
-    console.log('sharing')
+    const { userId } = this.props;
     window.gapi.client.drive.permissions.create({
-    fileId,
-    emailMessage: 'Share Success!',
-    sendNotificationEmail: true,
-    resource: {
-      type: 'user',
-      role: 'writer',
-      emailAddress: newEmail,
-    },
-  }).then((response) => {
-    console.log('sharing DONE')
-    refreshFunc(userId)
-
-  }, (error) => {
-    alert("Insufficient Permission to Share This File")
-  })
-}
-
+      fileId,
+      emailMessage: 'Share Success!',
+      sendNotificationEmail: true,
+      resource: {
+        type: 'user',
+        role: 'writer',
+        emailAddress: newEmail,
+      },
+    }).then((response) => {
+      refreshFunc(userId);
+    }, (error) => {
+      alert('Insufficient Permission to Share This File');
+    });
+  }
 
   // This is to be used with the decorator func in app
   moveExternal = (fileId, newEmail) => {
@@ -133,7 +129,7 @@ class User extends Component {
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
-      fileUpload, moveWithin, loadAuth, moveExternal
+      fileUpload, moveWithin, loadAuth, moveExternal,
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -235,8 +231,8 @@ class User extends Component {
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
-          refreshFunc = {refreshFunc}
-          email = {email}
+          refreshFunc={refreshFunc}
+          email={email}
         />
 
         <OpenFolderList
@@ -252,8 +248,8 @@ class User extends Component {
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
-          refreshFunc = {refreshFunc}
-          email = {email}
+          refreshFunc={refreshFunc}
+          email={email}
         />
         <LooseFileList
           fileList={fileList}
@@ -266,8 +262,8 @@ class User extends Component {
           isDisplayed={looseFilesIsDisplayed}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
-          refreshFunc = {refreshFunc}
-          email = {email}
+          refreshFunc={refreshFunc}
+          email={email}
         />
       </ContextMenuTrigger>
     );
