@@ -49,13 +49,12 @@ class File extends Component {
       loadAuth,
     } = this.props;
     const {
-      id, webViewLink, iconLink, name, mimeType,
+      id, webViewLink, iconLink, name, mimeType, starred,
     } = data;
     const copyFunc = loadAuth(userId, this.copy);
     const deleteFunc = loadAuth(userId, this.delete);
     const renameFunc = loadAuth(userId, this.rename);
     const starFunc = loadAuth(userId, this.star);
-    const isStarred = this.props.data.starred;
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
@@ -79,39 +78,17 @@ class File extends Component {
                 Open
               </MenuItem>
               <hr className="divider" />
-              <MenuItem className="menu-item move-to">
-                <SubMenu
-                  className="context-menu sub-menu-move-to"
-                  title={
-                    (
-                      <span>
-                        <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
-                        Move to...
-                      </span>
-                    )
-                  }
-                >
-                  <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, 1)}>
-                    Account 1
-                  </MenuItem>
-                  <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, 2)}>
-                    Account 2
-                  </MenuItem>
-                  <MenuItem className="menu-item" onClick={() => moveExternal(userId, id, 3)}>
-                    Account 3
-                  </MenuItem>
-                </SubMenu>
+              <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
+                <FontAwesomeIcon className="menu-icon" icon={faShare} />
+                Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
+                <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
                 Move to Root
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => renameFunc()}>
                 <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
                 Rename
-              </MenuItem>
-              <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
-                <FontAwesomeIcon className="menu-icon" icon={faShare} />
-                Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc()}>
                 <FontAwesomeIcon className="menu-icon" icon={faCopy} />
@@ -119,7 +96,7 @@ class File extends Component {
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => starFunc()}>
                 <FontAwesomeIcon className="menu-icon" icon={faStar} />
-                { (isStarred) ? 'Remove From Starred' : 'Star' }
+                { (starred) ? 'Remove From Starred' : 'Add to Starred' }
               </MenuItem>
               <hr className="divider" />
               <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(); } }}>
@@ -148,17 +125,22 @@ class File extends Component {
               <FontAwesomeIcon className="menu-icon" icon={faGoogleDrive} />
               View on Google Drive
             </MenuItem>
-            <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
-              <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
-              Rename
-            </MenuItem>
+            <hr className="divider" />
             <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
               <FontAwesomeIcon className="menu-icon" icon={faShare} />
               Share
             </MenuItem>
+            <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
+              <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
+              Move to Root
+            </MenuItem>
+            <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+              <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
+              Rename
+            </MenuItem>
             <MenuItem className="menu-item" onClick={() => starFunc()}>
               <FontAwesomeIcon className="menu-icon" icon={faStar} />
-              { (isStarred) ? 'Remove From Starred' : 'Star' }
+              { (starred) ? 'Remove From Starred' : 'Add to Starred' }
             </MenuItem>
             <hr className="divider" />
             <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(userId, id); } }}>
