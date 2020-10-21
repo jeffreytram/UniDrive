@@ -198,7 +198,6 @@ class App extends Component {
         for (let i = 0; i < allFilepaths.length; i++) {
           this.filepathTrace(newUserList[index].id, allFilepaths[i][allFilepaths[i].length - 1], allFilepaths[i], true);
         }
-        console.log(this.state);
         return {
           userList: newUserList,
         };
@@ -649,7 +648,6 @@ findTopLevelFolders = (fileList) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
     const { email } = this.parseIDToken(userToken);
-    console.log(file);
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -663,7 +661,6 @@ findTopLevelFolders = (fileList) => {
           console.log(response.error);
           console.log('authorization error');
         }
-        console.log(response);
         const preParents = file.parents.join(',');
         window.gapi.client.drive.files.update({
           fileId: file.id,
