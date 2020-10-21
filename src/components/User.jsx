@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faTrash, faSyncAlt, faEye, faEyeSlash, faUpload, faPlus, faEllipsisV, faFolderPlus,
+  faTrash, faSyncAlt, faEye, faEyeSlash, faUpload, faPlus, faEllipsisV, faFolderPlus, faSortNumericDown, faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   ContextMenu, MenuItem, ContextMenuTrigger, SubMenu,
@@ -129,7 +129,7 @@ class User extends Component {
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
-      fileUpload, moveWithin, loadAuth, moveExternal,
+      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal,
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -145,7 +145,7 @@ class User extends Component {
           onClick={() => this.viewToggle()}
           onKeyDown={() => this.viewToggle()}
         >
-          <img className="profile-picture" src={picture} alt="UniDrive logo" />
+          <img className="profile-picture" src={picture} alt="Account profile" />
           <span className="profile-text">
             <span className="profile-name">{name}</span>
             {' '}
@@ -212,6 +212,50 @@ class User extends Component {
             <FontAwesomeIcon className="fa-eye-slash menu-icon" icon={(looseFilesIsDisplayed) ? faEye : faEyeSlash} />
             Toggle Folder View
           </MenuItem>
+
+          <MenuItem className="menu-item sort">
+            <SubMenu
+              className="context-menu sub-menu-sort"
+              title={
+              (
+                <span>
+                  <FontAwesomeIcon className="fa-sort menu-icon" icon={faSortNumericDown} onClick={(event) => this.handleIconClick(event, () => {})} />
+                  Sort...
+                </span>
+              )
+            }
+            >
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, viewedByMeTime desc')}>
+                {'Last Opened by Me'}
+                {currentSort === 'folder, viewedByMeTime desc'
+                  && (
+                  <FontAwesomeIcon className="fa-check menu-icon" icon={faCheck} />
+                  )}
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, modifiedTime desc')}>
+                Last Modified
+                {currentSort === 'folder, modifiedTime desc'
+                && (
+                <FontAwesomeIcon className="fa-check menu-icon" icon={faCheck} />
+                )}
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, createdTime desc')}>
+                Newest
+                {currentSort === 'folder, createdTime desc'
+                && (
+                <FontAwesomeIcon className="fa-check menu-icon" icon={faCheck} />
+                )}
+              </MenuItem>
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, createdTime')}>
+                Oldest
+                {currentSort === 'folder, createdTime'
+                && (
+                <FontAwesomeIcon className="fa-check menu-icon" icon={faCheck} />
+                )}
+              </MenuItem>
+            </SubMenu>
+          </MenuItem>
+
           <MenuItem className="menu-item" onClick={(event) => this.handleIconClick(event, () => refreshFunc(userId))}>
             <FontAwesomeIcon className="fa-sync menu-icon" icon={faSyncAlt} />
             Refresh Account
@@ -221,6 +265,7 @@ class User extends Component {
             Remove Account
           </MenuItem>
         </ContextMenu>
+
         <TopLevelFolderList
           fileList={fileList}
           fileContainerStyles={fileContainerStyles}
@@ -285,6 +330,10 @@ User.propTypes = {
   filepathTraceFunc: PropTypes.func.isRequired,
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   buildChildrenArray: PropTypes.func.isRequired,
+  sortFunc: PropTypes.func.isRequired,
+  currentSort: PropTypes.string.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  loadAuth: PropTypes.func.isRequired,
 };
 
 export default User;

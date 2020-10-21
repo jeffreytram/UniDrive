@@ -41,6 +41,7 @@ class OpenFolder extends Component {
               data={file}
               fileList={fileList}
               displayed
+              fId={fileObj.fId}
               openChildrenFunc={openChildrenFunc}
               moveExternal={moveExternal}
               shareFile={shareFile}

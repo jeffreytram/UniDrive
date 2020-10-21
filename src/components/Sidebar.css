@@ -1,6 +1,6 @@
 .sidebar {
   margin: 0;
-  padding: 0;
+  padding: 5px;
   width: 15%;
   color: var(--text);
   background-color: var(--sub-bg);
@@ -12,4 +12,24 @@
 
 .content {
   height: 100%;
+}
+
+.sidebar-user-container {
+  margin-top: 70px;
+}
+
+.sidebar-user {
+  padding: 4px 4px;
+}
+
+.sidebar-user:hover {
+  outline: 2px solid var(--subtle2);
+  cursor: pointer;
+}
+
+.sidebar-picture {
+  height: 20px;
+  vertical-align: text-bottom;
+  border-radius: 10px;
+  margin-right: 5px;
 }
