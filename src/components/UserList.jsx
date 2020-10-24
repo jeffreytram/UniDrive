@@ -7,7 +7,7 @@ export default function UserList(props) {
   const {
     userList, parseIDToken, removeFunc, refreshFunc, isChildFunc, openChildrenFunc,
     buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, sortFunc, moveExternal, moveWithin,
-    loadAuth,
+    loadAuth, primaryAccount
   } = props;
   return (
     <div className="user-list">
@@ -34,6 +34,7 @@ export default function UserList(props) {
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
+          primaryAccount={primaryAccount}
         />
       ))}
     </div>

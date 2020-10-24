@@ -99,12 +99,64 @@ deletePermission = (permId) => {
     starred: !this.props.data.starred,
   })
 
+  share = (shareInternal, shareExternal, unshareInternal) => {
+    const fileId = this.props.data.id;
+    const { userId } = this.props;
+    const primaryUser = this.props.primaryAccount;
+    if (primaryUser.files.includes(files)) {
+      let s = new window.gapi.drive.share.ShareClient()
+      console.log(s)
+      s.setOAuthToken(primaryUser.accessToken)
+      s.setItemIds(fileId);
+      s.showSettingsDialog()
+    }
+    else {
+      shareInternal(shareExternal, unshareInternal)
+    //1st, share file internally with the primary account
+  }
+}
+  shareInternal = (shareExternal, unshareInternal) => {
+    window.gapi.client.drive.permissions.create({
+      fileId,
+      sendNotificationEmail: false,
+      resource: {
+        type: 'user',
+        role: 'writer',
+        emailAddress: primaryUser.email,
+      },
+    }).then((response) => {
+      refreshFunc(userId);
+      shareExternal(unshareInternal);
+    }, (error) => {
+      alert('Error with internal share');
+    });
+  }
+
+
+
+   shareExternal = (unshareInternal) => {
+    const fileId = this.props.data.id;
+    const { userId } = this.props;
+    const primaryUser = this.props.primaryAccount;
+    let s = new window.gapi.drive.share.ShareClient()
+    console.log(s)
+    s.setOAuthToken(primaryUser.accessToken)
+    s.setItemIds(fileId);
+    s.showSettingsDialog()
+   }
+
+
+    
+    
+
+  
+
   /* Props contains: Name, Link, Image */
   // export default function File(props) {
   render() {
     const {
       userId, data, fId, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
-      loadAuth, refreshFunc, email,
+      loadAuth, refreshFunc, email, primaryAccount
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
@@ -116,6 +168,9 @@ deletePermission = (permId) => {
     const findPermissionFunc = loadAuth(userId, this.findPermission);
     const findFilePermissionFunc = loadAuth(userId, this.findFilePermission);
     const deletePermissionFunc = loadAuth(userId, this.deletePermission);
+    const shareFunc = loadAuth(1, this.share, primaryAccount)
+    const shareInternalFunc = loadAuth(userId, this.shareInternal)
+    const shareExternalFunc = loadAuth(1, this.shareExternal, primaryAccount)
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
@@ -139,7 +194,7 @@ deletePermission = (permId) => {
                 Open
               </MenuItem>
               <hr className="divider" />
-              <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
+              <MenuItem className="menu-item" onClick={() => shareFile(shareInternalFunc, shareExternalFunc, unshareInternalFunc)}>
                 <FontAwesomeIcon className="menu-icon" icon={faShare} />
                 Share
               </MenuItem>

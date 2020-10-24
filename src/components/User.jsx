@@ -120,6 +120,10 @@ class User extends Component {
     });
     return window.gapi.client.drive.files.create({
       resource: reqBody,
+    }).then((response) => {
+      console.log(response)
+    }, (error) => {
+      alert('Error, could not create file');
     });
   }
 
@@ -129,7 +133,7 @@ class User extends Component {
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
-      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal,
+      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal, primaryAccount
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -278,6 +282,7 @@ class User extends Component {
           moveExternal={moveExternal}
           refreshFunc={refreshFunc}
           email={email}
+          primaryAccount={primaryAccount}
         />
 
         <OpenFolderList
@@ -295,6 +300,7 @@ class User extends Component {
           moveExternal={moveExternal}
           refreshFunc={refreshFunc}
           email={email}
+          primaryAccount={primaryAccount}
         />
         <LooseFileList
           fileList={fileList}
@@ -309,6 +315,7 @@ class User extends Component {
           moveExternal={moveExternal}
           refreshFunc={refreshFunc}
           email={email}
+          primaryAccount={primaryAccount}
         />
       </ContextMenuTrigger>
     );

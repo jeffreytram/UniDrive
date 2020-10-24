@@ -42,6 +42,7 @@ class App extends Component {
    * Signs a new user into Google, and then begins the process of storing all of their information
    * Returns an idToken, an AccessToken, and a Code, all unique to the user in a Response object
    */
+
   authorizeUser = () => {
     window.gapi.load('client:auth', () => {
       window.gapi.auth2.authorize({
@@ -114,6 +115,7 @@ class App extends Component {
     const { userList } = this.state;
     const isDup = this.isDuplicateUser(email, userList);
     if (!isDup) {
+      if (userId === 1) {
       this.setState((prevState) => ({
         userList: [...prevState.userList, {
           id: userId,
@@ -126,11 +128,41 @@ class App extends Component {
           looseFiles: [],
           openFolders: [],
           sortedBy: 'folder, viewedByMeTime desc',
-        }],
+        }], 
+        primaryAccount : {
+          id: userId,
+          accessToken,
+          idToken,
+          code,
+          files: [],
+          topLevelFolders: [],
+          filesWithChildren: [],
+          looseFiles: [],
+          openFolders: [],
+          sortedBy: 'folder, viewedByMeTime desc',
+          email : email
+        }
       }));
-      userId += 1;
     } else {
-      console.log('Email is already in UserList');
+      this.setState((prevState) => ({
+        userList: [...prevState.userList, {
+          id: userId,
+          accessToken,
+          idToken,
+          code,
+          files: [],
+          topLevelFolders: [],
+          filesWithChildren: [],
+          looseFiles: [],
+          openFolders: [],
+          sortedBy: 'folder, viewedByMeTime desc',
+        }], 
+        primaryAccount : prevState.primaryAccount
+      }));
+    }
+    userId +=1;
+  } else {
+      alert('Email is already added');
     }
     return isDup;
   }
@@ -168,6 +200,7 @@ class App extends Component {
       });
     });
   }
+
 
   /**
    * Stores the files for the given user
@@ -215,7 +248,7 @@ retrieveAllFiles = (callback, email, user) => {
   let res = [];
   const { sortedBy } = user;
   const retrievePageOfFiles = function (email, response, user) {
-    window.gapi.client.load('drive', 'v3').then(() => {
+   window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
@@ -344,6 +377,7 @@ assignChildren = (files) => {
   return filesWithChildren;
 }
 
+
 /**
    * checks whether the given file is a child of another file(or folder) somewhere in the file list
    * the fileList here should be the filelist returned from assignChildren(), so that each element of the filelist is a fileObj, not just a file
@@ -360,6 +394,7 @@ checkIfChild = (file, filesWithChildren) => {
   }
   return false;
 }
+
 
 /**
  * displays a folder's contents on the users page by adding the folder to the openFolders array
@@ -587,6 +622,7 @@ closeFolder = (openFolder, userId) => {
   });
 }
 
+
 /**
    * returns an array of all of the children of a given folder
    * @param {object} folder a plain ol' folder
@@ -677,6 +713,7 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
+  
   /**
    * Gets email for auth from a user Id
    * @param {*} userId
@@ -686,6 +723,7 @@ findTopLevelFolders = (fileList) => {
     const userToken = this.state.userList[userIndex].idToken;
     return this.parseIDToken(userToken).email;
   }
+
 
   moveExternal = (userId, fileId, newUserId) => {
     const email = this.getEmailFromUserId(userId);
@@ -718,7 +756,8 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
-  load_authorize = (id, func) => {
+  load_authorize = (id, func, primaryAccount) => {
+    if (primaryAccount === undefined) {
     const email = this.getEmailFromUserId(id);
     return (...args) => {
       window.gapi.client.load('drive', 'v3').then(() => {
@@ -737,6 +776,28 @@ findTopLevelFolders = (fileList) => {
         });
       });
     };
+  } else {
+    console.log(primaryAccount)
+    const userToken = primaryAccount.idToken;
+    const email = this.parseIDToken(userToken).email;
+    return (...args) => {
+      window.gapi.client.load('drive-share').then(() => {
+        window.gapi.auth2.authorize({
+          apiKey: API_KEY,
+          clientId: CLIENT_ID,
+          scope: SCOPE,
+          prompt: 'none',
+          login_hint: email,
+          discoveryDocs: [discoveryUrl],
+        }, (response) => {
+          if (response.error) {
+            console.log(response.error);
+          }
+          func.call(this, ...args)
+        });
+      });
+    };
+   }
   }
 
   /**
@@ -856,7 +917,7 @@ findTopLevelFolders = (fileList) => {
 
   render() {
     // #const { userList } = this.state;
-    const { userList, uploadRequests } = this.state;
+    const { userList, uploadRequests, primaryAccount } = this.state;
     const addedAccount = userList.length > 0;
     return (
       <div className="App">
@@ -899,6 +960,7 @@ findTopLevelFolders = (fileList) => {
                     moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}
                     refreshFunc = {this.refreshFunction}
+                    primaryAccount = {primaryAccount}
                  
                   />
                   <div>
