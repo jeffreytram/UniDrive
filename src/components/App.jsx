@@ -18,6 +18,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      primaryAccount: {},
       userList: [],
       uploadRequests: [],
       lastRefreshTime: Date().substring(0, 21),
@@ -818,10 +819,14 @@ findTopLevelFolders = (fileList) => {
           login_hint: email,
           discoveryDocs: [discoveryUrl],
         }, (response) => {
-          console.log(response)
           if (response.error) {
             console.log(response.error);
           }
+          const primary = this.state.primaryAccount
+          primary.accessToken = response.access_token;
+          this.setState((prevState) => ({
+            primaryAccount : primary
+          }));
           func.call(this, ...args)
         });
       });
@@ -831,6 +836,7 @@ findTopLevelFolders = (fileList) => {
     return (...args) => {
     const userToken = primaryAccount.idToken;
     const email = this.parseIDToken(userToken).email
+    console.log(this.state.primaryAccount)
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,

@@ -104,21 +104,17 @@ deletePermission = (permId) => {
 
 
 initShare = (share, shareInternal, shareExternal, findPermi, findFilePermi, deletePermi) => {
-  console.log('initshare')
-  console.log(share)
     const fileId = this.props.data.id;
     const { userId } = this.props;
     const primaryUser = this.props.primaryAccount;
     const email = this.props.email;
     let isIncluded = false;
-    console.log(primaryUser)
     for (let i = 0; i< primaryUser.files.length; i++) {
       if (primaryUser.files[i].id === fileId) {
         isIncluded = true;
         break;
       }
     }
-    console.log(isIncluded)
     if (isIncluded) {
       share()
   } else {
@@ -132,7 +128,6 @@ initShare = (share, shareInternal, shareExternal, findPermi, findFilePermi, dele
     const { userId } = this.props;
     const primaryUser = this.props.primaryAccount;
       let s = new window.gapi.drive.share.ShareClient()
-      console.log(s)
       s.setOAuthToken(primaryUser.accessToken)
       s.setItemIds(fileId);
       s.showSettingsDialog()
@@ -164,11 +159,10 @@ initShare = (share, shareInternal, shareExternal, findPermi, findFilePermi, dele
     const { userId } = this.props;
     const primaryUser = this.props.primaryAccount;
     let s = new window.gapi.drive.share.ShareClient()
-    console.log(s)
     s.setOAuthToken(primaryUser.accessToken)
     s.setItemIds(fileId);
     s.showSettingsDialog()
-    refreshAll = this.props.refreshAllFunc;
+    const refreshAll = this.props.refreshAllFunc;
     //if Yes is selected to share with primary
     if (findPermi === undefined) {
       refreshAll();
@@ -189,7 +183,6 @@ initShare = (share, shareInternal, shareExternal, findPermi, findFilePermi, dele
 
     
    submit = (share, shareInternal, shareExternal, findPermi, findFilePermi, deletePermi) => {
-     console.log('submit')
     const primaryUser = this.props.primaryAccount;
     if (primaryUser.email === this.props.email) {
       this.initShare(share, shareInternal, shareExternal)
@@ -233,9 +226,9 @@ initShare = (share, shareInternal, shareExternal, findPermi, findFilePermi, dele
     const findPermissionFunc1 = loadAuth(userId, this.findPermission, primaryAccount, true);
     const findFilePermissionFunc1 = loadAuth(userId, this.findFilePermission, primaryAccount, true);
     const deletePermissionFunc1 = loadAuth(userId, this.deletePermission, primaryAccount, true);
-    const shareFunc = loadAuth(1, this.share, primaryAccount)
+    const shareFunc = loadAuth(1, this.share, primaryAccount, false)
     const shareInternalFunc = loadAuth(userId, this.shareInternal)
-    const shareExternalFunc = loadAuth(1, this.shareExternal, primaryAccount)
+    const shareExternalFunc = loadAuth(1, this.shareExternal, primaryAccount, false)
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
