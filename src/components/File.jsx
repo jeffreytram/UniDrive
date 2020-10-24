@@ -191,6 +191,9 @@ initShare = (share, shareInternal, shareExternal, findPermi, findFilePermi, dele
    submit = (share, shareInternal, shareExternal, findPermi, findFilePermi, deletePermi) => {
      console.log('submit')
     const primaryUser = this.props.primaryAccount;
+    if (primaryUser.email === this.props.email) {
+      this.initShare(share, shareInternal, shareExternal)
+    } else {
     confirmAlert({
       title: 'Are you trying to share with ' + primaryUser.email + "?",
       message: 'To accomplish sharing, this file must be briefly shared with '  + primaryUser.email + ', and then will be unshared once complete. Select yes if ' + primaryUser.email + ' is an intended recipient of the share.',
@@ -205,6 +208,7 @@ initShare = (share, shareInternal, shareExternal, findPermi, findFilePermi, dele
         }
       ]
     });
+  }
   };
 
   

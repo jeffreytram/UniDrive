@@ -58,6 +58,7 @@ class App extends Component {
           console.log('authorization error');
           return;
         }
+        console.log(response)
         const accessToken = response.access_token;
         const idToken = response.id_token;
         const { code } = response;
@@ -785,7 +786,6 @@ findTopLevelFolders = (fileList) => {
   }
 
   load_authorize = (id, func, primaryAccount, isDeletingTempSharedFile) => {
-    console.log('loadauth called')
     if (primaryAccount === undefined) {
     const email = this.getEmailFromUserId(id);
     return (...args) => {
@@ -808,7 +808,6 @@ findTopLevelFolders = (fileList) => {
   } else if (!isDeletingTempSharedFile) {
     const userToken = primaryAccount.idToken;
     const email = this.parseIDToken(userToken).email;
-    console.log(email)
     return (...args) => {
       window.gapi.load('drive-share', () => {
         window.gapi.auth2.authorize({
