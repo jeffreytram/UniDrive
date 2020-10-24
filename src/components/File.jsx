@@ -8,6 +8,8 @@ import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
   ContextMenu, MenuItem, ContextMenuTrigger, SubMenu,
 } from 'react-contextmenu';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'; 
 import './File.css';
 
 class File extends Component {
@@ -79,6 +81,7 @@ deletePermission = (permId) => {
 }
 
   rename = () => {
+    console.log('rename')
     const fileId = this.props.data.id;
     const { userId } = this.props;
     const refreshFunction = this.props.refreshFunc;
@@ -99,23 +102,46 @@ deletePermission = (permId) => {
     starred: !this.props.data.starred,
   })
 
-  share = (shareInternal, shareExternal, unshareInternal) => {
+
+initShare = (share, shareInternal, shareExternal, findPermi, findFilePermi, deletePermi) => {
+  console.log('initshare')
+  console.log(share)
     const fileId = this.props.data.id;
     const { userId } = this.props;
     const primaryUser = this.props.primaryAccount;
-    if (primaryUser.files.includes(files)) {
+    const email = this.props.email;
+    let isIncluded = false;
+    console.log(primaryUser)
+    for (let i = 0; i< primaryUser.files.length; i++) {
+      if (primaryUser.files[i].id === fileId) {
+        isIncluded = true;
+        break;
+      }
+    }
+    console.log(isIncluded)
+    if (isIncluded) {
+      share()
+  } else {
+    shareInternal(shareExternal, findPermi, findFilePermi, deletePermi)
+  }
+}
+
+  share = () => {
+
+    const fileId = this.props.data.id;
+    const { userId } = this.props;
+    const primaryUser = this.props.primaryAccount;
       let s = new window.gapi.drive.share.ShareClient()
       console.log(s)
       s.setOAuthToken(primaryUser.accessToken)
       s.setItemIds(fileId);
       s.showSettingsDialog()
     }
-    else {
-      shareInternal(shareExternal, unshareInternal)
-    //1st, share file internally with the primary account
-  }
-}
-  shareInternal = (shareExternal, unshareInternal) => {
+ 
+
+  shareInternal = (shareExternal, findPermi, findFilePermi, deletePermi) => {
+    const fileId = this.props.data.id;
+    const primaryUser = this.props.primaryAccount;
     window.gapi.client.drive.permissions.create({
       fileId,
       sendNotificationEmail: false,
@@ -125,8 +151,7 @@ deletePermission = (permId) => {
         emailAddress: primaryUser.email,
       },
     }).then((response) => {
-      refreshFunc(userId);
-      shareExternal(unshareInternal);
+      shareExternal(findPermi, findFilePermi, deletePermi);
     }, (error) => {
       alert('Error with internal share');
     });
@@ -134,7 +159,7 @@ deletePermission = (permId) => {
 
 
 
-   shareExternal = (unshareInternal) => {
+   shareExternal = (findPermi, findFilePermi, deletePermi) => {
     const fileId = this.props.data.id;
     const { userId } = this.props;
     const primaryUser = this.props.primaryAccount;
@@ -143,11 +168,44 @@ deletePermission = (permId) => {
     s.setOAuthToken(primaryUser.accessToken)
     s.setItemIds(fileId);
     s.showSettingsDialog()
-   }
+    refreshAll = this.props.refreshAllFunc;
+    //if Yes is selected to share with primary
+    if (findPermi === undefined) {
+      refreshAll();
+      return;
+    }
+    
+     //3 minute timer until file gets "unshared" with primary, so that user has enough time to actually share first. 
+     //Refresh will occur here also to update accounts
+     //note if UniDrive is closed in this window the file won't be unshared with primary
+    setTimeout(function () {
+      findPermi(findFilePermi, deletePermi)
+  }, 180000)
+  }
+
+
+
 
 
     
-    
+   submit = (share, shareInternal, shareExternal, findPermi, findFilePermi, deletePermi) => {
+     console.log('submit')
+    const primaryUser = this.props.primaryAccount;
+    confirmAlert({
+      title: 'Are you trying to share with ' + primaryUser.email + "?",
+      message: 'To accomplish sharing, this file must be briefly shared with '  + primaryUser.email + ', and then will be unshared once complete. Select yes if ' + primaryUser.email + ' is an intended recipient of the share.',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () =>  this.initShare(share, shareInternal, shareExternal)
+        },
+        {
+          label: 'No',
+          onClick: () => this.initShare(share, shareInternal, shareExternal, findPermi, findFilePermi, deletePermi)
+        }
+      ]
+    });
+  };
 
   
 
@@ -156,7 +214,7 @@ deletePermission = (permId) => {
   render() {
     const {
       userId, data, fId, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
-      loadAuth, refreshFunc, email, primaryAccount
+      loadAuth, refreshFunc, email, primaryAccount, refreshAllFunc
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
@@ -168,6 +226,9 @@ deletePermission = (permId) => {
     const findPermissionFunc = loadAuth(userId, this.findPermission);
     const findFilePermissionFunc = loadAuth(userId, this.findFilePermission);
     const deletePermissionFunc = loadAuth(userId, this.deletePermission);
+    const findPermissionFunc1 = loadAuth(userId, this.findPermission, primaryAccount, true);
+    const findFilePermissionFunc1 = loadAuth(userId, this.findFilePermission, primaryAccount, true);
+    const deletePermissionFunc1 = loadAuth(userId, this.deletePermission, primaryAccount, true);
     const shareFunc = loadAuth(1, this.share, primaryAccount)
     const shareInternalFunc = loadAuth(userId, this.shareInternal)
     const shareExternalFunc = loadAuth(1, this.shareExternal, primaryAccount)
@@ -194,7 +255,7 @@ deletePermission = (permId) => {
                 Open
               </MenuItem>
               <hr className="divider" />
-              <MenuItem className="menu-item" onClick={() => shareFile(shareInternalFunc, shareExternalFunc, unshareInternalFunc)}>
+              <MenuItem className="menu-item" onClick={() => this.submit(shareFunc, shareInternalFunc, shareExternalFunc, findPermissionFunc1, findFilePermissionFunc1, deletePermissionFunc1 )}>
                 <FontAwesomeIcon className="menu-icon" icon={faShare} />
                 Share
               </MenuItem>
@@ -242,7 +303,7 @@ deletePermission = (permId) => {
               View on Google Drive
             </MenuItem>
             <hr className="divider" />
-            <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
+            <MenuItem className="menu-item" onClick={() => this.submit(share, shareInternal, shareExternal )}>
               <FontAwesomeIcon className="menu-icon" icon={faShare} />
               Share
             </MenuItem>

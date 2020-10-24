@@ -86,6 +86,37 @@ class App extends Component {
     this.updateFiles(newUserIndex, email);
   }
 
+  updatePrimaryAccount = () => {
+    const primary = this.state.primaryAccount;
+    console.log(primary)
+    const email = primary.email
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        if (response.error) {
+          console.log(response.error);
+          console.log('updatePrimary error');
+          return;
+        }
+        this.retrieveAllFiles((result) => {
+          this.setState((prevState) => {
+            primary.files = result;
+            return {
+              userList: prevState.userList,
+              primaryAccount: primary
+            };
+          })
+        }, email, primary)
+      });
+  })
+}
+
   /**
    *  Handles user sign out.
    *  Removes the specified user from the userList array, then updates the State
@@ -135,10 +166,6 @@ class App extends Component {
           idToken,
           code,
           files: [],
-          topLevelFolders: [],
-          filesWithChildren: [],
-          looseFiles: [],
-          openFolders: [],
           sortedBy: 'folder, viewedByMeTime desc',
           email : email
         }
@@ -197,6 +224,7 @@ class App extends Component {
           return;
         }
         this.getfiles(index, email);
+        this.updatePrimaryAccount();
       });
     });
   }
@@ -756,7 +784,8 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
-  load_authorize = (id, func, primaryAccount) => {
+  load_authorize = (id, func, primaryAccount, isDeletingTempSharedFile) => {
+    console.log('loadauth called')
     if (primaryAccount === undefined) {
     const email = this.getEmailFromUserId(id);
     return (...args) => {
@@ -776,12 +805,12 @@ findTopLevelFolders = (fileList) => {
         });
       });
     };
-  } else {
-    console.log(primaryAccount)
+  } else if (!isDeletingTempSharedFile) {
     const userToken = primaryAccount.idToken;
     const email = this.parseIDToken(userToken).email;
+    console.log(email)
     return (...args) => {
-      window.gapi.client.load('drive-share').then(() => {
+      window.gapi.load('drive-share', () => {
         window.gapi.auth2.authorize({
           apiKey: API_KEY,
           clientId: CLIENT_ID,
@@ -790,6 +819,7 @@ findTopLevelFolders = (fileList) => {
           login_hint: email,
           discoveryDocs: [discoveryUrl],
         }, (response) => {
+          console.log(response)
           if (response.error) {
             console.log(response.error);
           }
@@ -798,7 +828,30 @@ findTopLevelFolders = (fileList) => {
       });
     };
    }
+   else {
+    return (...args) => {
+    const userToken = primaryAccount.idToken;
+    const email = this.parseIDToken(userToken).email
+    window.gapi.client.load('drive', 'v3').then(() => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        prompt: 'none',
+        login_hint: email,
+        discoveryDocs: [discoveryUrl],
+      }, (response) => {
+        if (response.error) {
+          console.log(response.error);
+        }
+        func.call(this, ...args)
+        this.refreshAllFunction()
+      });
+    });
   }
+  };
+}
+  
 
   /**
    * Refreshes all the files being displayed within an account
@@ -959,8 +1012,8 @@ findTopLevelFolders = (fileList) => {
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}
-                    refreshFunc = {this.refreshFunction}
                     primaryAccount = {primaryAccount}
+                    refreshAllFunc = {this.refreshAllFunction}
                  
                   />
                   <div>

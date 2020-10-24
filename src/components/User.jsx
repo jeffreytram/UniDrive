@@ -133,7 +133,7 @@ class User extends Component {
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
-      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal, primaryAccount
+      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal, primaryAccount, refreshAllFunc
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -283,6 +283,7 @@ class User extends Component {
           refreshFunc={refreshFunc}
           email={email}
           primaryAccount={primaryAccount}
+          refreshAllFunc = {refreshAllFunc}
         />
 
         <OpenFolderList
@@ -301,6 +302,7 @@ class User extends Component {
           refreshFunc={refreshFunc}
           email={email}
           primaryAccount={primaryAccount}
+          refreshAllFunc = {refreshAllFunc}
         />
         <LooseFileList
           fileList={fileList}
@@ -316,6 +318,7 @@ class User extends Component {
           refreshFunc={refreshFunc}
           email={email}
           primaryAccount={primaryAccount}
+          refreshAllFunc = {refreshAllFunc}
         />
       </ContextMenuTrigger>
     );

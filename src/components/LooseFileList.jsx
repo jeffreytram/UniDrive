@@ -7,7 +7,7 @@ export default function LooseFileList(props) {
   const {
     fileList, fileContainerStyles, userId, copyFunc, deleteFunc, renameFunc, openChildrenFunc,
     looseFileList, moveExternal, shareFile, moveWithin, isDisplayed, loadAuth, refreshFunc, email,
-    primaryAccount
+    primaryAccount, refreshAllFunc
   } = props;
 
   if (isDisplayed) {
@@ -31,6 +31,7 @@ export default function LooseFileList(props) {
             refreshFunc = {refreshFunc}
             email = {email}
             primaryAccount ={primaryAccount}
+            refreshAllFunc = {refreshAllFunc}
           />
         ))}
       </div>
