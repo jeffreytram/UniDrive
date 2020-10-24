@@ -22,6 +22,7 @@ class App extends Component {
       userList: [],
       uploadRequests: [],
       lastRefreshTime: Date().substring(0, 21),
+      userId : userId
     };
   }
 
@@ -170,7 +171,8 @@ class App extends Component {
           files: [],
           sortedBy: 'folder, viewedByMeTime desc',
           email : email
-        }
+        },
+        userId : userId += 1
       }));
     } else {
       this.setState((prevState) => ({
@@ -186,7 +188,8 @@ class App extends Component {
           openFolders: [],
           sortedBy: 'folder, viewedByMeTime desc',
         }], 
-        primaryAccount : prevState.primaryAccount
+        primaryAccount : prevState.primaryAccount,
+        userId : userId += 1
       }));
     }
     userId +=1;
