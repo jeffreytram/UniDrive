@@ -300,7 +300,7 @@ initShare = (share, shareInternal, shareExternal, findPermi, findFilePermi, dele
               View on Google Drive
             </MenuItem>
             <hr className="divider" />
-            <MenuItem className="menu-item" onClick={() => this.submit(share, shareInternal, shareExternal )}>
+            <MenuItem className="menu-item" onClick={() => this.submit(shareFunc, shareInternalFunc, shareExternalFunc, findPermissionFunc1, findFilePermissionFunc1, deletePermissionFunc1 )}>
               <FontAwesomeIcon className="menu-icon" icon={faShare} />
               Share
             </MenuItem>
