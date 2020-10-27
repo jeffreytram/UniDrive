@@ -20,7 +20,7 @@ class File extends Component {
     const { userId } = this.props;
     const fileId = this.props.data.id;
     const refreshFunction = this.props.refreshFunc;
-    return window.gapi.client.drive.files.copy({
+    window.gapi.client.drive.files.copy({
       fileId,
     }).then((response) => {
       refreshFunction(userId);
@@ -147,7 +147,7 @@ deletePermission = (permId) => {
                 <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
                 Move to Root
               </MenuItem>
-              <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+              <MenuItem className="menu-item" onClick={() => renameFunc()}>
                 <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
                 Rename
               </MenuItem>

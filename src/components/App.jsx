@@ -733,7 +733,7 @@ findTopLevelFolders = (fileList) => {
           if (response.error) {
             console.log(response.error);
           }
-          func.call(this, ...args)
+          func.call(this, ...args);
         });
       });
     };

@@ -97,18 +97,23 @@ class User extends Component {
         console.log(response.error);
       }
       console.log(response);
-      return window.gapi.client.drive.permissions.update({
+      window.gapi.client.drive.permissions.update({
         fileId,
         permissionId: response.result.id,
         transferOwnership: true,
         resource: {
           role: 'owner',
         },
+      }).then((response) => {
+        if (response.error) {
+          console.log(response.error);
+        }
       });
     });
   }
 
   create = (fileType) => {
+    const { userId } = this.props;
     let newName = prompt('Enter a Name');
     if (newName === null) { return; }
     if (newName === '') {
@@ -118,8 +123,10 @@ class User extends Component {
       mimeType: fileType,
       name: newName,
     });
-    return window.gapi.client.drive.files.create({
+    window.gapi.client.drive.files.create({
       resource: reqBody,
+    }).then((response) => {
+      refreshFunc(userId);
     });
   }
 
