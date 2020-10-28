@@ -126,7 +126,7 @@ class User extends Component {
     window.gapi.client.drive.files.create({
       resource: reqBody,
     }).then((response) => {
-      refreshFunc(userId);
+      this.refreshFunc(userId);
     });
   }
 
