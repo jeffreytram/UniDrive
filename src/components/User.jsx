@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -16,15 +16,16 @@ class User extends Component {
   constructor() {
     super();
     this.state = {
-      isDisplayed: false,
       looseFilesIsDisplayed: true,
     };
   }
 
   viewToggle = () => {
-    this.setState((prevState) => ({
-      isDisplayed: !prevState.isDisplayed,
-    }));
+    const { forwardRef } = this.props;
+    console.log(forwardRef);
+    console.log(forwardRef.current);
+    const display = forwardRef.current.style.display;
+    forwardRef.current.style.display = (display == 'none') ? 'block' : 'none';
   }
 
   handleIconClick = (event, func) => {
@@ -131,18 +132,15 @@ class User extends Component {
   }
 
   render() {
-    const { isDisplayed, looseFilesIsDisplayed } = this.state;
+    const { looseFilesIsDisplayed } = this.state;
 
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
-      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal,
+      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal, usedRef
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
-    const fileContainerStyles = {
-      display: isDisplayed ? 'flex' : 'none',
-    };
     const createFunc = loadAuth(userId, this.create);
     return (
       <ContextMenuTrigger className="user" id={userId}>
@@ -272,51 +270,48 @@ class User extends Component {
             Remove Account
           </MenuItem>
         </ContextMenu>
-
-        <TopLevelFolderList
-          fileList={fileList}
-          fileContainerStyles={fileContainerStyles}
-          userId={userId}
-          topLevelFolderList={topLevelFolderList}
-          openChildrenFunc={openChildrenFunc}
-          shareFile={loadAuth(userId, this.shareFile)}
-          moveWithin={moveWithin}
-          loadAuth={loadAuth}
-          moveExternal={moveExternal}
-          refreshFunc={refreshFunc}
-          email={email}
-        />
-
-        <OpenFolderList
-          fileList={fileList}
-          fileContainerStyles={fileContainerStyles}
-          userId={userId}
-          openChildrenFunc={openChildrenFunc}
-          filepathTraceFunc={filepathTraceFunc}
-          openFolderList={openFolderList}
-          buildChildrenArray={buildChildrenArray}
-          closeFolderFunc={closeFolderFunc}
-          shareFile={loadAuth(userId, this.shareFile)}
-          moveWithin={moveWithin}
-          loadAuth={loadAuth}
-          moveExternal={moveExternal}
-          refreshFunc={refreshFunc}
-          email={email}
-        />
-        <LooseFileList
-          fileList={fileList}
-          fileContainerStyles={fileContainerStyles}
-          userId={userId}
-          openChildrenFunc={openChildrenFunc}
-          looseFileList={looseFileList}
-          shareFile={loadAuth(userId, this.shareFile)}
-          moveWithin={moveWithin}
-          isDisplayed={looseFilesIsDisplayed}
-          loadAuth={loadAuth}
-          moveExternal={moveExternal}
-          refreshFunc={refreshFunc}
-          email={email}
-        />
+        <div style={{display: 'none',}} className="Files/Folders" ref={this.props.forwardRef}>
+          <TopLevelFolderList
+            fileList={fileList}
+            userId={userId}
+            topLevelFolderList={topLevelFolderList}
+            openChildrenFunc={openChildrenFunc}
+            shareFile={loadAuth(userId, this.shareFile)}
+            moveWithin={moveWithin}
+            loadAuth={loadAuth}
+            moveExternal={moveExternal}
+            refreshFunc={refreshFunc}
+            email={email}
+          />
+          <OpenFolderList
+            fileList={fileList}
+            userId={userId}
+            openChildrenFunc={openChildrenFunc}
+            filepathTraceFunc={filepathTraceFunc}
+            openFolderList={openFolderList}
+            buildChildrenArray={buildChildrenArray}
+            closeFolderFunc={closeFolderFunc}
+            shareFile={loadAuth(userId, this.shareFile)}
+            moveWithin={moveWithin}
+            loadAuth={loadAuth}
+            moveExternal={moveExternal}
+            refreshFunc={refreshFunc}
+            email={email}
+          />
+          <LooseFileList
+            fileList={fileList}
+            userId={userId}
+            openChildrenFunc={openChildrenFunc}
+            looseFileList={looseFileList}
+            shareFile={loadAuth(userId, this.shareFile)}
+            moveWithin={moveWithin}
+            isDisplayed={looseFilesIsDisplayed}
+            loadAuth={loadAuth}
+            moveExternal={moveExternal}
+            refreshFunc={refreshFunc}
+            email={email}
+          />
+        </div>
       </ContextMenuTrigger>
     );
   }

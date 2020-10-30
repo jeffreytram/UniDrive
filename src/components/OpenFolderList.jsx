@@ -5,12 +5,12 @@ import './FileList.css';
 
 export default function OpenFolderList(props) {
   const {
-    fileList, fileContainerStyles, userId, openChildrenFunc, openFolderList, buildChildrenArray, filepathTraceFunc,
+    fileList, userId, openChildrenFunc, openFolderList, buildChildrenArray, filepathTraceFunc,
     closeFolderFunc, moveExternal, moveWithin, shareFile, loadAuth, email,
   } = props;
 
   return (
-    <div className="file-list-container" style={fileContainerStyles}>
+    <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
       {openFolderList.map((fileObj) => (
         <OpenFolder
           fileObj={fileObj}

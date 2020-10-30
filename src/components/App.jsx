@@ -17,6 +17,7 @@ let folderId = 1;
 class App extends Component {
   constructor() {
     super();
+    //this.refs = [];
     this.state = {
       userList: [],
       uploadRequests: [],
@@ -125,6 +126,7 @@ class App extends Component {
           filesWithChildren: [],
           looseFiles: [],
           openFolders: [],
+          ref: React.createRef(),
           sortedBy: 'folder, viewedByMeTime desc',
         }],
       }));
@@ -854,6 +856,10 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
+  // addRef = (node, index) => {
+  //   this.refs[index] = node;
+  // }
+
   render() {
     // #const { userList } = this.state;
     const { userList, uploadRequests } = this.state;
@@ -864,6 +870,7 @@ findTopLevelFolders = (fileList) => {
         <Sidebar
           userList={userList}
           parseIDToken={this.parseIDToken}
+          refs={this.refs}
         />
         <div className="main-container">
           <div className="main-content">
@@ -883,6 +890,7 @@ findTopLevelFolders = (fileList) => {
                     </span>
                   </>
                   <UserList
+                    //addRef={this.addRef}
                     userList={userList}
                     parseIDToken={this.parseIDToken}
                     removeFunc={this.signOutFunction}
@@ -899,7 +907,6 @@ findTopLevelFolders = (fileList) => {
                     moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}
                     refreshFunc = {this.refreshFunction}
-                 
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
