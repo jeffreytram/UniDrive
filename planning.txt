@@ -47,6 +47,10 @@ Running the code
 - run command "npm install"
 - start the development server with "npm start"
 
+Securing API key
+https://www.rockyourcode.com/secret-keys-in-react/
+- dont use .env file since it is embedded in the application
+
 
 8.22.20
 - added example code from https://dev.to/arnabsen1729/using-google-drive-api-v3-to-upload-a-file-to-drive-using-react-4loi
