@@ -5,13 +5,13 @@ import './FileList.css';
 
 export default function TopLevelFolderList(props) {
   const {
-    fileList, fileContainerStyles, userId, topLevelFolderList, openChildrenFunc,
+    fileList, userId, topLevelFolderList, openChildrenFunc,
     moveExternal, shareFile, moveWithin, loadAuth, refreshFunc, email
   } = props;
 
   return (
     <div className="topFolder">
-    <div className="file-list-container" style={fileContainerStyles}>
+    <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
       {topLevelFolderList.map((fileObj) => (
         <File
           fileObj={fileObj}

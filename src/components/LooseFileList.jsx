@@ -5,13 +5,13 @@ import './FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    fileList, fileContainerStyles, userId, copyFunc, deleteFunc, renameFunc, openChildrenFunc,
+    fileList, userId, copyFunc, deleteFunc, renameFunc, openChildrenFunc,
     looseFileList, moveExternal, shareFile, moveWithin, isDisplayed, loadAuth, refreshFunc, email
   } = props;
 
   if (isDisplayed) {
     return (
-      <div className="file-list-container" style={fileContainerStyles}>
+      <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
         {looseFileList.map((file) => (
           <File
             userId={userId}

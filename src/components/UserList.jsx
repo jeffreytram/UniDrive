@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import User from './User';
 import './UserList.css';
@@ -7,12 +7,14 @@ export default function UserList(props) {
   const {
     userList, parseIDToken, removeFunc, refreshFunc, isChildFunc, openChildrenFunc,
     buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, sortFunc, moveExternal, moveWithin,
-    loadAuth,
+    loadAuth, addRef
   } = props;
   return (
     <div className="user-list">
-      {userList.map((user) => (
+      {userList.map((user, i) => (
         <User
+          //ref={(node) => { this.addRef(node, i);}}
+          forwardRef={user.ref}
           parseIDToken={parseIDToken}
           fileList={user.filesWithChildren}
           userId={user.id}
