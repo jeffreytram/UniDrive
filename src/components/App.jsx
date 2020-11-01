@@ -17,7 +17,6 @@ let folderId = 1;
 class App extends Component {
   constructor() {
     super();
-    //this.refs = [];
     this.state = {
       userList: [],
       uploadRequests: [],
@@ -74,7 +73,6 @@ class App extends Component {
     * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   signInFunction = (accessToken, idToken, code) => {
-    // ready = false;
     const userInfo = this.parseIDToken(idToken);
     const { email } = userInfo;
     const isDup = this.addUser(accessToken, idToken, code);
@@ -235,7 +233,6 @@ retrieveAllFiles = (callback, email, user) => {
             orderBy: sortedBy,
             q: 'trashed = false',
             pageSize: 1000,
-            // maxResults : 10,
             corpera: 'allDrives',
             includeItemsFromAllDrives: 'true',
             supportsAllDrives: 'true',
@@ -268,7 +265,6 @@ retrieveAllFiles = (callback, email, user) => {
         orderBy: sortedBy,
         q: 'trashed = false',
         pageSize: 1000,
-        // maxResults : 10,
         corpera: 'allDrives',
         includeItemsFromAllDrives: 'true',
         supportsAllDrives: 'true',
@@ -749,7 +745,6 @@ findTopLevelFolders = (fileList) => {
    *
    */
   refreshFunction = (id) => {
-    // ready = false;
     const index = this.getAccountIndex(id);
     const { userList } = this.state;
     const userInfo = this.parseIDToken(userList[index].idToken);
@@ -819,7 +814,7 @@ findTopLevelFolders = (fileList) => {
         resumable.setRequestHeader('Content-Type', 'application/json');
         resumable.setRequestHeader('X-Upload-Content-Length', file.size);
         resumable.setRequestHeader('X-Upload-Content-Type', contentType);
-        resumable.onreadystatechange =  () => {
+        resumable.onreadystatechange = () => {
           if (resumable.readyState === XMLHttpRequest.DONE && resumable.status === 200) {
             const locationUrl = resumable.getResponseHeader('Location');
             const reader = new FileReader();
@@ -831,7 +826,7 @@ findTopLevelFolders = (fileList) => {
               uploadResumable.onreadystatechange = () => {
                 if (uploadResumable.readyState === XMLHttpRequest.DONE && uploadResumable.status === 200) {
                   console.log(uploadResumable.response);
-                  this.refreshAllFunction()
+                  this.refreshAllFunction();
                 }
               };
               uploadResumable.send(reader.result);
@@ -856,12 +851,7 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
-  // addRef = (node, index) => {
-  //   this.refs[index] = node;
-  // }
-
   render() {
-    // #const { userList } = this.state;
     const { userList, uploadRequests } = this.state;
     const addedAccount = userList.length > 0;
     return (
@@ -890,7 +880,6 @@ findTopLevelFolders = (fileList) => {
                     </span>
                   </>
                   <UserList
-                    //addRef={this.addRef}
                     userList={userList}
                     parseIDToken={this.parseIDToken}
                     removeFunc={this.signOutFunction}
@@ -906,7 +895,6 @@ findTopLevelFolders = (fileList) => {
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}
-                    refreshFunc = {this.refreshFunction}
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>

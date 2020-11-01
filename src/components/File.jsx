@@ -6,7 +6,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
-  ContextMenu, MenuItem, ContextMenuTrigger, SubMenu,
+  ContextMenu, MenuItem, ContextMenuTrigger,
 } from 'react-contextmenu';
 import './File.css';
 
@@ -49,7 +49,6 @@ findPermission = (findFilePermi, deletePermi) => {
   }).then((response) => {
     console.log(response);
     const permId = response.result.user.permissionId;
-    console.log(permId);
     findFilePermi(permId, deletePermi);
   });
 }
@@ -94,17 +93,23 @@ deletePermission = (permId) => {
     });
   }
 
-  star = () => window.gapi.client.drive.files.update({
-    fileId: this.props.data.id,
-    starred: !this.props.data.starred,
-  })
+  star = () => {
+    const refreshFunction = this.props.refreshFunc;
+    const { userId } = this.props;
+    window.gapi.client.drive.files.update({
+      fileId: this.props.data.id,
+      starred: !this.props.data.starred,
+    }).then((response) => {
+      refreshFunction(userId);
+    });
+  }
 
   /* Props contains: Name, Link, Image */
   // export default function File(props) {
   render() {
     const {
-      userId, data, fId, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
-      loadAuth, refreshFunc, email,
+      userId, data, fId, displayed, openChildrenFunc, fileObj, shareFile, moveWithin,
+      loadAuth,
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
