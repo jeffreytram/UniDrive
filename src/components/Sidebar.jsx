@@ -22,14 +22,13 @@ export default function Sidebar({userList, parseIDToken, filterFilesInAllAccount
 
     let query = 'trashed = false';
 
-    if (filter === 'starred') {
-      query += ' and starred = true';
-    } else if (filter === 'shared') {
-      query += ' and sharedWithMe';
-    } else if (filter === 'my drives') {
+    if (filter === 'my drives') {
       query += ' and "me" in owners';
-    }
-
+    } else if (filter === 'shared') {
+      query += ' and not "me" in owners';
+    } else if (filter === 'starred') {
+      query += ' and starred = true';
+    } 
     filterFilesInAllAccounts(query);
   };
 
