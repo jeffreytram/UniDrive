@@ -1,0 +1,8 @@
+.getting-started-container {
+  width: 80vw;
+  margin: var(--header-margin) auto;
+  color: var(--text);
+  padding: 30px 15px;
+  text-align: center;
+}
+

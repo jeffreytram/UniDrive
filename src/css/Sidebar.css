@@ -1,13 +1,12 @@
 .sidebar {
   margin: 0;
-  padding: 5px;
   width: 15%;
   color: var(--text);
   background-color: var(--sub-bg);
   position: fixed;
   height: 100%;
   overflow: hidden;
-  margin-top: 45px;
+  margin-top: var(--header-margin);
 }
 
 .sidebar-icon {
@@ -22,15 +21,6 @@
   margin-top: 70px;
 }
 
-.sidebar-user {
-  padding: 4px 4px;
-}
-
-.sidebar-user:hover {
-  outline: 2px solid var(--subtle2);
-  cursor: pointer;
-}
-
 .sidebar-picture {
   height: 20px;
   vertical-align: text-bottom;
@@ -38,16 +28,18 @@
   margin-right: 5px;
 }
 
-.sidebar-item {
-  padding: 4px 8px;
+.sidebar-item, .sidebar-user {
+  border: 1px solid rgba(0,0,0,0);
+  padding: 8px 8px;
 }
 
-.sidebar-item:hover {
-  outline: 1px solid var(--text);
+.sidebar-item:hover, .sidebar-user:hover {
+  border: 1px solid var(--text);
   cursor: pointer;
+  font-weight: 600;
 }
 
 .selected {
-  background-color: var(--text);
-  color: white;
+  background-color: var(--subtle1);
+  font-weight: bold;
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
 import Layout from './components/Layout';
+import Welcome from './components/Welcome';
 import { config } from './config';
 import './App.css';
 
@@ -248,7 +249,7 @@ retrieveAllFiles = (callback, email, user) => {
             orderBy: sortedBy,
             q: query,
             pageSize: 1000,
-            corpera: 'allDrives',
+            corpora: 'allDrives',
             includeItemsFromAllDrives: 'true',
             supportsAllDrives: 'true',
           }).then((response) => {
@@ -280,7 +281,7 @@ retrieveAllFiles = (callback, email, user) => {
         orderBy: sortedBy,
         q: query,
         pageSize: 1000,
-        corpera: 'allDrives',
+        corpora: 'allDrives',
         includeItemsFromAllDrives: 'true',
         supportsAllDrives: 'true',
       }).then((response) => {
@@ -870,17 +871,17 @@ findTopLevelFolders = (fileList) => {
     const { userList, uploadRequests } = this.state;
     const addedAccount = userList.length > 0;
     return (
-      <Layout
-        userList={userList}
-        parseIDToken={this.parseIDToken}
-        refs={this.refs}
-        filterFilesInAllAccounts={(query) => this.filterFilesInAllAccounts(query)}
-      >
-        <div className="main-container">
-          <div className="main-content">
-            {addedAccount
-              ? (
-                <div>
+      <div>
+        {addedAccount
+          ? (
+            <Layout
+              userList={userList}
+              parseIDToken={this.parseIDToken}
+              refs={this.refs}
+              filterFilesInAllAccounts={(query) => this.filterFilesInAllAccounts(query)}
+            >
+              <div className="main-container">
+                <div className="main-content">
                   <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
                   <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
                     Refresh All
@@ -919,17 +920,13 @@ findTopLevelFolders = (fileList) => {
                     ))}
                   </div>
                 </div>
-              )
-              : (
-                <div className="getting-started-container">
-                  <h2>Welcome to UniDrive!</h2>
-                  <h3>Get started by adding an account.</h3>
-                  <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-                </div>
-              )}
-          </div>
-        </div>
-      </Layout>
+              </div>
+            </Layout>
+          )
+          : (
+            <Welcome authorizeUser={() => this.authorizeUser()} />
+          )}
+      </div>
     );
   }
 }

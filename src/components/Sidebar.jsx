@@ -5,8 +5,7 @@ import { faShareSquare, faStar, faHome } from '@fortawesome/free-solid-svg-icons
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import '../css/Sidebar.css';
 
-export default function Sidebar({userList, parseIDToken, filterFilesInAllAccounts}) {
-
+export default function Sidebar({ userList, parseIDToken, filterFilesInAllAccounts }) {
   const scrollToggle = (ref) => {
     userList.forEach((user) => {
       user.ref.current.style.display = 'none';
@@ -28,7 +27,7 @@ export default function Sidebar({userList, parseIDToken, filterFilesInAllAccount
       query += ' and not "me" in owners';
     } else if (filter === 'starred') {
       query += ' and starred = true';
-    } 
+    }
     filterFilesInAllAccounts(query);
   };
 
