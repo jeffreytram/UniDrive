@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
+import Layout from './components/Layout';
 import { config } from './config';
 import './App.css';
 
@@ -855,13 +854,11 @@ findTopLevelFolders = (fileList) => {
     const { userList, uploadRequests } = this.state;
     const addedAccount = userList.length > 0;
     return (
-      <div className="App">
-        <Header />
-        <Sidebar
-          userList={userList}
-          parseIDToken={this.parseIDToken}
-          refs={this.refs}
-        />
+      <Layout
+        userList={userList}
+        parseIDToken={this.parseIDToken}
+        refs={this.refs}
+      >
         <div className="main-container">
           <div className="main-content">
             {addedAccount
@@ -915,7 +912,7 @@ findTopLevelFolders = (fileList) => {
               )}
           </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 }
