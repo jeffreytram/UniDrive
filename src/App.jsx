@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import UserList from './UserList';
-import RequestProgressElement from './RequestProgressElement';
-import Header from './Header';
-import Sidebar from './Sidebar';
-import { config } from '../config';
+import UserList from './components/UserList';
+import RequestProgressElement from './components/RequestProgressElement';
+import Layout from './components/Layout';
+import Welcome from './components/Welcome';
+import { config } from './config';
 import './App.css';
 
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
@@ -17,11 +17,11 @@ let folderId = 1;
 class App extends Component {
   constructor() {
     super();
-    //this.refs = [];
     this.state = {
       userList: [],
       uploadRequests: [],
       lastRefreshTime: Date().substring(0, 21),
+      query: 'trashed = false',
     };
   }
 
@@ -74,7 +74,6 @@ class App extends Component {
     * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   signInFunction = (accessToken, idToken, code) => {
-    // ready = false;
     const userInfo = this.parseIDToken(idToken);
     const { email } = userInfo;
     const isDup = this.addUser(accessToken, idToken, code);
@@ -166,9 +165,24 @@ class App extends Component {
           console.log('authorization error');
           return;
         }
-        this.getfiles(index, email);
+        this.getFiles(index, email);
       });
     });
+  }
+
+  filterFilesInAllAccounts = (query) => {
+    this.setQuery(query);
+    const { userList } = this.state;
+    userList.forEach((user, i) => {
+      const { email } = this.parseIDToken(userList[i].idToken);
+      this.updateFiles(i, email);
+    });
+  }
+
+  setQuery = (query) => {
+    this.setState((prevState) => ({
+      query,
+    }));
   }
 
   /**
@@ -176,8 +190,7 @@ class App extends Component {
    * @param {Number} index the index of the user to store the files
    * @param {Object} email email of the user (used for authentication)
    */
-
-  getfiles = (index, email) => {
+  getFiles = (index, email) => {
     const user = this.state.userList[index];
     this.retrieveAllFiles((result) => {
       this.setState((prevState) => {
@@ -214,6 +227,7 @@ class App extends Component {
  * @param {String} email email of the user to keep automatically authenticating for each list request
  */
 retrieveAllFiles = (callback, email, user) => {
+  const { query } = this.state;
   let res = [];
   const { sortedBy } = user;
   const retrievePageOfFiles = function (email, response, user) {
@@ -233,10 +247,9 @@ retrieveAllFiles = (callback, email, user) => {
             pageToken: nextPageToken,
             fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId), nextPageToken',
             orderBy: sortedBy,
-            q: 'trashed = false',
+            q: query,
             pageSize: 1000,
-            // maxResults : 10,
-            corpera: 'allDrives',
+            corpora: 'allDrives',
             includeItemsFromAllDrives: 'true',
             supportsAllDrives: 'true',
           }).then((response) => {
@@ -266,10 +279,9 @@ retrieveAllFiles = (callback, email, user) => {
       window.gapi.client.drive.files.list({
         fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId) , nextPageToken',
         orderBy: sortedBy,
-        q: 'trashed = false',
+        q: query,
         pageSize: 1000,
-        // maxResults : 10,
-        corpera: 'allDrives',
+        corpora: 'allDrives',
         includeItemsFromAllDrives: 'true',
         supportsAllDrives: 'true',
       }).then((response) => {
@@ -720,7 +732,7 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
-  load_authorize = (id, func) => {
+  loadAuthorize = (id, func) => {
     const email = this.getEmailFromUserId(id);
     return (...args) => {
       window.gapi.client.load('drive', 'v3').then(() => {
@@ -749,7 +761,6 @@ findTopLevelFolders = (fileList) => {
    *
    */
   refreshFunction = (id) => {
-    // ready = false;
     const index = this.getAccountIndex(id);
     const { userList } = this.state;
     const userInfo = this.parseIDToken(userList[index].idToken);
@@ -819,7 +830,7 @@ findTopLevelFolders = (fileList) => {
         resumable.setRequestHeader('Content-Type', 'application/json');
         resumable.setRequestHeader('X-Upload-Content-Length', file.size);
         resumable.setRequestHeader('X-Upload-Content-Type', contentType);
-        resumable.onreadystatechange =  () => {
+        resumable.onreadystatechange = () => {
           if (resumable.readyState === XMLHttpRequest.DONE && resumable.status === 200) {
             const locationUrl = resumable.getResponseHeader('Location');
             const reader = new FileReader();
@@ -831,7 +842,7 @@ findTopLevelFolders = (fileList) => {
               uploadResumable.onreadystatechange = () => {
                 if (uploadResumable.readyState === XMLHttpRequest.DONE && uploadResumable.status === 200) {
                   console.log(uploadResumable.response);
-                  this.refreshAllFunction()
+                  this.refreshAllFunction();
                 }
               };
               this.setState((prevState) => ({
@@ -855,27 +866,21 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
-  // addRef = (node, index) => {
-  //   this.refs[index] = node;
-  // }
-
   render() {
-    // #const { userList } = this.state;
     const { userList, uploadRequests } = this.state;
     const addedAccount = userList.length > 0;
     return (
-      <div className="App">
-        <Header />
-        <Sidebar
-          userList={userList}
-          parseIDToken={this.parseIDToken}
-          refs={this.refs}
-        />
-        <div className="main-container">
-          <div className="main-content">
-            {addedAccount
-              ? (
-                <div>
+      <div>
+        {addedAccount
+          ? (
+            <Layout
+              userList={userList}
+              parseIDToken={this.parseIDToken}
+              refs={this.refs}
+              filterFilesInAllAccounts={(query) => this.filterFilesInAllAccounts(query)}
+            >
+              <div className="main-container">
+                <div className="main-content">
                   <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
                   <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
                     Refresh All
@@ -889,7 +894,6 @@ findTopLevelFolders = (fileList) => {
                     </span>
                   </>
                   <UserList
-                    //addRef={this.addRef}
                     userList={userList}
                     parseIDToken={this.parseIDToken}
                     removeFunc={this.signOutFunction}
@@ -904,8 +908,7 @@ findTopLevelFolders = (fileList) => {
                     sortFunc={this.changeSortedBy}
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
-                    loadAuth={this.load_authorize}
-                    refreshFunc = {this.refreshFunction}
+                    loadAuth={this.loadAuthorize}
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
@@ -916,16 +919,12 @@ findTopLevelFolders = (fileList) => {
                     ))}
                   </div>
                 </div>
-              )
-              : (
-                <div className="getting-started-container">
-                  <h2>Welcome to UniDrive!</h2>
-                  <h3>Get started by adding an account.</h3>
-                  <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-                </div>
-              )}
-          </div>
-        </div>
+              </div>
+            </Layout>
+          )
+          : (
+            <Welcome authorizeUser={() => this.authorizeUser()} />
+          )}
       </div>
     );
   }

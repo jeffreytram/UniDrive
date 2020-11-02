@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import OpenFolder from './OpenFolder';
-import './FileList.css';
+import '../css/FileList.css';
 
 export default function OpenFolderList(props) {
   const {

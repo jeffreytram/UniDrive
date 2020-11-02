@@ -1,4 +1,4 @@
-import React, { Component, forwardRef } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,7 +10,7 @@ import {
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
-import './User.css';
+import '../css/User.css';
 
 class User extends Component {
   constructor() {
@@ -22,10 +22,8 @@ class User extends Component {
 
   viewToggle = () => {
     const { forwardRef } = this.props;
-    console.log(forwardRef);
-    console.log(forwardRef.current);
-    const display = forwardRef.current.style.display;
-    forwardRef.current.style.display = (display == 'none') ? 'block' : 'none';
+    const { display } = forwardRef.current.style;
+    forwardRef.current.style.display = (display === 'none') ? 'block' : 'none';
   }
 
   handleIconClick = (event, func) => {
@@ -135,9 +133,9 @@ class User extends Component {
     const { looseFilesIsDisplayed } = this.state;
 
     const {
-      parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
-      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal, usedRef
+      parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, topLevelFolderList,
+      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc,
+      closeFolderFunc, sortFunc, currentSort, moveWithin, loadAuth, moveExternal,
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -270,7 +268,7 @@ class User extends Component {
             Remove Account
           </MenuItem>
         </ContextMenu>
-        <div style={{display: 'none',}} className="Files/Folders" ref={this.props.forwardRef}>
+        <div style={{ display: 'none' }} className="Files/Folders" ref={this.props.forwardRef}>
           <TopLevelFolderList
             fileList={fileList}
             userId={userId}

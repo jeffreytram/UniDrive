@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import FilePath from './FilePath';
-import './OpenFolder.css';
+import '../css/OpenFolder.css';
 import File from './File';
 
 class OpenFolder extends Component {

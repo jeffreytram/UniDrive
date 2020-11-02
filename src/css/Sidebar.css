@@ -1,0 +1,45 @@
+.sidebar {
+  margin: 0;
+  width: 15%;
+  color: var(--text);
+  background-color: var(--sub-bg);
+  position: fixed;
+  height: 100%;
+  overflow: hidden;
+  margin-top: var(--header-margin);
+}
+
+.sidebar-icon {
+  color: var(--subtle2);
+}
+
+.content {
+  height: 100%;
+}
+
+.sidebar-user-container {
+  margin-top: 70px;
+}
+
+.sidebar-picture {
+  height: 20px;
+  vertical-align: text-bottom;
+  border-radius: 10px;
+  margin-right: 5px;
+}
+
+.sidebar-item, .sidebar-user {
+  border: 1px solid rgba(0,0,0,0);
+  padding: 8px 8px;
+}
+
+.sidebar-item:hover, .sidebar-user:hover {
+  border: 1px solid var(--text);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.selected {
+  background-color: var(--subtle1);
+  font-weight: bold;
+}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './File.css';
-import './FilePath.css';
+import '../css/File.css';
+import '../css/FilePath.css';
 
 class Filepath extends Component {
   constructor() {
