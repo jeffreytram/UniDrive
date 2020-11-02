@@ -174,9 +174,8 @@ class App extends Component {
     const { userList } = this.state;
     userList.forEach((user, i) => {
       const { email } = this.parseIDToken(userList[i].idToken);
-      this.getFiles(i, email);
+      this.updateFiles(i, email);
     });
-    this.refreshAllFunction();
   }
 
   setQuery = (query) => {

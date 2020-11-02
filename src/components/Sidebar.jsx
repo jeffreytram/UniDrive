@@ -21,9 +21,14 @@ export default function Sidebar({userList, parseIDToken, filterFilesInAllAccount
     target.classList.add('selected');
 
     let query = 'trashed = false';
-    if (filter === 'starred') {
+
+    if (filter === 'my drives') {
+      query += ' and "me" in owners';
+    } else if (filter === 'shared') {
+      query += ' and not "me" in owners';
+    } else if (filter === 'starred') {
       query += ' and starred = true';
-    }
+    } 
     filterFilesInAllAccounts(query);
   };
 
@@ -31,15 +36,15 @@ export default function Sidebar({userList, parseIDToken, filterFilesInAllAccount
     <div className="sidebar">
       <div className="sidebar-item selected" onClick={(event) => handleClick(event.target, '')}>
         <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faHome} size="2x" />
-        Home
+        All Files
       </div>
-      <div className="sidebar-item" onClick={(event) => handleClick(event.target, '')}>
+      <div className="sidebar-item" onClick={(event) => handleClick(event.target, 'my drives')}>
         <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faGoogleDrive} size="2x" />
-        My Drives
+        My Drive Files
       </div>
-      <div className="sidebar-item" onClick={(event) => handleClick(event.target, '')}>
+      <div className="sidebar-item" onClick={(event) => handleClick(event.target, 'shared')}>
         <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faShareSquare} size="2x" />
-        Shared with me
+        Shared
       </div>
       <div className="sidebar-item" onClick={(event) => handleClick(event.target, 'starred')}>
         <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faStar} size="2x" />
