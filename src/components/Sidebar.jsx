@@ -20,7 +20,7 @@ export default function Sidebar({userList, parseIDToken, filterFilesInAllAccount
     selected.classList.remove('selected');
     target.classList.add('selected');
 
-    let query = 'trashed = true';
+    let query = 'trashed = false';
     if (filter === 'starred') {
       query += ' and starred = true';
     }

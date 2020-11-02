@@ -20,6 +20,7 @@ class App extends Component {
       userList: [],
       uploadRequests: [],
       lastRefreshTime: Date().substring(0, 21),
+      query: 'trashed = false',
     };
   }
 
@@ -169,11 +170,19 @@ class App extends Component {
   }
 
   filterFilesInAllAccounts = (query) => {
+    this.setQuery(query);
     const { userList } = this.state;
     userList.forEach((user, i) => {
       const { email } = this.parseIDToken(userList[i].idToken);
-      this.getFiles(i, email, query);
+      this.getFiles(i, email);
     });
+    this.refreshAllFunction();
+  }
+
+  setQuery = (query) => {
+    this.setState((prevState) => ({
+      query,
+    }));
   }
 
   /**
@@ -181,7 +190,7 @@ class App extends Component {
    * @param {Number} index the index of the user to store the files
    * @param {Object} email email of the user (used for authentication)
    */
-  getFiles = (index, email, query = 'trashed = false') => {
+  getFiles = (index, email) => {
     const user = this.state.userList[index];
     this.retrieveAllFiles((result) => {
       this.setState((prevState) => {
@@ -208,7 +217,7 @@ class App extends Component {
           userList: newUserList,
         };
       }, () => { ready = true; });
-    }, email, user, query);
+    }, email, user);
   }
 
 /**
@@ -217,7 +226,8 @@ class App extends Component {
  * @param {Function} callback Function to call when the request is complete.
  * @param {String} email email of the user to keep automatically authenticating for each list request
  */
-retrieveAllFiles = (callback, email, user, query) => {
+retrieveAllFiles = (callback, email, user) => {
+  const { query } = this.state;
   let res = [];
   const { sortedBy } = user;
   const retrievePageOfFiles = function (email, response, user) {
