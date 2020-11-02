@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import File from './File';
-import './FileList.css';
+import '../css/FileList.css';
 
 export default function TopLevelFolderList(props) {
   const {

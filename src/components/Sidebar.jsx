@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faShareSquare, faStar, faHome,
-} from '@fortawesome/free-solid-svg-icons';
-import './Sidebar.css';
+import { faShareSquare, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
+import '../css/Sidebar.css';
 
 class Sidebar extends Component {
   scrollToggle = (ref) => {
@@ -21,7 +20,7 @@ class Sidebar extends Component {
     return (
       <div className="sidebar">
         <div>
-          <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faHome} size="2x" />
+          <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faGoogleDrive} size="2x" />
           My Drives
         </div>
         <div>

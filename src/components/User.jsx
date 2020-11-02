@@ -10,7 +10,7 @@ import {
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
-import './User.css';
+import '../css/User.css';
 
 class User extends Component {
   constructor() {
