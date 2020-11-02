@@ -37,3 +37,12 @@
   border-radius: 10px;
   margin-right: 5px;
 }
+
+.sidebar-item {
+  padding: 4px 8px;
+}
+
+.sidebar-item:hover {
+  outline: 1px solid var(--text);
+  cursor: pointer;
+}

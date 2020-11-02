@@ -4,7 +4,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 
 export default function Layout({
-  children, userList, parseIDToken, refs,
+  children, userList, parseIDToken, refs, filterFilesInAllAccounts
 }) {
   return (
     <div>
@@ -13,6 +13,7 @@ export default function Layout({
         userList={userList}
         parseIDToken={parseIDToken}
         refs={refs}
+        filterFilesInAllAccounts={filterFilesInAllAccounts}
       />
       {children}
     </div>

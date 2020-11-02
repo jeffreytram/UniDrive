@@ -163,8 +163,16 @@ class App extends Component {
           console.log('authorization error');
           return;
         }
-        this.getfiles(index, email);
+        this.getFiles(index, email);
       });
+    });
+  }
+
+  filterFilesInAllAccounts = (query) => {
+    const { userList } = this.state;
+    userList.forEach((user, i) => {
+      const { email } = this.parseIDToken(userList[i].idToken);
+      this.getFiles(i, email, query);
     });
   }
 
@@ -173,8 +181,7 @@ class App extends Component {
    * @param {Number} index the index of the user to store the files
    * @param {Object} email email of the user (used for authentication)
    */
-
-  getfiles = (index, email) => {
+  getFiles = (index, email, query = 'trashed = false') => {
     const user = this.state.userList[index];
     this.retrieveAllFiles((result) => {
       this.setState((prevState) => {
@@ -201,7 +208,7 @@ class App extends Component {
           userList: newUserList,
         };
       }, () => { ready = true; });
-    }, email, user);
+    }, email, user, query);
   }
 
 /**
@@ -210,7 +217,7 @@ class App extends Component {
  * @param {Function} callback Function to call when the request is complete.
  * @param {String} email email of the user to keep automatically authenticating for each list request
  */
-retrieveAllFiles = (callback, email, user) => {
+retrieveAllFiles = (callback, email, user, query) => {
   let res = [];
   const { sortedBy } = user;
   const retrievePageOfFiles = function (email, response, user) {
@@ -230,7 +237,7 @@ retrieveAllFiles = (callback, email, user) => {
             pageToken: nextPageToken,
             fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId), nextPageToken',
             orderBy: sortedBy,
-            q: 'trashed = false',
+            q: query,
             pageSize: 1000,
             corpera: 'allDrives',
             includeItemsFromAllDrives: 'true',
@@ -262,7 +269,7 @@ retrieveAllFiles = (callback, email, user) => {
       window.gapi.client.drive.files.list({
         fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId) , nextPageToken',
         orderBy: sortedBy,
-        q: 'trashed = false',
+        q: query,
         pageSize: 1000,
         corpera: 'allDrives',
         includeItemsFromAllDrives: 'true',
@@ -858,6 +865,7 @@ findTopLevelFolders = (fileList) => {
         userList={userList}
         parseIDToken={this.parseIDToken}
         refs={this.refs}
+        filterFilesInAllAccounts={(query) => this.filterFilesInAllAccounts(query)}
       >
         <div className="main-container">
           <div className="main-content">
