@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import UserList from './UserList';
-import RequestProgressElement from './RequestProgressElement';
-import Header from './Header';
-import Sidebar from './Sidebar';
-import { config } from '../config';
+import UserList from './components/UserList';
+import RequestProgressElement from './components/RequestProgressElement';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import { config } from './config';
 import './App.css';
 
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
@@ -716,7 +716,7 @@ findTopLevelFolders = (fileList) => {
     });
   }
 
-  load_authorize = (id, func) => {
+  loadAuthorize = (id, func) => {
     const email = this.getEmailFromUserId(id);
     return (...args) => {
       window.gapi.client.load('drive', 'v3').then(() => {
@@ -894,7 +894,7 @@ findTopLevelFolders = (fileList) => {
                     sortFunc={this.changeSortedBy}
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
-                    loadAuth={this.load_authorize}
+                    loadAuth={this.loadAuthorize}
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>

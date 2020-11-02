@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import User from './User';
-import './UserList.css';
+import '../css/UserList.css';
 
 export default function UserList(props) {
   const {

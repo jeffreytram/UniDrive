@@ -8,7 +8,7 @@ import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
   ContextMenu, MenuItem, ContextMenuTrigger,
 } from 'react-contextmenu';
-import './File.css';
+import '../css/File.css';
 
 class File extends Component {
   constructor() {
