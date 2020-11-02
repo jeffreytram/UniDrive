@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShareSquare, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faShareSquare, faStar, faHome } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import '../css/Sidebar.css';
 
@@ -15,7 +15,11 @@ export default function Sidebar({userList, parseIDToken, filterFilesInAllAccount
     window.scrollTo(0, ref.current.offsetTop - 100);
   };
 
-  const handleFilter = (filter) => {
+  const handleClick = (target, filter) => {
+    const selected = document.getElementsByClassName('selected')[0];
+    selected.classList.remove('selected');
+    target.classList.add('selected');
+
     let query = 'trashed = true';
     if (filter === 'starred') {
       query += ' and starred = true';
@@ -25,15 +29,19 @@ export default function Sidebar({userList, parseIDToken, filterFilesInAllAccount
 
   return (
     <div className="sidebar">
-      <div className="sidebar-item">
+      <div className="sidebar-item selected" onClick={(event) => handleClick(event.target, '')}>
+        <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faHome} size="2x" />
+        Home
+      </div>
+      <div className="sidebar-item" onClick={(event) => handleClick(event.target, '')}>
         <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faGoogleDrive} size="2x" />
         My Drives
       </div>
-      <div className="sidebar-item">
+      <div className="sidebar-item" onClick={(event) => handleClick(event.target, '')}>
         <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faShareSquare} size="2x" />
         Shared with me
       </div>
-      <div className="sidebar-item" onClick={() => handleFilter('starred')}>
+      <div className="sidebar-item" onClick={(event) => handleClick(event.target, 'starred')}>
         <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faStar} size="2x" />
         Starred
       </div>

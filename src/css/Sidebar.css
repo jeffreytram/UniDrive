@@ -46,3 +46,8 @@
   outline: 1px solid var(--text);
   cursor: pointer;
 }
+
+.selected {
+  background-color: var(--text);
+  color: white;
+}
