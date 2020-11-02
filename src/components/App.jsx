@@ -834,18 +834,17 @@ findTopLevelFolders = (fileList) => {
                   this.refreshAllFunction()
                 }
               };
+              this.setState((prevState) => ({
+                uploadRequests: [...prevState.uploadRequests, {
+                  request: uploadResumable,
+                  name: file.name,
+                }],
+              }));
               uploadResumable.send(reader.result);
             };
             reader.readAsArrayBuffer(file);
           }
         };
-        // Add resumable
-        this.setState((prevState) => ({
-          uploadRequests: [...prevState.uploadRequests, {
-            request: resumable,
-            name: file.name,
-          }],
-        }));
         resumable.send(JSON.stringify({
           name: file.name,
           mimeType: contentType,
