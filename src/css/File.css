@@ -8,13 +8,17 @@
   align-content: center;
   flex-direction: column;
   color: var(--text);
-  border: 1px solid var(--subtle1);
+  border: 1px solid var(--sub-bg);
   border-radius: 5px;
+  background-color: var(--sub-bg);
+  -webkit-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.2);
+  -moz-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.2);
+  box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.2);
 }
 
 .file-container:hover {
   cursor: pointer;
-  border-color: var(--blue);
+  border: 1px solid var(--blue);
 }
 
 .file-img {
