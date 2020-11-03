@@ -3,13 +3,12 @@ import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
 import Layout from './components/Layout';
 import Welcome from './components/Welcome';
-import { config } from './config';
 import './App.css';
 
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
 const discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
-const API_KEY = config.web.api_key;
-const CLIENT_ID = config.web.client_id;
+const API_KEY = process.env.REACT_APP_API_KEY;
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
 let ready = true;
 let userId = 1;
 let folderId = 1;
