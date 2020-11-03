@@ -3,6 +3,7 @@ import UserList from './UserList';
 import RequestProgressElement from './RequestProgressElement';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import SearchBar from './SearchBar';
 import { config } from '../config';
 import './App.css';
 
@@ -15,14 +16,18 @@ let userId = 1;
 let folderId = 1;
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props)
     this.state = {
       userList: [],
       uploadRequests: [],
       lastRefreshTime: Date().substring(0, 21),
-    };
+      searchInput:'trashed = false'
+    }
+    this.onFormSubmit = this.onFormSubmit.bind(this);
   }
+
+
 
   componentDidMount() {
     const script = document.createElement('script');
@@ -170,6 +175,23 @@ class App extends Component {
   }
 
   /**
+   * Saves the input from the search bar. Will not return folders, only files
+   * @param {string} searchInput from the searchbar.js
+   */
+  onFormSubmit(searchInput) {
+    console.log("OnFormSubmit()")
+    if (searchInput == '') {
+      searchInput = 'trashed = false'
+    } else if (searchInput != 'trashed = false') {
+      searchInput = "mimeType != 'application/vnd.google-apps.folder' and trashed = false and name contains '" + searchInput + "'"
+    }
+    console.log(searchInput)
+    this.setState({ searchInput });
+    this.refreshAllFunction();
+
+  }
+
+  /**
    * Stores the files for the given user
    * @param {Number} index the index of the user to store the files
    * @param {Object} email email of the user (used for authentication)
@@ -212,6 +234,9 @@ class App extends Component {
  * @param {String} email email of the user to keep automatically authenticating for each list request
  */
 retrieveAllFiles = (callback, email, user) => {
+  const { searchInput } = this.state;
+  console.log('Retrieving Files')
+  console.log(searchInput)
   let res = [];
   const { sortedBy } = user;
   const retrievePageOfFiles = function (email, response, user) {
@@ -231,7 +256,7 @@ retrieveAllFiles = (callback, email, user) => {
             pageToken: nextPageToken,
             fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId), nextPageToken',
             orderBy: sortedBy,
-            q: 'trashed = false',
+            q: searchInput,
             pageSize: 1000,
             // maxResults : 10,
             corpera: 'allDrives',
@@ -264,7 +289,7 @@ retrieveAllFiles = (callback, email, user) => {
       window.gapi.client.drive.files.list({
         fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId) , nextPageToken',
         orderBy: sortedBy,
-        q: 'trashed = false',
+        q: searchInput,
         pageSize: 1000,
         // maxResults : 10,
         corpera: 'allDrives',
@@ -276,6 +301,7 @@ retrieveAllFiles = (callback, email, user) => {
     });
   });
 }
+
 
 changeSortedBy = (userId, newSort) => {
   const index = this.getAccountIndex(userId);
@@ -882,6 +908,7 @@ findTopLevelFolders = (fileList) => {
                       {this.state.lastRefreshTime}
                     </span>
                   </>
+                  <SearchBar onSubmit={this.onFormSubmit} />
                   <UserList
                     userList={userList}
                     parseIDToken={this.parseIDToken}
@@ -899,7 +926,7 @@ findTopLevelFolders = (fileList) => {
                     moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}
                     refreshFunc = {this.refreshFunction}
-                 
+
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
