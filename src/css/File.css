@@ -1,9 +1,6 @@
-.file-container {
+.file-container, .folder-container {
   position: relative;
-  height: 90px;
-  width: 50px;
   display: flex;
-  padding: 10px 10px;
   justify-content: center;
   align-content: center;
   flex-direction: column;
@@ -16,7 +13,19 @@
   box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.2);
 }
 
-.file-container:hover {
+.file-container {
+  height: 90px;
+  width: 50px;
+  padding: 10px 10px;
+}
+
+.folder-container {
+  height: 20px;
+  width: 132px;
+  padding: 10px 10px;
+}
+
+.file-container:hover, .folder-container:hover {
   cursor: pointer;
   border: 1px solid var(--blue);
 }
@@ -37,7 +46,23 @@
   font-size: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* Not doing its thing */
+}
+
+.folder-content-container {
+  display: flex;
+  align-items: center;
+}
+
+.folder-img {
+  height: 25px;
+  width: 25px;
+}
+
+.folder-name {
+  width: 80%;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 a:link {

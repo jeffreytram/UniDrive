@@ -126,7 +126,7 @@ deletePermission = (permId) => {
       // if file
         return (
           <div>
-            <ContextMenuTrigger className="file-container" id={id}>
+            <ContextMenuTrigger id={id}>
               <a href={webViewLink} target="blank">
                 <div className="file-container">
                   <div className="file-image-container">
@@ -176,13 +176,11 @@ deletePermission = (permId) => {
       // if folder
       return (
         <div>
-          <ContextMenuTrigger className="file-container" id={id}>
-            <div className="file-container" onClick={() => openChildrenFunc(userId, fileObj, fId)}>
-              <div className="file-image-container">
-                <img className="file-img" src={iconLink} alt="File icon" />
-              </div>
-              <div className="file-name">
-                {name}
+          <ContextMenuTrigger id={id}>
+            <div className="folder-container" onClick={() => openChildrenFunc(userId, fileObj, fId)}>
+              <div className="folder-content-container">
+                <img className="folder-img" src={iconLink} alt="File icon" />
+                <p className="folder-name">{name}</p>
               </div>
             </div>
           </ContextMenuTrigger>
