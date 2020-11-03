@@ -12,7 +12,7 @@ class Filepath extends Component {
 
   render() {
     const {
-      filepath, userId, filepathArray, filepathTraceFunc,
+      userId, oId, pIndex, folder, updatePath
     } = this.props;
 
     return (
@@ -21,7 +21,7 @@ class Filepath extends Component {
         <span>
           {' '}
           &rarr;
-          <button type="button" className="btn info" onClick={() => filepathTraceFunc(userId, filepath, filepathArray)}>{filepath.name}</button>
+          <button type="button" className="btn info" onClick={() => updatePath(userId, oId, pIndex)}>{folder.name}</button>
         </span>
       </span>
 

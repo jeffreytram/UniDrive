@@ -12,7 +12,6 @@ export default function Layout({
       <Sidebar
         userList={userList}
         parseIDToken={parseIDToken}
-        refs={refs}
         filterFilesInAllAccounts={filterFilesInAllAccounts}
       />
       {children}

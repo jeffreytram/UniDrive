@@ -5,30 +5,27 @@ import '../css/FileList.css';
 
 export default function OpenFolderList(props) {
   const {
-    fileList, userId, openChildrenFunc, openFolderList, buildChildrenArray, filepathTraceFunc,
-    closeFolderFunc, moveExternal, moveWithin, shareFile, loadAuth, email,
+    userId, openFolderList, moveExternal, moveWithin, shareFile, loadAuth, email,
+    openFolder, closePath, updatePath
   } = props;
 
   return (
     <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
-      {openFolderList.map((fileObj) => (
+      {openFolderList.map((pathObj, i) => (
         <OpenFolder
-          fileObj={fileObj}
+          path={pathObj.path}
+          children={pathObj.displayed}
+          oId={i}
           userId={userId}
-          data={fileObj.file}
-          childrenList={fileObj.children}
-          fileList={fileList}
           displayed
-          openChildrenFunc={openChildrenFunc}
-          filepathTraceFunc={filepathTraceFunc}
-          filePath={fileObj.filepath}
-          buildChildrenArray={buildChildrenArray}
-          closeFolderFunc={closeFolderFunc}
           shareFile={shareFile}
           moveExternal={moveExternal}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
-          email = {email}
+          email={email}
+          openFolder={openFolder}
+          closePath={closePath}
+          updatePath={updatePath}
         />
       ))}
     </div>

@@ -133,9 +133,9 @@ class User extends Component {
     const { looseFilesIsDisplayed } = this.state;
 
     const {
-      parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc,
-      closeFolderFunc, sortFunc, currentSort, moveWithin, loadAuth, moveExternal,
+      parseIDToken, removeFunc, userId, idToken, refreshFunc, topLevelFolderList,
+      looseFileList, openFolderList, sortFunc, currentSort, moveWithin, loadAuth,
+      moveExternal, openFolder, closePath, updatePath
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -270,36 +270,31 @@ class User extends Component {
         </ContextMenu>
         <div style={{ display: 'none' }} className="Files/Folders" ref={this.props.forwardRef}>
           <TopLevelFolderList
-            fileList={fileList}
             userId={userId}
             topLevelFolderList={topLevelFolderList}
-            openChildrenFunc={openChildrenFunc}
             shareFile={loadAuth(userId, this.shareFile)}
             moveWithin={moveWithin}
             loadAuth={loadAuth}
             moveExternal={moveExternal}
             refreshFunc={refreshFunc}
             email={email}
+            openFolder={openFolder}
           />
           <OpenFolderList
-            fileList={fileList}
             userId={userId}
-            openChildrenFunc={openChildrenFunc}
-            filepathTraceFunc={filepathTraceFunc}
             openFolderList={openFolderList}
-            buildChildrenArray={buildChildrenArray}
-            closeFolderFunc={closeFolderFunc}
             shareFile={loadAuth(userId, this.shareFile)}
             moveWithin={moveWithin}
             loadAuth={loadAuth}
             moveExternal={moveExternal}
             refreshFunc={refreshFunc}
             email={email}
+            openFolder={openFolder}
+            closePath={closePath}
+            updatePath={updatePath}
           />
           <LooseFileList
-            fileList={fileList}
             userId={userId}
-            openChildrenFunc={openChildrenFunc}
             looseFileList={looseFileList}
             shareFile={loadAuth(userId, this.shareFile)}
             moveWithin={moveWithin}
