@@ -16,40 +16,40 @@ class OpenFolder extends Component {
   // export default function File(props) {
   render() {
     const {
-      userId, fileList, openChildrenFunc, fileObj, filePath, filepathTraceFunc, closeFolderFunc, moveExternal, moveWithin,
-      shareFile, loadAuth, refreshFunc, email
+      path, children, oId, userId, moveExternal, moveWithin,
+      shareFile, loadAuth, refreshFunc, email,
+      openFolder, closePath, updatePath
     } = this.props;
 
     return (
       <div className="open-folder">
         <div className="file-path-container">
-          <button type="button" className="copy-btn" onClick={() => closeFolderFunc(fileObj, userId)}>Close</button>
-          {fileObj.filepath.map((filep) => (
+          <button type="button" className="copy-btn" onClick={() => closePath(oId, userId)}>Close</button>
+          {path.map((folder, i) => (
             <FilePath
-              filepath={filep}
               userId={userId}
-              filepathArray={filePath}
-              filepathTraceFunc={filepathTraceFunc}
+              oId={oId}
+              pIndex={i}
+              folder={folder}
+              updatePath={updatePath}
             />
           ))}
         </div>
 
         <div className="current-folder">
-          {fileObj.children.map((file) => (
+          {children.map((file) => (
             <File
               userId={userId}
               data={file}
-              fileList={fileList}
+              oId={oId}
               displayed
-              fId={fileObj.fId}
-              openChildrenFunc={openChildrenFunc}
               moveExternal={moveExternal}
               shareFile={shareFile}
               moveWithin={moveWithin}
               loadAuth={loadAuth}
-              fileObj={file}
-              refreshFunc = {refreshFunc}
-              email = {email}
+              refreshFunc={refreshFunc}
+              email={email}
+              openFolder={openFolder}
             />
           ))}
         </div>

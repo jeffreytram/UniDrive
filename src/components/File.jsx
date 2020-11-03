@@ -104,12 +104,11 @@ deletePermission = (permId) => {
     });
   }
 
-  /* Props contains: Name, Link, Image */
   // export default function File(props) {
   render() {
     const {
-      userId, data, fId, displayed, openChildrenFunc, fileObj, shareFile, moveWithin,
-      loadAuth,
+      userId, data, oId, displayed, moveExternal, shareFile, moveWithin, loadAuth,
+      openFolder,
     } = this.props;
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
@@ -177,7 +176,7 @@ deletePermission = (permId) => {
       return (
         <div>
           <ContextMenuTrigger className="file-container" id={id}>
-            <div className="file-container" onClick={() => openChildrenFunc(userId, fileObj, fId)}>
+            <div className="file-container" onClick={() => openFolder(userId, oId, data)}>
               <div className="file-image-container">
                 <img className="file-img" src={iconLink} alt="File icon" />
               </div>
@@ -223,10 +222,9 @@ deletePermission = (permId) => {
 File.propTypes = {
   userId: PropTypes.number.isRequired,
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
-  fId: PropTypes.number.isRequired,
   displayed: PropTypes.bool.isRequired,
-  openChildrenFunc: PropTypes.func.isRequired,
-  fileObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf()])),
+  openFolder: PropTypes.func.isRequired,
+  // fileObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf()])),
 };
 
 File.defaultProps = {

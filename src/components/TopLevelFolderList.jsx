@@ -2,31 +2,30 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import File from './File';
 import '../css/FileList.css';
+import OpenFolder from './OpenFolder';
 
 export default function TopLevelFolderList(props) {
   const {
-    fileList, userId, topLevelFolderList, openChildrenFunc,
-    moveExternal, shareFile, moveWithin, loadAuth, refreshFunc, email
+    userId, topLevelFolderList, moveExternal, shareFile,
+    moveWithin, loadAuth, refreshFunc, email, openFolder
   } = props;
 
   return (
     <div className="topFolder">
     <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
-      {topLevelFolderList.map((fileObj) => (
+      {topLevelFolderList.map((folderObj) => (
         <File
-          fileObj={fileObj}
           userId={userId}
-          data={fileObj.file}
-          childrenList={fileObj.children}
-          fileList={fileList}
+          data={folderObj.folder}
+          oId={null}
           displayed
           moveExternal={moveExternal}
           shareFile={shareFile}
           moveWithin={moveWithin}
-          openChildrenFunc={openChildrenFunc}
+          openFolder={openFolder}
           loadAuth={loadAuth}
-          refreshFunc = {refreshFunc}
-          email = {email}
+          refreshFunc={refreshFunc}
+          email={email}
         />
       ))}
     </div>

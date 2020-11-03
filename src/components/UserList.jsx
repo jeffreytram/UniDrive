@@ -5,9 +5,9 @@ import '../css/UserList.css';
 
 export default function UserList(props) {
   const {
-    userList, parseIDToken, removeFunc, refreshFunc, isChildFunc, openChildrenFunc,
-    buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, sortFunc, moveExternal, moveWithin,
-    loadAuth,
+    userList, parseIDToken, removeFunc, refreshFunc,
+    fileUpload, sortFunc, moveExternal, moveWithin,
+    loadAuth, openFolder, closePath, updatePath
   } = props;
   return (
     <div className="user-list">
@@ -21,20 +21,18 @@ export default function UserList(props) {
           removeFunc={removeFunc}
           refreshFunc={refreshFunc}
           fileUpload={fileUpload}
-          isChildFunc={isChildFunc}
+          fileTrees={user.folderTrees}
           topLevelFolderList={user.topLevelFolders}
           looseFileList={user.looseFiles}
-          fileTrees={user.folderTrees}
-          openChildrenFunc={openChildrenFunc}
-          filepathTraceFunc={filepathTraceFunc}
           openFolderList={user.openFolders}
-          buildChildrenArray={buildChildrenArray}
-          closeFolderFunc={closeFolderFunc}
           sortFunc={sortFunc}
           currentSort={user.sortedBy}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
+          openFolder={openFolder}
+          closePath={closePath}
+          updatePath={updatePath}
         />
       ))}
     </div>

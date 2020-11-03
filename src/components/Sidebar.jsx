@@ -26,7 +26,7 @@ export default function Sidebar({ userList, parseIDToken, filterFilesInAllAccoun
     } else if (filter === 'shared') {
       query += ' and not "me" in owners';
     } else if (filter === 'starred') {
-      query += ' and starred = true';
+      query += ' and starred=true';
     }
     filterFilesInAllAccounts(query);
   };
@@ -52,7 +52,7 @@ export default function Sidebar({ userList, parseIDToken, filterFilesInAllAccoun
       <div className="sidebar-user-container">
         { userList.map((user) => {
           const { name, picture } = parseIDToken(user.idToken);
-          const { ref } = user;// refs[i];
+          const { ref } = user;
           return (
             <div className="sidebar-user" onClick={() => scrollToggle(ref)}>
               <img className="sidebar-picture" src={picture} alt="Account profile" />
