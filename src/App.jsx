@@ -279,31 +279,24 @@ class App extends Component {
    * @param {*} folder Folder being opened
    */
   openFolder = (userId, oId, folder) => {
-    console.log("Open Folder");
     const index = this.getAccountIndex(userId);
-    this.setState((prevState) => {
-      const updatedList = prevState.userList;
-      const newOpenFolders = updatedList[index].openFolders;
-      // If folder is topLevel, we will pass in null oId for these, create new open folder
-      if (oId === null) {
-        newOpenFolders.push({
-          path: [folder],
-          displayed: updatedList[index].folders[folder.id].children
-        });
-        updatedList[index].openFolders = newOpenFolders;
-        return {
-          userList: updatedList,
-        }
-      // If folder is not top level it is part of a filePath already
-      } else {
-        newOpenFolders[oId].path.push(folder);
-        newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
-        updatedList[index].openFolders = newOpenFolders;
-        return {
-          userList: updatedList,
-        }
-      }
-    });
+    const updatedList = this.state.userList;
+    const newOpenFolders = updatedList[index].openFolders;
+    // If folder is topLevel, we will pass in null oId for these, create new open folder
+    if (oId === null) {
+      newOpenFolders.push({
+        path: [folder],
+        displayed: updatedList[index].folders[folder.id].children
+      });
+      updatedList[index].openFolders = newOpenFolders;
+      this.setState({ userList: updatedList });
+    // If folder is not top level it is part of a filePath already
+    } else {
+      newOpenFolders[oId].path.push(folder);
+      newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
+      updatedList[index].openFolders = newOpenFolders;
+      this.setState({ userList: updatedList });
+    }
   }
 
   /**
@@ -312,15 +305,10 @@ class App extends Component {
    * @param {number} userId id of the user
    */
   closePath = (oId, userId) => {
-    console.log("Close Path");
     const index = this.getAccountIndex(userId);
-    this.setState((prevState) => {
-      const newUserList = prevState.userList;
-      newUserList[index].openFolders.splice(oId, 1);
-      return {
-        userList: newUserList,
-      };
-    });
+    const newUserList = this.state.userList;
+    newUserList[index].openFolders.splice(oId, 1);
+    this.setState({userList: newUserList });
   }
 
   /**
@@ -331,16 +319,12 @@ class App extends Component {
    */
   updatePath = (userId, oId, pId) => {
     const index = this.getAccountIndex(userId);
-    this.setState((prevState) => {
-      const updatedList = prevState.userList;
-      const newOpenFolders = prevState.userList[index].openFolders[oId];
-      newOpenFolders.path.splice(pId + 1, (newOpenFolders.path.length - 1) - pId);
-      newOpenFolders.displayed = prevState.userList[index].folders[newOpenFolders.path[pId].id].children;
-      updatedList[index].openFolders = newOpenFolders;
-      return {
-        userList: updatedList
-      }
-    });
+    const updatedList = this.state.userList;
+    const newOpenFolders = this.state.userList[index].openFolders[oId];
+    newOpenFolders.path.splice(pId + 1, (newOpenFolders.path.length) - (pId + 1));
+    newOpenFolders.displayed = this.state.userList[index].folders[newOpenFolders.path[pId].id].children;
+    updatedList[index].openFolders[oId] = newOpenFolders;
+    this.setState({userList: updatedList});
   }
 
   /**
