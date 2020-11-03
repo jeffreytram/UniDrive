@@ -5,16 +5,19 @@
 
 .user-banner {
   border-radius: 5px;
-  border: 2px solid var(--subtle2);
+  border: none;
   position: sticky;
   top: calc(var(--header-margin) + 5px);
   height: 40px;
   width: 100%;
   margin: 5px 0px;
   color: var(--text);
-  background-color: var(--main-bg);
+  background-color: var(--sub-bg);
   text-align: left;
   z-index: 1;
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.4);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.4);
+  box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.4);
 }
 
 .user-banner:hover {
@@ -80,12 +83,9 @@
   display: none;
 }
 
-.menu-item.sort:hover > nav > .sub-menu-sort {
+.menu-item.sort:hover>nav>.sub-menu-sort {
   display: inline-block;
 }
-
-
-
 
 .file-input {
   display: none;
@@ -118,7 +118,7 @@
   color: var(--red);
 }
 
-.menu-item:hover>.fa-upload, .menu-item:hover > nav > div > span > .fa-sort {
+.menu-item:hover>.fa-upload, .menu-item:hover>nav>div>span>.fa-sort {
   color: var(--blue);
 }
 

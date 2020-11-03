@@ -6,12 +6,15 @@ body {
   --red: #DB4437;
   --blue: #4285F4;
   --green: #0F9D58;
-  --main-bg: white;
-  --sub-bg: #fafafa;
+  --main-bg: #fafafa;
+  --sub-bg: white;
   --text: #303030;
   --subtle1: lightgray;
   --subtle2: gray;
   --header-margin: 45px;
+  background-color: var(--main-bg);
+  background-image: url('../src/components/images/bg-img.svg');
+  background-size: 100%;
 }
 
 code {
