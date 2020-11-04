@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
-import preview from './images/unidrive-preview.png';
+import preview from './images/preview.png';
 import '../css/Welcome.css';
 
 export default function Welcome({ authorizeUser }) {
