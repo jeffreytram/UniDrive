@@ -16,9 +16,6 @@ export default function LooseFileList(props) {
           <File
             userId={userId}
             data={file}
-            copyFunc={copyFunc}
-            deleteFunc={deleteFunc}
-            renameFunc={renameFunc}
             displayed
             moveExternal={moveExternal}
             shareFile={shareFile}
