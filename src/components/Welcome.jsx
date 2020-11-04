@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
-import preview from './images/unidrive-preview.PNG';
+import preview from './images/unidrive-preview.png';
 import '../css/Welcome.css';
 
 export default function Welcome({ authorizeUser }) {
@@ -14,7 +14,7 @@ export default function Welcome({ authorizeUser }) {
           <h3 className="getting-started-description">Get started by adding a Google Account.</h3>
           <button type="button" className="welcome-button" id="signin-btn" onClick={() => authorizeUser()}>Add an Account</button>
         </div>
-        <img className="preview" src={preview} alt="Icon" />
+        <img className="preview" src={preview} alt="UniDrive Preview" />
       </div>
     </div>
   );
