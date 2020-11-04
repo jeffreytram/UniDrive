@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 import { config } from '../config';
 import './App.css';
 
+
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
 const discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const API_KEY = config.web.api_key;
@@ -128,6 +129,7 @@ class App extends Component {
           openFolders: [],
           ref: React.createRef(),
           sortedBy: 'folder, viewedByMeTime desc',
+          filterBy: ''
         }],
       }));
       userId += 1;
@@ -216,6 +218,9 @@ class App extends Component {
 retrieveAllFiles = (callback, email, user) => {
   let res = [];
   const { sortedBy } = user;
+  const {filterBy} = user;
+  let generalFilter = 'trashed = false';
+  console.log(filterBy)
   const retrievePageOfFiles = function (email, response, user) {
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
@@ -279,13 +284,20 @@ retrieveAllFiles = (callback, email, user) => {
   });
 }
 
-changeSortedBy = (userId, newSort) => {
+
+
+
+
+changeFilterBy = (userId, newFilter) => {
   const index = this.getAccountIndex(userId);
   const { userList } = this.state;
   const { email } = this.parseIDToken(userList[index].idToken);
-  userList[index].sortedBy = newSort;
+  userList[index].filterBy = newFilter;
   this.updateFiles(index, email);
 }
+
+
+
 
 // finds all of the files in the user's drive which are not held within a folder
 /**
@@ -903,6 +915,7 @@ findTopLevelFolders = (fileList) => {
                     buildChildrenArray={this.buildChildrenArray}
                     createFunc={this.create}
                     sortFunc={this.changeSortedBy}
+                    filterFunc = {this.changeFilterBy}
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
                     loadAuth={this.load_authorize}

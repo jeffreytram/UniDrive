@@ -11,6 +11,9 @@ import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
 import './User.css';
+import Checklist from  './Checklist';
+
+
 
 class User extends Component {
   constructor() {
@@ -133,11 +136,11 @@ class User extends Component {
 
   render() {
     const { looseFilesIsDisplayed } = this.state;
-
+  
     const {
       parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
       openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
-      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal, usedRef
+      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal, usedRef, filterFunc
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -271,6 +274,14 @@ class User extends Component {
           </MenuItem>
         </ContextMenu>
         <div style={{display: 'none',}} className="Files/Folders" ref={this.props.forwardRef}>
+
+
+
+
+       <Checklist
+        userId = {userId}
+         filterFunc={filterFunc}
+       />
           <TopLevelFolderList
             fileList={fileList}
             userId={userId}
