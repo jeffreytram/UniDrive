@@ -1,0 +1,54 @@
+.welcome-container {
+  overflow: hidden;
+  height: 100vh;
+  --welcome-margin: 10vw;
+}
+
+.welcome-content {
+  position: relative;
+  width: 375px;
+  height: 90vh;
+  margin: 25vh var(--welcome-margin);
+  color: var(--text);
+}
+
+.getting-started {
+  margin: 60px 0px;
+}
+
+.getting-started-description {
+  margin: 15px 0;
+}
+
+.welcome-title {
+  font-size: 45px;
+}
+
+.preview {
+  position: absolute;
+  top: -80px;
+  left: 425px;
+  height: 550px;
+  border-radius: 10px;
+  z-index: -1;
+  -webkit-box-shadow: 8px 13px 30px 0px rgba(50, 50, 50, 0.6);
+  -moz-box-shadow: 8px 13px 30px 0px rgba(50, 50, 50, 0.6);
+  box-shadow: 8px 13px 30px 0px rgba(50, 50, 50, 0.6);
+}
+
+.welcome-button {
+  border-radius: 10px;
+  padding: 5px 10px;
+  height: 30px;
+  font-weight: bold;
+  color: var(--main-bg);
+  border: 2px solid var(--green);
+  background-color: var(--green);
+  margin: 0;
+}
+
+.welcome-button:hover {
+  cursor: pointer;
+  background-color: var(--main-bg);
+  color: var(--text);
+}

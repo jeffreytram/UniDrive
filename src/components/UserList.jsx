@@ -1,42 +1,43 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import User from './User';
-import './UserList.css';
+import '../css/UserList.css';
 
 export default function UserList(props) {
   const {
+<<<<<<< HEAD
     userList, parseIDToken, removeFunc, refreshFunc, isChildFunc, openChildrenFunc,
     buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, sortFunc, moveExternal, moveWithin,
     loadAuth, addRef, filterFunc
+=======
+    closePath, fileUpload, loadAuth, moveExternal, moveWithin, openFolder,
+    parseIDToken, refreshFunc, removeFunc, sortFunc, updatePath, userList,
+>>>>>>> master
   } = props;
   return (
     <div className="user-list">
-      {userList.map((user, i) => (
+      {userList.map((user) => (
         <User
-          //ref={(node) => { this.addRef(node, i);}}
+          key={user.id}
           forwardRef={user.ref}
           parseIDToken={parseIDToken}
-          fileList={user.filesWithChildren}
           userId={user.id}
           idToken={user.idToken}
           removeFunc={removeFunc}
           refreshFunc={refreshFunc}
           fileUpload={fileUpload}
-          isChildFunc={isChildFunc}
           topLevelFolderList={user.topLevelFolders}
           looseFileList={user.looseFiles}
-          fileTrees={user.folderTrees}
-          openChildrenFunc={openChildrenFunc}
-          filepathTraceFunc={filepathTraceFunc}
           openFolderList={user.openFolders}
-          buildChildrenArray={buildChildrenArray}
-          closeFolderFunc={closeFolderFunc}
           sortFunc={sortFunc}
           filterFunc = {filterFunc}
           currentSort={user.sortedBy}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
+          openFolder={openFolder}
+          closePath={closePath}
+          updatePath={updatePath}
         />
       ))}
     </div>
@@ -44,17 +45,16 @@ export default function UserList(props) {
 }
 
 UserList.propTypes = {
-  userList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  parseIDToken: PropTypes.func.isRequired,
-  removeFunc: PropTypes.func.isRequired,
-  refreshFunc: PropTypes.func.isRequired,
+  closePath: PropTypes.func.isRequired,
   fileUpload: PropTypes.func.isRequired,
-  filepathTraceFunc: PropTypes.func.isRequired,
-  isChildFunc: PropTypes.func.isRequired,
-  openChildrenFunc: PropTypes.func.isRequired,
-  closeFolderFunc: PropTypes.func.isRequired,
-  buildChildrenArray: PropTypes.func.isRequired,
-  sortFunc: PropTypes.func.isRequired,
-  moveWithin: PropTypes.func.isRequired,
   loadAuth: PropTypes.func.isRequired,
+  moveExternal: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  openFolder: PropTypes.func.isRequired,
+  parseIDToken: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
+  removeFunc: PropTypes.func.isRequired,
+  sortFunc: PropTypes.func.isRequired,
+  updatePath: PropTypes.func.isRequired,
+  userList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

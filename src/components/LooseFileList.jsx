@@ -1,34 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import File from './File';
-import './FileList.css';
+import '../css/FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    fileList, userId, copyFunc, deleteFunc, renameFunc, openChildrenFunc,
-    looseFileList, moveExternal, shareFile, moveWithin, isDisplayed, loadAuth, refreshFunc, email
+    isDisplayed, loadAuth, looseFileList, moveExternal, moveWithin, refreshFunc, shareFile, userId,
   } = props;
 
   if (isDisplayed) {
     return (
-      <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
+      <div className="file-list-container" style={{ display: 'flex', flexDirection: 'row' }}>
         {looseFileList.map((file) => (
           <File
+            key={file.id}
             userId={userId}
             data={file}
-            copyFunc={copyFunc}
-            deleteFunc={deleteFunc}
-            renameFunc={renameFunc}
-            childrenList={[]}
-            fileList={fileList}
             displayed
             moveExternal={moveExternal}
             shareFile={shareFile}
             moveWithin={moveWithin}
-            openChildrenFunc={openChildrenFunc}
             loadAuth={loadAuth}
-            refreshFunc = {refreshFunc}
-            email = {email}
+            refreshFunc={refreshFunc}
           />
         ))}
       </div>
@@ -38,13 +31,12 @@ export default function LooseFileList(props) {
 }
 
 LooseFileList.propTypes = {
-  fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
-  userId: PropTypes.number.isRequired,
-  copyFunc: PropTypes.func.isRequired,
-  deleteFunc: PropTypes.func.isRequired,
-  renameFunc: PropTypes.func.isRequired,
-  openChildrenFunc: PropTypes.func.isRequired,
-  looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   isDisplayed: PropTypes.bool.isRequired,
+  loadAuth: PropTypes.func.isRequired,
+  looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  moveExternal: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
+  shareFile: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };
