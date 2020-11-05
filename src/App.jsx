@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
 import Layout from './components/Layout';
+import SearchBar from './components/SearchBar';
 import Welcome from './components/Welcome';
 import { config } from './config';
 import './App.css';
@@ -20,7 +21,8 @@ class App extends Component {
       userList: [],
       uploadRequests: [],
       lastRefreshTime: Date().substring(0, 21),
-      query: 'trashed = false',
+      filterQuery: 'trashed = false',
+      searchQuery: 'name contains ""',
     };
   }
 
@@ -170,8 +172,23 @@ class App extends Component {
     });
   }
 
-  filterFilesInAllAccounts = (query) => {
-    this.setQuery(query);
+  /**
+   * Saves the input from the search bar. Will not return folders, only files
+   * @param {string} searchInput from the searchbar.js
+   */
+  onFormSubmit = (searchInput) => {
+    let searchQuery;
+    if (searchInput === '') {
+      searchQuery = `name contains '${searchInput}'`;
+    } else {
+      searchQuery = `mimeType != 'application/vnd.google-apps.folder' and name contains '${searchInput}'`;
+    }
+    this.setState({ searchQuery });
+    this.refreshAllFunction();
+  }
+
+  filterFilesInAllAccounts = (filter) => {
+    this.setFilterQuery(filter);
     const { userList } = this.state;
     userList.forEach((user, i) => {
       const { email } = this.parseIDToken(userList[i].idToken);
@@ -179,9 +196,9 @@ class App extends Component {
     });
   }
 
-  setQuery = (query) => {
+  setFilterQuery = (filter) => {
     this.setState((prevState) => ({
-      query,
+      filterQuery: filter,
     }));
   }
 
@@ -326,7 +343,8 @@ class App extends Component {
    * @param {String} email email of the user to keep automatically authenticating for each list request
    */
   retrieveAllFiles = (callback, email, user) => {
-    const { query } = this.state;
+    const { filterQuery, searchQuery } = this.state;
+    const query = `${filterQuery} and ${searchQuery}`;
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
@@ -650,6 +668,7 @@ class App extends Component {
                       {this.state.lastRefreshTime}
                     </span>
                   </>
+                  <SearchBar onSubmit={this.onFormSubmit} />
                   <UserList
                     userList={userList}
                     parseIDToken={this.parseIDToken}
