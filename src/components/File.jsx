@@ -107,9 +107,9 @@ deletePermission = (permId) => {
   // export default function File(props) {
   render() {
     const {
-      data, displayed, loadAuth, moveWithin, oId, openFolder, shareFile, userId,
+      userId, data, oId, displayed, moveExternal, shareFile, moveWithin, loadAuth,
+      openFolder,
     } = this.props;
-
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
     } = data;
@@ -176,7 +176,7 @@ deletePermission = (permId) => {
       return (
         <div>
           <ContextMenuTrigger id={id}>
-            <div className="folder-container" onClick={() => openFolder(userId, oId, data)}>
+            <div className="folder-container" onClick={() =>  openFolder(userId, oId, data)}>
               <div className="folder-content-container">
                 <img className="folder-img" src={iconLink} alt="File icon" />
                 <p className="folder-name">{name}</p>
@@ -218,22 +218,15 @@ deletePermission = (permId) => {
 }
 
 File.propTypes = {
+  userId: PropTypes.number.isRequired,
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
   displayed: PropTypes.bool.isRequired,
-  loadAuth: PropTypes.func.isRequired,
-  moveExternal: PropTypes.func.isRequired,
-  moveWithin: PropTypes.func.isRequired,
-  oId: PropTypes.number,
-  openFolder: PropTypes.func,
-  refreshFunc: PropTypes.func,
-  shareFile: PropTypes.func.isRequired,
-  userId: PropTypes.number.isRequired,
+  openFolder: PropTypes.func.isRequired,
+  // fileObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf()])),
 };
 
 File.defaultProps = {
-  oId: -1,
-  openFolder: () => { console.log('No open folder function found.'); },
-  refreshFunc: () => { console.log('No open refresh function found.'); },
+  fileObj: {},
 };
 
 export default File;

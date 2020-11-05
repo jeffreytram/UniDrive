@@ -16,8 +16,9 @@ class OpenFolder extends Component {
   // export default function File(props) {
   render() {
     const {
-      children, closePath, displayed, loadAuth, moveExternal, moveWithin,
-      oId, openFolder, path, shareFile, updatePath, userId,
+      path, children, oId, userId, moveExternal, moveWithin,
+      shareFile, loadAuth, refreshFunc, email,
+      openFolder, closePath, updatePath
     } = this.props;
 
     return (
@@ -26,7 +27,6 @@ class OpenFolder extends Component {
           <button type="button" className="copy-btn" onClick={() => closePath(oId, userId)}>Close</button>
           {path.map((folder, i) => (
             <FilePath
-              key={folder.id}
               userId={userId}
               oId={oId}
               pIndex={i}
@@ -39,15 +39,16 @@ class OpenFolder extends Component {
         <div className="current-folder">
           {children.map((file) => (
             <File
-              key={file.id}
               userId={userId}
               data={file}
               oId={oId}
-              displayed={displayed}
+              displayed
               moveExternal={moveExternal}
               shareFile={shareFile}
               moveWithin={moveWithin}
               loadAuth={loadAuth}
+              refreshFunc={refreshFunc}
+              email={email}
               openFolder={openFolder}
             />
           ))}
@@ -59,18 +60,13 @@ class OpenFolder extends Component {
 }
 
 OpenFolder.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.object).isRequired,
-  closePath: PropTypes.func.isRequired,
-  displayed: PropTypes.bool.isRequired,
-  loadAuth: PropTypes.func.isRequired,
-  moveExternal: PropTypes.func.isRequired,
-  moveWithin: PropTypes.func.isRequired,
-  oId: PropTypes.number.isRequired,
-  openFolder: PropTypes.func.isRequired,
-  path: PropTypes.arrayOf(PropTypes.object).isRequired,
-  shareFile: PropTypes.func.isRequired,
-  updatePath: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
+  fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  openChildrenFunc: PropTypes.func.isRequired,
+  closeFolderFunc: PropTypes.func.isRequired,
+  filepathTraceFunc: PropTypes.func.isRequired,
+  fileObj: PropTypes.arrayOf(PropTypes.object).isRequired,
+  filePath: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default OpenFolder;

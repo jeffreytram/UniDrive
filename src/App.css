@@ -4,7 +4,7 @@
 }
 
 .main-button {
-  border-radius: 5px;
+  border-radius: 3px;
   padding: 5px 10px;
   height: 30px;
   font-weight: bold;
@@ -13,6 +13,9 @@
 
 .main-button:hover {
   cursor: pointer;
+}
+
+.main-button:hover {
   background-color: var(--main-bg);
   color: var(--text);
 }

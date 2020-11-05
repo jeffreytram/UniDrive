@@ -4,7 +4,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 
 export default function Layout({
-  children, filterFilesInAllAccounts, parseIDToken, userList,
+  children, userList, parseIDToken, refs, filterFilesInAllAccounts
 }) {
   return (
     <div>
@@ -18,10 +18,3 @@ export default function Layout({
     </div>
   );
 }
-
-Layout.propTypes = {
-  children: PropTypes.node.isRequired,
-  filterFilesInAllAccounts: PropTypes.func.isRequired,
-  parseIDToken: PropTypes.func.isRequired,
-  userList: PropTypes.arrayOf(PropTypes.object).isRequired,
-};

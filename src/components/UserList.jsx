@@ -5,21 +5,23 @@ import '../css/UserList.css';
 
 export default function UserList(props) {
   const {
-    closePath, fileUpload, loadAuth, moveExternal, moveWithin, openFolder,
-    parseIDToken, refreshFunc, removeFunc, sortFunc, updatePath, userList,
+    userList, parseIDToken, removeFunc, refreshFunc,
+    fileUpload, sortFunc, moveExternal, moveWithin,
+    loadAuth, openFolder, closePath, updatePath
   } = props;
   return (
     <div className="user-list">
       {userList.map((user) => (
         <User
-          key={user.id}
           forwardRef={user.ref}
           parseIDToken={parseIDToken}
+          fileList={user.filesWithChildren}
           userId={user.id}
           idToken={user.idToken}
           removeFunc={removeFunc}
           refreshFunc={refreshFunc}
           fileUpload={fileUpload}
+          fileTrees={user.folderTrees}
           topLevelFolderList={user.topLevelFolders}
           looseFileList={user.looseFiles}
           openFolderList={user.openFolders}
@@ -38,16 +40,17 @@ export default function UserList(props) {
 }
 
 UserList.propTypes = {
-  closePath: PropTypes.func.isRequired,
-  fileUpload: PropTypes.func.isRequired,
-  loadAuth: PropTypes.func.isRequired,
-  moveExternal: PropTypes.func.isRequired,
-  moveWithin: PropTypes.func.isRequired,
-  openFolder: PropTypes.func.isRequired,
-  parseIDToken: PropTypes.func.isRequired,
-  refreshFunc: PropTypes.func.isRequired,
-  removeFunc: PropTypes.func.isRequired,
-  sortFunc: PropTypes.func.isRequired,
-  updatePath: PropTypes.func.isRequired,
   userList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  parseIDToken: PropTypes.func.isRequired,
+  removeFunc: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
+  fileUpload: PropTypes.func.isRequired,
+  filepathTraceFunc: PropTypes.func.isRequired,
+  isChildFunc: PropTypes.func.isRequired,
+  openChildrenFunc: PropTypes.func.isRequired,
+  closeFolderFunc: PropTypes.func.isRequired,
+  buildChildrenArray: PropTypes.func.isRequired,
+  sortFunc: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  loadAuth: PropTypes.func.isRequired,
 };
