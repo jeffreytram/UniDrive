@@ -12,7 +12,7 @@ class Filepath extends Component {
 
   render() {
     const {
-      userId, oId, pIndex, folder, updatePath
+      folder, oId, pIndex, updatePath, userId,
     } = this.props;
 
     return (
@@ -30,10 +30,11 @@ class Filepath extends Component {
 }
 
 Filepath.propTypes = {
-  filepathTraceFunc: PropTypes.func.isRequired,
+  folder: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
+  oId: PropTypes.number.isRequired,
+  pIndex: PropTypes.number.isRequired,
+  updatePath: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
-  filepathArray: PropTypes.arrayOf(PropTypes.object).isRequired,
-  filepath: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
 export default Filepath;
