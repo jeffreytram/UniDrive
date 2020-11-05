@@ -5,15 +5,15 @@ import '../css/FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    userId, copyFunc, deleteFunc, renameFunc, looseFileList, moveExternal, shareFile,
-    moveWithin, isDisplayed, loadAuth, refreshFunc, email
+    isDisplayed, loadAuth, looseFileList, moveExternal, moveWithin, refreshFunc, shareFile, userId,
   } = props;
 
   if (isDisplayed) {
     return (
-      <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
+      <div className="file-list-container" style={{ display: 'flex', flexDirection: 'row' }}>
         {looseFileList.map((file) => (
           <File
+            key={file.id}
             userId={userId}
             data={file}
             displayed
@@ -22,7 +22,6 @@ export default function LooseFileList(props) {
             moveWithin={moveWithin}
             loadAuth={loadAuth}
             refreshFunc={refreshFunc}
-            email={email}
           />
         ))}
       </div>
@@ -32,13 +31,12 @@ export default function LooseFileList(props) {
 }
 
 LooseFileList.propTypes = {
-  fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
-  userId: PropTypes.number.isRequired,
-  copyFunc: PropTypes.func.isRequired,
-  deleteFunc: PropTypes.func.isRequired,
-  renameFunc: PropTypes.func.isRequired,
-  openChildrenFunc: PropTypes.func.isRequired,
-  looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   isDisplayed: PropTypes.bool.isRequired,
+  loadAuth: PropTypes.func.isRequired,
+  looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  moveExternal: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
+  shareFile: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };

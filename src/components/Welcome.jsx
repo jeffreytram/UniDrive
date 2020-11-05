@@ -19,3 +19,7 @@ export default function Welcome({ authorizeUser }) {
     </div>
   );
 }
+
+Welcome.propTypes = {
+  authorizeUser: PropTypes.func.isRequired,
+};
