@@ -5,14 +5,8 @@ import '../css/UserList.css';
 
 export default function UserList(props) {
   const {
-<<<<<<< HEAD
-    userList, parseIDToken, removeFunc, refreshFunc, isChildFunc, openChildrenFunc,
-    buildChildrenArray, filepathTraceFunc, closeFolderFunc, fileUpload, sortFunc, moveExternal, moveWithin,
-    loadAuth, addRef, filterFunc
-=======
     closePath, fileUpload, loadAuth, moveExternal, moveWithin, openFolder,
-    parseIDToken, refreshFunc, removeFunc, sortFunc, updatePath, userList,
->>>>>>> master
+    parseIDToken, refreshFunc, removeFunc, sortFunc, updatePath, userList, filterFunc
   } = props;
   return (
     <div className="user-list">
