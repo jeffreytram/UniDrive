@@ -253,6 +253,9 @@ class App extends Component {
         for (let oId = 0; oId < oldOpenFolders.length; oId++) {
           for (let pathIndex = 0; pathIndex < oldOpenFolders[oId].path.length; pathIndex++) {
             const oldPath = oldOpenFolders[oId].path;
+            console.log(oldPath)
+
+            //removes delted open folders
             if (!prevState.userList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
               if (pathIndex === 0) {
                 updatedList[index].openFolders.splice(oId, 1);
@@ -261,6 +264,9 @@ class App extends Component {
                 updatedList[index].openFolders[oId].path.splice(pathIndex, (oldPath.length - 1) - pathIndex);
                 updatedList[index].openFolders[oId].displayed = prevState.userList[index].folders[oldPath[pathIndex - 1].id].children;
               }
+            } else {
+              console.log(oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1])
+              this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true)
             }
           }
         }
@@ -278,9 +284,11 @@ class App extends Component {
    * @param {*} oId Index of the path in the openFolders array
    * @param {*} folder Folder being opened
    */
-  openFolder = (userId, oId, folder) => {
+  openFolder = (userId, oId, folder, isUpdate) => {
     const index = this.getAccountIndex(userId);
     const updatedList = this.state.userList;
+    console.log(updatedList)
+    console.log(index)
     const newOpenFolders = updatedList[index].openFolders;
     // If folder is topLevel, we will pass in null oId for these, create new open folder
     if (oId === null) {
@@ -291,8 +299,15 @@ class App extends Component {
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
     // If folder is not top level it is part of a filePath already
-    } else {
+    } else if (!isUpdate) {
       newOpenFolders[oId].path.push(folder);
+      newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
+      updatedList[index].openFolders = newOpenFolders;
+      this.setState({ userList: updatedList });
+    } else {
+      console.log(updatedList[index].folders)
+      console.log(folder)
+      console.log(updatedList[index].folders[folder.id])
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
