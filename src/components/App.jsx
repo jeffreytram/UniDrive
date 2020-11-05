@@ -286,7 +286,13 @@ retrieveAllFiles = (callback, email, user) => {
 
 
 
-
+changeSortedBy = (userId, newSort) => {
+  const index = this.getAccountIndex(userId);
+  const { userList } = this.state;
+  const { email } = this.parseIDToken(userList[index].idToken);
+  userList[index].sortedBy = newSort;
+  this.updateFiles(index, email);
+}
 
 changeFilterBy = (userId, newFilter) => {
   const index = this.getAccountIndex(userId);
