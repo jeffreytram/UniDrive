@@ -202,7 +202,6 @@ class App extends Component {
         if (updatedList[index] === undefined) {
           return;
         }
-        console.log("Help")
         // Initialize so there are not double
         updatedList[index].folders = [];
         updatedList[index].topLevelFolders = [];
@@ -253,7 +252,6 @@ class App extends Component {
         for (let oId = 0; oId < oldOpenFolders.length; oId++) {
           for (let pathIndex = 0; pathIndex < oldOpenFolders[oId].path.length; pathIndex++) {
             const oldPath = oldOpenFolders[oId].path;
-            console.log(oldPath)
 
             //removes delted open folders
             if (!prevState.userList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
@@ -265,7 +263,6 @@ class App extends Component {
                 updatedList[index].openFolders[oId].displayed = prevState.userList[index].folders[oldPath[pathIndex - 1].id].children;
               }
             } else {
-              console.log(oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1])
               this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true)
             }
           }
@@ -287,8 +284,6 @@ class App extends Component {
   openFolder = (userId, oId, folder, isUpdate) => {
     const index = this.getAccountIndex(userId);
     const updatedList = this.state.userList;
-    console.log(updatedList)
-    console.log(index)
     const newOpenFolders = updatedList[index].openFolders;
     // If folder is topLevel, we will pass in null oId for these, create new open folder
     if (oId === null) {
@@ -305,9 +300,7 @@ class App extends Component {
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
     } else {
-      console.log(updatedList[index].folders)
-      console.log(folder)
-      console.log(updatedList[index].folders[folder.id])
+
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
