@@ -10,7 +10,6 @@ class RequestProgrssElement extends Component {
   }
 
   componentDidMount() {
-    console.log('Did Mount');
     const { request } = this.props.requested;
     request.upload.addEventListener('load', this.handler);
     request.upload.addEventListener('error', this.handler);
