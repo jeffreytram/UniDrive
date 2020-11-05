@@ -6,9 +6,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
-  ContextMenu, MenuItem, ContextMenuTrigger, SubMenu,
+  ContextMenu, MenuItem, ContextMenuTrigger,
 } from 'react-contextmenu';
-import './File.css';
+import '../css/File.css';
 
 class File extends Component {
   constructor() {
@@ -49,7 +49,6 @@ findPermission = (findFilePermi, deletePermi) => {
   }).then((response) => {
     console.log(response);
     const permId = response.result.user.permissionId;
-    console.log(permId);
     findFilePermi(permId, deletePermi);
   });
 }
@@ -94,18 +93,23 @@ deletePermission = (permId) => {
     });
   }
 
-  star = () => window.gapi.client.drive.files.update({
-    fileId: this.props.data.id,
-    starred: !this.props.data.starred,
-  })
+  star = () => {
+    const refreshFunction = this.props.refreshFunc;
+    const { userId } = this.props;
+    window.gapi.client.drive.files.update({
+      fileId: this.props.data.id,
+      starred: !this.props.data.starred,
+    }).then((response) => {
+      refreshFunction(userId);
+    });
+  }
 
-  /* Props contains: Name, Link, Image */
   // export default function File(props) {
   render() {
     const {
-      userId, data, fId, displayed, openChildrenFunc, fileObj, moveExternal, shareFile, moveWithin,
-      loadAuth, refreshFunc, email,
+      data, displayed, loadAuth, moveWithin, oId, openFolder, shareFile, userId,
     } = this.props;
+
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
     } = data;
@@ -121,7 +125,7 @@ deletePermission = (permId) => {
       // if file
         return (
           <div>
-            <ContextMenuTrigger className="file-container" id={id}>
+            <ContextMenuTrigger id={id}>
               <a href={webViewLink} target="blank">
                 <div className="file-container">
                   <div className="file-image-container">
@@ -171,13 +175,11 @@ deletePermission = (permId) => {
       // if folder
       return (
         <div>
-          <ContextMenuTrigger className="file-container" id={id}>
-            <div className="file-container" onClick={() => openChildrenFunc(userId, fileObj, fId)}>
-              <div className="file-image-container">
-                <img className="file-img" src={iconLink} alt="File icon" />
-              </div>
-              <div className="file-name">
-                {name}
+          <ContextMenuTrigger id={id}>
+            <div className="folder-container" onClick={() => openFolder(userId, oId, data)}>
+              <div className="folder-content-container">
+                <img className="folder-img" src={iconLink} alt="File icon" />
+                <p className="folder-name">{name}</p>
               </div>
             </div>
           </ContextMenuTrigger>
@@ -216,16 +218,22 @@ deletePermission = (permId) => {
 }
 
 File.propTypes = {
-  userId: PropTypes.number.isRequired,
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
-  fId: PropTypes.number.isRequired,
   displayed: PropTypes.bool.isRequired,
-  openChildrenFunc: PropTypes.func.isRequired,
-  fileObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf()])),
+  loadAuth: PropTypes.func.isRequired,
+  moveExternal: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  oId: PropTypes.number,
+  openFolder: PropTypes.func,
+  refreshFunc: PropTypes.func,
+  shareFile: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };
 
 File.defaultProps = {
-  fileObj: {},
+  oId: -1,
+  openFolder: () => { console.log('No open folder function found.'); },
+  refreshFunc: () => { console.log('No open refresh function found.'); },
 };
 
 export default File;

@@ -10,21 +10,20 @@ import {
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
-import './User.css';
+import '../css/User.css';
 
 class User extends Component {
   constructor() {
     super();
     this.state = {
-      isDisplayed: false,
       looseFilesIsDisplayed: true,
     };
   }
 
   viewToggle = () => {
-    this.setState((prevState) => ({
-      isDisplayed: !prevState.isDisplayed,
-    }));
+    const { forwardRef } = this.props;
+    const { display } = forwardRef.current.style;
+    forwardRef.current.style.display = (display === 'none') ? 'block' : 'none';
   }
 
   handleIconClick = (event, func) => {
@@ -131,21 +130,18 @@ class User extends Component {
   }
 
   render() {
-    const { isDisplayed, looseFilesIsDisplayed } = this.state;
+    const { looseFilesIsDisplayed } = this.state;
 
     const {
-      parseIDToken, removeFunc, userId, idToken, fileList, refreshFunc, isChildFunc, topLevelFolderList,
-      openChildrenFunc, looseFileList, openFolderList, buildChildrenArray, filepathTraceFunc, closeFolderFunc,
-      fileUpload, sortFunc, currentSort, moveWithin, loadAuth, moveExternal,
+      closePath, currentSort, idToken, loadAuth, looseFileList, moveExternal, moveWithin,
+      openFolder, openFolderList, parseIDToken, refreshFunc, removeFunc, sortFunc,
+      topLevelFolderList, updatePath, userId,
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
-    const fileContainerStyles = {
-      display: isDisplayed ? 'flex' : 'none',
-    };
     const createFunc = loadAuth(userId, this.create);
     return (
-      <ContextMenuTrigger className="user" id={userId}>
+      <ContextMenuTrigger className="user" id={userId.toString()}>
         <button
           type="button"
           className="user-banner"
@@ -162,11 +158,11 @@ class User extends Component {
               )
             </span>
           </span>
-          <ContextMenuTrigger className="context-menu" id={userId} holdToDisplay={0}>
+          <ContextMenuTrigger className="context-menu" id={userId.toString()} holdToDisplay={0}>
             <FontAwesomeIcon className="fa-ellipsis menu-icon" icon={faEllipsisV} size="lg" onClick={(event) => this.handleIconClick(event, () => {})} title="Options" />
           </ContextMenuTrigger>
         </button>
-        <ContextMenu className="context-menu" id={userId}>
+        <ContextMenu className="context-menu" id={userId.toString()}>
           <MenuItem className="menu-item upload">
             <SubMenu
               className="context-menu sub-menu-upload"
@@ -272,75 +268,70 @@ class User extends Component {
             Remove Account
           </MenuItem>
         </ContextMenu>
-
-        <TopLevelFolderList
-          fileList={fileList}
-          fileContainerStyles={fileContainerStyles}
-          userId={userId}
-          topLevelFolderList={topLevelFolderList}
-          openChildrenFunc={openChildrenFunc}
-          shareFile={loadAuth(userId, this.shareFile)}
-          moveWithin={moveWithin}
-          loadAuth={loadAuth}
-          moveExternal={moveExternal}
-          refreshFunc={refreshFunc}
-          email={email}
-        />
-
-        <OpenFolderList
-          fileList={fileList}
-          fileContainerStyles={fileContainerStyles}
-          userId={userId}
-          openChildrenFunc={openChildrenFunc}
-          filepathTraceFunc={filepathTraceFunc}
-          openFolderList={openFolderList}
-          buildChildrenArray={buildChildrenArray}
-          closeFolderFunc={closeFolderFunc}
-          shareFile={loadAuth(userId, this.shareFile)}
-          moveWithin={moveWithin}
-          loadAuth={loadAuth}
-          moveExternal={moveExternal}
-          refreshFunc={refreshFunc}
-          email={email}
-        />
-        <LooseFileList
-          fileList={fileList}
-          fileContainerStyles={fileContainerStyles}
-          userId={userId}
-          openChildrenFunc={openChildrenFunc}
-          looseFileList={looseFileList}
-          shareFile={loadAuth(userId, this.shareFile)}
-          moveWithin={moveWithin}
-          isDisplayed={looseFilesIsDisplayed}
-          loadAuth={loadAuth}
-          moveExternal={moveExternal}
-          refreshFunc={refreshFunc}
-          email={email}
-        />
+        <div style={{ display: 'none' }} className="Files/Folders" ref={this.props.forwardRef}>
+          <TopLevelFolderList
+            userId={userId}
+            topLevelFolderList={topLevelFolderList}
+            shareFile={loadAuth(userId, this.shareFile)}
+            moveWithin={moveWithin}
+            loadAuth={loadAuth}
+            moveExternal={moveExternal}
+            refreshFunc={refreshFunc}
+            email={email}
+            openFolder={openFolder}
+          />
+          <OpenFolderList
+            userId={userId}
+            openFolderList={openFolderList}
+            shareFile={loadAuth(userId, this.shareFile)}
+            moveWithin={moveWithin}
+            loadAuth={loadAuth}
+            moveExternal={moveExternal}
+            refreshFunc={refreshFunc}
+            email={email}
+            openFolder={openFolder}
+            closePath={closePath}
+            updatePath={updatePath}
+          />
+          <LooseFileList
+            userId={userId}
+            looseFileList={looseFileList}
+            shareFile={loadAuth(userId, this.shareFile)}
+            moveWithin={moveWithin}
+            isDisplayed={looseFilesIsDisplayed}
+            loadAuth={loadAuth}
+            moveExternal={moveExternal}
+            refreshFunc={refreshFunc}
+            email={email}
+          />
+        </div>
       </ContextMenuTrigger>
     );
   }
 }
 
 User.propTypes = {
-  parseIDToken: PropTypes.func.isRequired,
-  fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  userId: PropTypes.number.isRequired,
-  idToken: PropTypes.string.isRequired,
-  removeFunc: PropTypes.func.isRequired,
-  refreshFunc: PropTypes.func.isRequired,
-  fileUpload: PropTypes.func.isRequired,
-  topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  openChildrenFunc: PropTypes.func.isRequired,
-  closeFolderFunc: PropTypes.func.isRequired,
-  filepathTraceFunc: PropTypes.func.isRequired,
-  openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  buildChildrenArray: PropTypes.func.isRequired,
-  sortFunc: PropTypes.func.isRequired,
+  closePath: PropTypes.func.isRequired,
   currentSort: PropTypes.string.isRequired,
-  moveWithin: PropTypes.func.isRequired,
+  fileUpload: PropTypes.func.isRequired,
+  forwardRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+  ]).isRequired,
+  idToken: PropTypes.string.isRequired,
   loadAuth: PropTypes.func.isRequired,
+  looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  moveExternal: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  openFolder: PropTypes.func.isRequired,
+  openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  parseIDToken: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
+  removeFunc: PropTypes.func.isRequired,
+  sortFunc: PropTypes.func.isRequired,
+  topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  updatePath: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };
 
 export default User;

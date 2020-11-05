@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './File.css';
-import './FilePath.css';
+import '../css/File.css';
+import '../css/FilePath.css';
 
 class Filepath extends Component {
   constructor() {
@@ -12,7 +12,7 @@ class Filepath extends Component {
 
   render() {
     const {
-      filepath, userId, filepathArray, filepathTraceFunc,
+      folder, oId, pIndex, updatePath, userId,
     } = this.props;
 
     return (
@@ -21,7 +21,7 @@ class Filepath extends Component {
         <span>
           {' '}
           &rarr;
-          <button type="button" className="btn info" onClick={() => filepathTraceFunc(userId, filepath, filepathArray)}>{filepath.name}</button>
+          <button type="button" className="btn info" onClick={() => updatePath(userId, oId, pIndex)}>{folder.name}</button>
         </span>
       </span>
 
@@ -30,10 +30,11 @@ class Filepath extends Component {
 }
 
 Filepath.propTypes = {
-  filepathTraceFunc: PropTypes.func.isRequired,
+  folder: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
+  oId: PropTypes.number.isRequired,
+  pIndex: PropTypes.number.isRequired,
+  updatePath: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
-  filepathArray: PropTypes.arrayOf(PropTypes.object).isRequired,
-  filepath: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
 export default Filepath;

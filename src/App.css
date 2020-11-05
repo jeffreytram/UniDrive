@@ -4,7 +4,7 @@
 }
 
 .main-button {
-  border-radius: 3px;
+  border-radius: 5px;
   padding: 5px 10px;
   height: 30px;
   font-weight: bold;
@@ -13,9 +13,6 @@
 
 .main-button:hover {
   cursor: pointer;
-}
-
-.main-button:hover {
   background-color: var(--main-bg);
   color: var(--text);
 }
@@ -31,7 +28,6 @@
   margin-right: 5px;
 }
 
-
 .main-container {
   width: 85%;
   float: right;
@@ -45,17 +41,4 @@
 .sync-message {
   font-style: italic;
   color: var(--subtle2);
-}
-
-.getting-started-container {
-  width: 50vw;
-  margin: auto;
-  border-radius: 10px;
-  color: var(--text);
-  border: 1px solid var(--subtle2);
-  padding: 30px 15px;
-  text-align: center;
-  -webkit-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
-  box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.15);
 }

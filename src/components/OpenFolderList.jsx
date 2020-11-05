@@ -1,34 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import OpenFolder from './OpenFolder';
-import './FileList.css';
+import '../css/FileList.css';
 
 export default function OpenFolderList(props) {
   const {
-    fileList, fileContainerStyles, userId, openChildrenFunc, openFolderList, buildChildrenArray, filepathTraceFunc,
-    closeFolderFunc, moveExternal, moveWithin, shareFile, loadAuth, email,
+    closePath, loadAuth, moveExternal, moveWithin, openFolder, openFolderList,
+    shareFile, updatePath, userId,
   } = props;
 
   return (
-    <div className="file-list-container" style={fileContainerStyles}>
-      {openFolderList.map((fileObj) => (
+    <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
+      {openFolderList.map((pathObj, i) => (
         <OpenFolder
-          fileObj={fileObj}
+          key={pathObj.path[0].id}
+          path={pathObj.path}
+          children={pathObj.displayed}
+          oId={i}
           userId={userId}
-          data={fileObj.file}
-          childrenList={fileObj.children}
-          fileList={fileList}
           displayed
-          openChildrenFunc={openChildrenFunc}
-          filepathTraceFunc={filepathTraceFunc}
-          filePath={fileObj.filepath}
-          buildChildrenArray={buildChildrenArray}
-          closeFolderFunc={closeFolderFunc}
           shareFile={shareFile}
           moveExternal={moveExternal}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
-          email = {email}
+          openFolder={openFolder}
+          closePath={closePath}
+          updatePath={updatePath}
         />
       ))}
     </div>
@@ -36,12 +33,13 @@ export default function OpenFolderList(props) {
 }
 
 OpenFolderList.propTypes = {
-  fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
-  userId: PropTypes.number.isRequired,
-  filepathTraceFunc: PropTypes.func.isRequired,
-  openChildrenFunc: PropTypes.func.isRequired,
-  closeFolderFunc: PropTypes.func.isRequired,
+  closePath: PropTypes.func.isRequired,
+  loadAuth: PropTypes.func.isRequired,
+  moveExternal: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  openFolder: PropTypes.func.isRequired,
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  buildChildrenArray: PropTypes.func.isRequired,
+  shareFile: PropTypes.func.isRequired,
+  updatePath: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };
