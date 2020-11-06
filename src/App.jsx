@@ -256,6 +256,9 @@ class App extends Component {
       fQuery = fQuery + " or mimeType = 'application/pdf'"
     }
   }
+  if (firstChecked != -1) {
+  fQuery = fQuery + " or mimeType = 'application/vnd.google-apps.folder'"
+  }
     userList[index].filteredBy = fQuery;
     this.setState((prevState) => ({
       userList: userList
@@ -405,7 +408,7 @@ class App extends Component {
   retrieveAllFiles = (callback, email, user) => {
     const { filterQuery, searchQuery } = this.state;
     const fileTypeQuery = user.filteredBy
-    const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery}) or mimeType = 'application/vnd.google-apps.folder'`;
+    const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
