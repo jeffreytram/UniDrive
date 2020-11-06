@@ -129,6 +129,7 @@ class App extends Component {
           openFolders: [],
           ref: React.createRef(),
           sortedBy: 'folder, viewedByMeTime desc',
+          filteredBy: ""
         }],
       }));
       userId += 1;
@@ -187,6 +188,8 @@ class App extends Component {
     this.refreshAllFunction();
   }
 
+  
+
   filterFilesInAllAccounts = (filter) => {
     this.setFilterQuery(filter);
     const { userList } = this.state;
@@ -199,6 +202,51 @@ class App extends Component {
   setFilterQuery = (filter) => {
     this.setState((prevState) => ({
       filterQuery: filter,
+    }));
+  }
+
+  changeFilterType = (userId, filterBy, firstChecked) => {
+    this.setfilterType(userId, filterBy, firstChecked)
+    this.refreshAllFunction();
+  }
+
+
+  setfilterType = (userId, filterBy, firstChecked) => {
+    const userList = this.state.userList;
+    let index = this.getAccountIndex(userId);
+    let fQuery = "";
+    console.log(firstChecked)
+    if (filterBy.includes("Google Docs")) {
+      if (firstChecked === 0) {
+        fQuery = fQuery + "mimeType = 'application/vnd.google-apps.document'"
+        } else {
+      fQuery = fQuery + " or mimeType = 'application/vnd.google-apps.document'";
+    }
+  }
+    if (filterBy.includes("Google Sheets")) {
+      if (firstChecked === 1) {
+        fQuery = fQuery + "mimeType = 'application/vnd.google-apps.spreadsheet'"
+        } else {
+      fQuery = fQuery + " or mimeType = 'application/vnd.google-apps.spreadsheet'"
+    }
+  }
+    if (filterBy.includes("Google Slides")) {
+      if (firstChecked === 2) {
+        fQuery = fQuery + "mimeType = 'application/vnd.google-apps.presentation'"
+        } else {
+      fQuery = fQuery + " or mimeType = 'application/vnd.google-apps.presentation'"
+    }
+  }
+    if (filterBy.includes("PDF")) {
+      if (firstChecked === 3) {
+        fQuery = fQuery + "mimeType = 'application/pdf'"
+        } else {
+      fQuery = fQuery + " or mimeType = 'application/pdf'"
+    }
+  }
+    userList[index].filteredBy = fQuery;
+    this.setState((prevState) => ({
+      userList: userList
     }));
   }
 
@@ -344,7 +392,9 @@ class App extends Component {
    */
   retrieveAllFiles = (callback, email, user) => {
     const { filterQuery, searchQuery } = this.state;
-    const query = `${filterQuery} and ${searchQuery}`;
+    const fileTypeQuery = user.filteredBy
+    const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery}) or mimeType = 'application/vnd.google-apps.folder'`;
+    console.log(query)
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
@@ -682,6 +732,7 @@ class App extends Component {
                     openFolder={this.openFolder}
                     closePath={this.closePath}
                     updatePath={this.updatePath}
+                    filterFunc = {this.changeFilterType}
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>

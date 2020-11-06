@@ -49,13 +49,21 @@ applyFilter = () => {
   const { filterFunc } = this.props;
   let filterBy = "";
   let fruites = this.state.fruites
+  let firstChecked = -1;
+  let count = 0;
     fruites.forEach(fruite => {
       if (fruite.isChecked) {
         filterBy = filterBy + " " + fruite.value;
+        if (firstChecked === -1) {
+
+          firstChecked = count;
+        }
       }
+      count ++;
     })
     console.log(filterBy)
-    filterFunc(userId, filterBy)
+    console.log(firstChecked)
+    filterFunc(userId, filterBy, firstChecked)
 }
 
 
