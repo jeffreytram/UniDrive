@@ -3,14 +3,6 @@ import './Checklist.css'
 import  CheckBox  from './CheckBox'
 
 
-
-
-
-
-
-
-
-
 class Checklist extends Component {
   constructor() {
     super()
@@ -20,13 +12,20 @@ class Checklist extends Component {
         {id: 2, value: "Google Sheets", isChecked: false},
         {id: 3, value: "Google Slides", isChecked: false},
         {id: 4, value: "PDF", isChecked: false}
-      ]
+      ],
+      displayed: 'none'
+      
     }
   }
-  
 
-
-
+  viewToggle = () => {
+    this.setState((prevState) => {
+      let display = prevState.displayed
+      return {
+      displayed: (display === 'none') ? 'block' : 'none'
+      }
+    })
+  }
 
   handleAllChecked = (event) => {
     let fruites = this.state.fruites
@@ -61,21 +60,25 @@ applyFilter = () => {
       }
       count ++;
     })
-    console.log(filterBy)
-    console.log(firstChecked)
     filterFunc(userId, filterBy, firstChecked)
 }
 
 
 
   render() {
-
     const {
       filterFunc, userId
     } = this.props;
     return (
-      <div className="Checklist">
-      <h1> Filter </h1>
+      <div className="Checklist" >
+        <button
+        
+          type="button"
+          className="ChecklistButton"
+          onClick={() => this.viewToggle()}
+          onKeyDown={() => this.viewToggle()}
+        > Toggle Filter </button>
+      <div style={{display: this.state.displayed}} className="ChecklistItems">
       <button type="button" onClick={() => this.handleAllChecked()}> Clear Filter </button>
         <ul>
         {
@@ -84,6 +87,7 @@ applyFilter = () => {
           })
         }
         </ul>
+        </div>
       </div>
     );
   }

@@ -205,17 +205,29 @@ class App extends Component {
     }));
   }
 
+
+/**
+   * function which updates the filetypes displayed
+   * @param {number} userID the id of the user
+   * @param {String} filterBy the string which lists all the currently checked filters
+   * @param {String} firstChecked the index of the first checkbox checked
+   */
   changeFilterType = (userId, filterBy, firstChecked) => {
     this.setfilterType(userId, filterBy, firstChecked)
     this.refreshAllFunction();
   }
 
 
+   /**
+   * builds the Google search parameter to use in retrieving the files based upon which filters are selected (for filtering by file type)
+   * @param {number} userID the id of the user
+   * @param {String} filterBy the string which lists all the currently checked filters
+   * @param {String} firstChecked the index of the first checkbox checked
+   */
   setfilterType = (userId, filterBy, firstChecked) => {
     const userList = this.state.userList;
     let index = this.getAccountIndex(userId);
     let fQuery = "";
-    console.log(firstChecked)
     if (filterBy.includes("Google Docs")) {
       if (firstChecked === 0) {
         fQuery = fQuery + "mimeType = 'application/vnd.google-apps.document'"
@@ -394,7 +406,6 @@ class App extends Component {
     const { filterQuery, searchQuery } = this.state;
     const fileTypeQuery = user.filteredBy
     const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery}) or mimeType = 'application/vnd.google-apps.folder'`;
-    console.log(query)
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
@@ -458,6 +469,11 @@ class App extends Component {
     });
   }
 
+  /**
+   * updates the sort Type when a new sort is selected
+   * @param {number} userID the id of the user
+   * @param {String} newSort the sort which has been selected
+   */
   changeSortedBy = (userId, newSort) => {
     const index = this.getAccountIndex(userId);
     const { userList } = this.state;
