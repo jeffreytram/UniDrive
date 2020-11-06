@@ -104,6 +104,7 @@ deletePermission = (permId) => {
     });
   }
 
+  
   // export default function File(props) {
   render() {
     const {
@@ -125,7 +126,7 @@ deletePermission = (permId) => {
       // if file
         return (
           <div>
-            <ContextMenuTrigger id={id}>
+            <ContextMenuTrigger id={id + userId.toString()}>
               <a href={webViewLink} target="blank">
                 <div className="file-container">
                   <div className="file-image-container">
@@ -137,7 +138,7 @@ deletePermission = (permId) => {
                 </div>
               </a>
             </ContextMenuTrigger>
-            <ContextMenu className="context-menu" id={id}>
+            <ContextMenu className="context-menu" id={id + userId.toString()}>
               <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
                 <FontAwesomeIcon className="menu-icon" icon={faFolderOpen} />
                 Open
@@ -175,7 +176,7 @@ deletePermission = (permId) => {
       // if folder
       return (
         <div>
-          <ContextMenuTrigger id={id}>
+          <ContextMenuTrigger id={id + userId.toString()}>
             <div className="folder-container" onClick={() => openFolder(userId, oId, data)}>
               <div className="folder-content-container">
                 <img className="folder-img" src={iconLink} alt="File icon" />
@@ -183,7 +184,7 @@ deletePermission = (permId) => {
               </div>
             </div>
           </ContextMenuTrigger>
-          <ContextMenu className="context-menu" id={id}>
+          <ContextMenu className="context-menu" id={id + userId.toString()}>
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
               <FontAwesomeIcon className="menu-icon" icon={faGoogleDrive} />
               View on Google Drive
