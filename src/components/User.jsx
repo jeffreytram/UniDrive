@@ -257,6 +257,13 @@ class User extends Component {
                 <FontAwesomeIcon className="fa-check menu-icon" icon={faCheck} />
                 )}
               </MenuItem>
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, name')}>
+                By Name
+                {currentSort === 'folder, name'
+                && (
+                <FontAwesomeIcon className="fa-check menu-icon" icon={faCheck} />
+                )}
+              </MenuItem>
             </SubMenu>
           </MenuItem>
 
