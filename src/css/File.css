@@ -113,6 +113,10 @@ a:hover {
   color: var(--subtle2);
 }
 
+.menu-item:hover>.faShare {
+  color: var(--red);
+}
+
 .sub-menu-move-to {
   display: none;
 }

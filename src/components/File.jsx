@@ -145,23 +145,23 @@ deletePermission = (permId) => {
               </MenuItem>
               <hr className="divider" />
               <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
-                <FontAwesomeIcon className="menu-icon" icon={faShare} />
+                <FontAwesomeIcon className="faShare menu-icon" icon={faShare} />
                 Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
-                <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
+                <FontAwesomeIcon className="faArrowRight menu-icon" icon={faArrowRight} />
                 Move to Root
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => renameFunc()}>
-                <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
+                <FontAwesomeIcon className="faPencil menu-icon" icon={faPencilAlt} />
                 Rename
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc()}>
-                <FontAwesomeIcon className="menu-icon" icon={faCopy} />
+                <FontAwesomeIcon className="faCopy menu-icon" icon={faCopy} />
                 Make a copy
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => starFunc()}>
-                <FontAwesomeIcon className="menu-icon" icon={faStar} />
+                <FontAwesomeIcon className="faStar menu-icon" icon={faStar} />
                 { (starred) ? 'Remove From Starred' : 'Add to Starred' }
               </MenuItem>
               <hr className="divider" />
