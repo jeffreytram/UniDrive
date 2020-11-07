@@ -11,6 +11,7 @@ import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
 import '../css/User.css';
+import Checklist from './Checklist';
 
 class User extends Component {
   constructor() {
@@ -112,6 +113,7 @@ class User extends Component {
   }
 
   create = (fileType) => {
+    const { refreshFunc } = this.props;
     const { userId } = this.props;
     let newName = prompt('Enter a Name');
     if (newName === null) { return; }
@@ -125,7 +127,7 @@ class User extends Component {
     window.gapi.client.drive.files.create({
       resource: reqBody,
     }).then((response) => {
-      this.refreshFunc(userId);
+      refreshFunc(userId);
     });
   }
 
@@ -133,8 +135,8 @@ class User extends Component {
     const { looseFilesIsDisplayed } = this.state;
 
     const {
-      closePath, currentSort, idToken, loadAuth, looseFileList, moveExternal, moveWithin,
-      openFolder, openFolderList, parseIDToken, refreshFunc, removeFunc, sortFunc,
+      closePath, currentSort, filterFunc, idToken, loadAuth, looseFileList, moveExternal,
+      moveWithin, openFolder, openFolderList, parseIDToken, refreshFunc, removeFunc, sortFunc,
       topLevelFolderList, updatePath, userId,
     } = this.props;
 
@@ -256,6 +258,13 @@ class User extends Component {
                 <FontAwesomeIcon className="fa-check menu-icon" icon={faCheck} />
                 )}
               </MenuItem>
+              <MenuItem className="menu-item" onClick={() => sortFunc(userId, 'folder, name')}>
+                By Name
+                {currentSort === 'folder, name'
+                && (
+                <FontAwesomeIcon className="fa-check menu-icon" icon={faCheck} />
+                )}
+              </MenuItem>
             </SubMenu>
           </MenuItem>
 
@@ -269,6 +278,11 @@ class User extends Component {
           </MenuItem>
         </ContextMenu>
         <div style={{ display: 'none' }} className="Files/Folders" ref={this.props.forwardRef}>
+
+          <Checklist
+            userId={userId}
+            filterFunc={filterFunc}
+          />
           <TopLevelFolderList
             userId={userId}
             topLevelFolderList={topLevelFolderList}
@@ -314,9 +328,10 @@ User.propTypes = {
   closePath: PropTypes.func.isRequired,
   currentSort: PropTypes.string.isRequired,
   fileUpload: PropTypes.func.isRequired,
+  filterFunc: PropTypes.func.isRequired,
   forwardRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   ]).isRequired,
   idToken: PropTypes.string.isRequired,
   loadAuth: PropTypes.func.isRequired,

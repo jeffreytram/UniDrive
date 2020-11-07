@@ -129,6 +129,7 @@ class App extends Component {
           openFolders: [],
           ref: React.createRef(),
           sortedBy: 'folder, viewedByMeTime desc',
+          filteredBy: '',
         }],
       }));
       userId += 1;
@@ -202,6 +203,64 @@ class App extends Component {
     }));
   }
 
+  /**
+   * function which updates the filetypes displayed
+   * @param {number} userID the id of the user
+   * @param {String} filterBy the string which lists all the currently checked filters
+   * @param {String} firstChecked the index of the first checkbox checked
+   */
+  changeFilterType = (userId, filterBy, firstChecked) => {
+    this.setfilterType(userId, filterBy, firstChecked);
+    this.refreshAllFunction();
+  }
+
+  /**
+   * builds the Google search parameter to use in retrieving the files based upon which filters are selected (for filtering by file type)
+   * @param {number} userID the id of the user
+   * @param {String} filterBy the string which lists all the currently checked filters
+   * @param {String} firstChecked the index of the first checkbox checked
+   */
+  setfilterType = (userId, filterBy, firstChecked) => {
+    const { userList } = this.state;
+    const index = this.getAccountIndex(userId);
+    let fQuery = '';
+    if (filterBy.includes('Google Docs')) {
+      if (firstChecked === 0) {
+        fQuery += "mimeType = 'application/vnd.google-apps.document'";
+      } else {
+        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.document'`;
+      }
+    }
+    if (filterBy.includes('Google Sheets')) {
+      if (firstChecked === 1) {
+        fQuery += "mimeType = 'application/vnd.google-apps.spreadsheet'";
+      } else {
+        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.spreadsheet'`;
+      }
+    }
+    if (filterBy.includes('Google Slides')) {
+      if (firstChecked === 2) {
+        fQuery += "mimeType = 'application/vnd.google-apps.presentation'";
+      } else {
+        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.presentation'`;
+      }
+    }
+    if (filterBy.includes('PDF')) {
+      if (firstChecked === 3) {
+        fQuery += "mimeType = 'application/pdf'";
+      } else {
+        fQuery = `${fQuery} or mimeType = 'application/pdf'`;
+      }
+    }
+    if (firstChecked !== -1) {
+      fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.folder'`;
+    }
+    userList[index].filteredBy = fQuery;
+    this.setState((prevState) => ({
+      userList,
+    }));
+  }
+
   // Relies on api call putting folders in front via orderBy
   /**
    *
@@ -261,6 +320,7 @@ class App extends Component {
         }
       }
       /* Update file paths if a folder that was there is not anymore */
+      const oldOpenFolders = updatedList[index].openFolders;
       for (let oId = 0; oId < updatedList[index].openFolders.length; oId++) {
         let pathIndex = 0;
         while (updatedList[index].openFolders[oId] && updatedList[index].openFolders[oId].path && pathIndex < updatedList[index].openFolders[oId].path.length) {
@@ -273,6 +333,8 @@ class App extends Component {
               updatedList[index].openFolders[oId].path.splice(pathIndex, (oldPath.length - 1) - pathIndex);
               updatedList[index].openFolders[oId].displayed = this.state.userList[index].folders[oldPath[pathIndex - 1].id].children;
             }
+          } else {
+            this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true);
           }
           pathIndex++;
         }
@@ -287,7 +349,7 @@ class App extends Component {
    * @param {*} oId Index of the path in the openFolders array
    * @param {*} folder Folder being opened
    */
-  openFolder = (userId, oId, folder) => {
+  openFolder = (userId, oId, folder, isUpdate) => {
     const index = this.getAccountIndex(userId);
     const updatedList = this.state.userList;
     const newOpenFolders = updatedList[index].openFolders;
@@ -300,8 +362,12 @@ class App extends Component {
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
     // If folder is not top level it is part of a filePath already
-    } else {
+    } else if (!isUpdate) {
       newOpenFolders[oId].path.push(folder);
+      newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
+      updatedList[index].openFolders = newOpenFolders;
+      this.setState({ userList: updatedList });
+    } else {
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
@@ -344,7 +410,8 @@ class App extends Component {
    */
   retrieveAllFiles = (callback, email, user) => {
     const { filterQuery, searchQuery } = this.state;
-    const query = `${filterQuery} and ${searchQuery}`;
+    const fileTypeQuery = user.filteredBy;
+    const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
@@ -408,6 +475,11 @@ class App extends Component {
     });
   }
 
+  /**
+   * updates the sort Type when a new sort is selected
+   * @param {number} userID the id of the user
+   * @param {String} newSort the sort which has been selected
+   */
   changeSortedBy = (userId, newSort) => {
     const index = this.getAccountIndex(userId);
     const { userList } = this.state;
@@ -688,6 +760,7 @@ class App extends Component {
                     openFolder={this.openFolder}
                     closePath={this.closePath}
                     updatePath={this.updatePath}
+                    filterFunc={this.changeFilterType}
                   />
                   <div>
                     <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>

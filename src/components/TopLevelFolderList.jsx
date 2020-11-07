@@ -5,7 +5,7 @@ import '../css/FileList.css';
 
 export default function TopLevelFolderList(props) {
   const {
-    loadAuth, moveExternal, moveWithin, openFolder, shareFile, topLevelFolderList, userId, refreshFunc
+    loadAuth, moveExternal, moveWithin, openFolder, refreshFunc, shareFile, topLevelFolderList, userId,
   } = props;
 
   return (
@@ -14,16 +14,16 @@ export default function TopLevelFolderList(props) {
         {topLevelFolderList.map((folderObj) => (
           <File
             key={folderObj.folder.id}
-            userId={userId}
             data={folderObj.folder}
-            oId={null}
             displayed
-            moveExternal={moveExternal}
-            shareFile={shareFile}
-            moveWithin={moveWithin}
-            openFolder={openFolder}
             loadAuth={loadAuth}
+            moveExternal={moveExternal}
+            moveWithin={moveWithin}
+            oId={null}
+            openFolder={openFolder}
             refreshFunc={refreshFunc}
+            shareFile={shareFile}
+            userId={userId}
           />
         ))}
       </div>
@@ -36,6 +36,7 @@ TopLevelFolderList.propTypes = {
   moveExternal: PropTypes.func.isRequired,
   moveWithin: PropTypes.func.isRequired,
   openFolder: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
   shareFile: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
   userId: PropTypes.number.isRequired,
