@@ -276,6 +276,7 @@ class App extends Component {
           }
           pathIndex++;
         }
+        this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true)
       }
       this.setState({ userList: updatedList });
     }, email, user);
@@ -287,7 +288,7 @@ class App extends Component {
    * @param {*} oId Index of the path in the openFolders array
    * @param {*} folder Folder being opened
    */
-  openFolder = (userId, oId, folder) => {
+  openFolder = (userId, oId, folder, isUpdate) => {
     const index = this.getAccountIndex(userId);
     const updatedList = this.state.userList;
     const newOpenFolders = updatedList[index].openFolders;
@@ -300,8 +301,13 @@ class App extends Component {
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
     // If folder is not top level it is part of a filePath already
-    } else {
+    } else if (!isUpdate) {
       newOpenFolders[oId].path.push(folder);
+      newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
+      updatedList[index].openFolders = newOpenFolders;
+      this.setState({ userList: updatedList });
+    } else {
+
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });

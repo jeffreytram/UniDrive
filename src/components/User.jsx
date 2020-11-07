@@ -112,6 +112,7 @@ class User extends Component {
   }
 
   create = (fileType) => {
+    const { refreshFunc } = this.props;
     const { userId } = this.props;
     let newName = prompt('Enter a Name');
     if (newName === null) { return; }
@@ -125,7 +126,7 @@ class User extends Component {
     window.gapi.client.drive.files.create({
       resource: reqBody,
     }).then((response) => {
-      this.refreshFunc(userId);
+      refreshFunc(userId);
     });
   }
 
