@@ -11,7 +11,7 @@ import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
 import '../css/User.css';
-import Checklist from  './Checklist';
+import Checklist from './Checklist';
 
 class User extends Component {
   constructor() {
@@ -132,11 +132,11 @@ class User extends Component {
 
   render() {
     const { looseFilesIsDisplayed } = this.state;
-  
+
     const {
-      closePath, currentSort, idToken, loadAuth, looseFileList, moveExternal, moveWithin,
-      openFolder, openFolderList, parseIDToken, refreshFunc, removeFunc, sortFunc,
-      topLevelFolderList, updatePath, userId, filterFunc
+      closePath, currentSort, filterFunc, idToken, loadAuth, looseFileList, moveExternal,
+      moveWithin, openFolder, openFolderList, parseIDToken, refreshFunc, removeFunc, sortFunc,
+      topLevelFolderList, updatePath, userId,
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -276,15 +276,12 @@ class User extends Component {
             Remove Account
           </MenuItem>
         </ContextMenu>
-        <div style={{display: 'none',}} className="Files/Folders" ref={this.props.forwardRef}>
+        <div style={{ display: 'none' }} className="Files/Folders" ref={this.props.forwardRef}>
 
-
-
-
-       <Checklist
-        userId = {userId}
-         filterFunc={filterFunc}
-       />
+          <Checklist
+            userId={userId}
+            filterFunc={filterFunc}
+          />
           <TopLevelFolderList
             userId={userId}
             topLevelFolderList={topLevelFolderList}
@@ -330,9 +327,10 @@ User.propTypes = {
   closePath: PropTypes.func.isRequired,
   currentSort: PropTypes.string.isRequired,
   fileUpload: PropTypes.func.isRequired,
+  filterFunc: PropTypes.func.isRequired,
   forwardRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   ]).isRequired,
   idToken: PropTypes.string.isRequired,
   loadAuth: PropTypes.func.isRequired,
