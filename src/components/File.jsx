@@ -100,23 +100,20 @@ deletePermission = (permId) => {
       fileId: this.props.data.id,
       starred: !this.props.data.starred,
     }).then((response) => {
-      refreshFunction(userId);  
+      refreshFunction(userId);
     });
   }
 
-  
   // export default function File(props) {
   render() {
     const {
       data, displayed, loadAuth, moveWithin, oId, openFolder, shareFile, userId,
     } = this.props;
 
-    
-    let shadow =  "1px 1px 5px 0px rgba(10, 10, 10, 0.2)";
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
     } = data;
-   
+
     const copyFunc = loadAuth(userId, this.copy);
     const deleteFunc = loadAuth(userId, this.delete);
     const renameFunc = loadAuth(userId, this.rename);
@@ -131,7 +128,7 @@ deletePermission = (permId) => {
           <div>
             <ContextMenuTrigger id={id + userId.toString()}>
               <a href={webViewLink} target="blank">
-                <div className="file-container" style={{boxShadow: shadow}}>
+                <div className="file-container">
                   <div className="file-image-container">
                     <img className="file-img" src={iconLink} alt="File icon" />
                   </div>
@@ -180,7 +177,7 @@ deletePermission = (permId) => {
       return (
         <div>
           <ContextMenuTrigger id={id + userId.toString()}>
-            <div className="folder-container" onClick={() => openFolder(userId, oId, data)} style={{boxShadow: shadow}}>
+            <div className="folder-container" onClick={() => openFolder(userId, oId, data)}>
               <div className="folder-content-container">
                 <img className="folder-img" src={iconLink} alt="File icon" />
                 <p className="folder-name">{name}</p>
