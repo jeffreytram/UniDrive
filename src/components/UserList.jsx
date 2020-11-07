@@ -6,7 +6,7 @@ import '../css/UserList.css';
 export default function UserList(props) {
   const {
     closePath, fileUpload, loadAuth, moveExternal, moveWithin, openFolder,
-    parseIDToken, refreshFunc, removeFunc, sortFunc, updatePath, userList,
+    parseIDToken, refreshFunc, removeFunc, sortFunc, updatePath, userList, filterFunc
   } = props;
   return (
     <div className="user-list">
@@ -24,6 +24,7 @@ export default function UserList(props) {
           looseFileList={user.looseFiles}
           openFolderList={user.openFolders}
           sortFunc={sortFunc}
+          filterFunc = {filterFunc}
           currentSort={user.sortedBy}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
