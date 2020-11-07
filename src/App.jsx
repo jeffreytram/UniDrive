@@ -261,6 +261,7 @@ class App extends Component {
         }
       }
       /* Update file paths if a folder that was there is not anymore */
+      const oldOpenFolders = updatedList[index].openFolders;
       for (let oId = 0; oId < updatedList[index].openFolders.length; oId++) {
         let pathIndex = 0;
         while (updatedList[index].openFolders[oId] && updatedList[index].openFolders[oId].path && pathIndex < updatedList[index].openFolders[oId].path.length) {
@@ -273,10 +274,11 @@ class App extends Component {
               updatedList[index].openFolders[oId].path.splice(pathIndex, (oldPath.length - 1) - pathIndex);
               updatedList[index].openFolders[oId].displayed = this.state.userList[index].folders[oldPath[pathIndex - 1].id].children;
             }
+          } else {
+            this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true);
           }
           pathIndex++;
         }
-        this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true)
       }
       this.setState({ userList: updatedList });
     }, email, user);
@@ -307,7 +309,6 @@ class App extends Component {
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
     } else {
-
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
