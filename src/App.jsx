@@ -510,6 +510,7 @@ class App extends Component {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
     const { email } = this.parseIDToken(userToken);
+
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -523,18 +524,23 @@ class App extends Component {
           console.log(response.error);
           console.log('authorization error');
         }
-        const preParents = file.parents.join(',');
-        window.gapi.client.drive.files.update({
-          fileId: file.id,
-          addParents: newParentId,
-          removeParents: preParents,
-          fields: 'id, parents',
-        }).then((response) => {
-          if (response.error) {
-            console.log(response.error);
-          }
-          console.log(response);
-        });
+        if (file.parents === undefined) {
+          return;
+        }
+        if (window.confirm('Warning: moving a file to root will unshare it with everybody it is currently shared with.')) {
+          const preParents = file.parents.join(',');
+          window.gapi.client.drive.files.update({
+            fileId: file.id,
+            addParents: newParentId,
+            removeParents: preParents,
+            fields: 'id, parents',
+          }).then((response) => {
+            if (response.error) {
+              console.log(response.error);
+            }
+            console.log(response);
+          });
+        }
       });
     });
   }

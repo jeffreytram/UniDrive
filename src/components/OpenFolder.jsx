@@ -46,8 +46,8 @@ class OpenFolder extends Component {
               moveExternal={moveExternal}
               moveWithin={moveWithin}
               oId={oId}
-              refreshFunc={refreshFunc}
               openFolder={openFolder}
+              refreshFunc={refreshFunc}
               shareFile={shareFile}
               userId={userId}
             />
