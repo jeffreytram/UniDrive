@@ -6,7 +6,7 @@ import '../css/FileList.css';
 export default function OpenFolderList(props) {
   const {
     closePath, loadAuth, moveExternal, moveWithin, openFolder, openFolderList,
-    shareFile, updatePath, userId,
+    refreshFunc, shareFile, updatePath, userId,
   } = props;
 
   return (
@@ -14,18 +14,19 @@ export default function OpenFolderList(props) {
       {openFolderList.map((pathObj, i) => (
         <OpenFolder
           key={pathObj.path[0].id}
-          path={pathObj.path}
           children={pathObj.displayed}
-          oId={i}
-          userId={userId}
+          closePath={closePath}
           displayed
-          shareFile={shareFile}
+          loadAuth={loadAuth}
           moveExternal={moveExternal}
           moveWithin={moveWithin}
-          loadAuth={loadAuth}
+          oId={i}
           openFolder={openFolder}
-          closePath={closePath}
+          path={pathObj.path}
+          refreshFunc={refreshFunc}
+          shareFile={shareFile}
           updatePath={updatePath}
+          userId={userId}
         />
       ))}
     </div>
@@ -39,6 +40,7 @@ OpenFolderList.propTypes = {
   moveWithin: PropTypes.func.isRequired,
   openFolder: PropTypes.func.isRequired,
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  refreshFunc: PropTypes.func.isRequired,
   shareFile: PropTypes.func.isRequired,
   updatePath: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,

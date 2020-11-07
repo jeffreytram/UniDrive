@@ -225,7 +225,7 @@ File.propTypes = {
   moveWithin: PropTypes.func.isRequired,
   oId: PropTypes.number,
   openFolder: PropTypes.func,
-  refreshFunc: PropTypes.func,
+  refreshFunc: PropTypes.func.isRequired,
   shareFile: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
 };
@@ -233,7 +233,6 @@ File.propTypes = {
 File.defaultProps = {
   oId: -1,
   openFolder: () => { console.log('No open folder function found.'); },
-  refreshFunc: () => { console.log('No open refresh function found.'); },
 };
 
 export default File;
