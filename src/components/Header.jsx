@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import SearchBar from './SearchBar';
 import icon from './images/unidrive-logo.png';
 import '../css/Header.css';

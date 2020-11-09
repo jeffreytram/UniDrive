@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
 import Layout from './components/Layout';
@@ -761,14 +763,21 @@ class App extends Component {
                     updatePath={this.updatePath}
                     filterFunc={this.changeFilterType}
                   />
-                  <div>
-                    <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
+                  {uploadRequests.length > 0 && (
+                  <div className="request-progress-container">
+                    <div className="progress-header">
+                      Upload Progress
+                      <button type="button" className="close-progress-button" onClick={() => this.clearRequests()}>
+                        <FontAwesomeIcon className="close-progress-button" icon={faTimes} size="lg" />
+                      </button>
+                    </div>
                     {uploadRequests.map((requested) => (
                       <RequestProgressElement
                         requested={requested}
                       />
                     ))}
                   </div>
+                  )}
                 </div>
               </div>
             </Layout>
