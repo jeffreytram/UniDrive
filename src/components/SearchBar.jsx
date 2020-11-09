@@ -31,7 +31,7 @@ class SearchBar extends Component {
     return (
       <div className="search-form">
         <form onSubmit={(e) => { e.preventDefault(); }}>
-          <FontAwesomeIcon className="search-icon" icon={faSearch}></FontAwesomeIcon>
+          <FontAwesomeIcon className="search-icon" icon={faSearch} />
           <input
             className="form-control"
             name="search"
@@ -40,6 +40,7 @@ class SearchBar extends Component {
             type="input"
             value={this.state.searchInput}
           />
+          <button type="submit" style={{ display: 'none' }} onClick={() => this.submitSearchInput()}>Search</button>
         </form>
       </div>
     );
