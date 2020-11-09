@@ -60,3 +60,7 @@
   background-color: var(--green);
   margin-right: 5px;
 }
+
+.add:hover {
+  color: var(--green);
+}

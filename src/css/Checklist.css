@@ -1,0 +1,21 @@
+ul {
+  list-style: none;
+}
+
+.filter-toggle-button {
+  background: none;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.clear-filters {
+  background: none;
+  border: none;
+  color: var(--blue);
+}
+
+.filter-toggle-button:hover, .clear-filters:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

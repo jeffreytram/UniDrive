@@ -3,7 +3,7 @@
 }
 
 .form-control {
-  border: 2px solid black;
+  border: 2px solid var(--subtle2);
   border-radius: 5px;
   padding: 6px 2px 2px 30px;
   width: 20vw;
@@ -13,4 +13,5 @@
 .search-icon {
   position: relative;
   left: 25px;
+  color: var(--subtle2);
 }
