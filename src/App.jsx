@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
 import Layout from './components/Layout';
+import Header from './components/Header';
 import Welcome from './components/Welcome';
 import './App.css';
 
@@ -9,9 +12,8 @@ const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https:
 const discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const API_KEY = process.env.REACT_APP_API_KEY;
 const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
-let ready = true;
+const ready = true;
 let userId = 1;
-let folderId = 1;
 
 class App extends Component {
   constructor() {
@@ -20,7 +22,8 @@ class App extends Component {
       userList: [],
       uploadRequests: [],
       lastRefreshTime: Date().substring(0, 21),
-      query: 'trashed = false',
+      filterQuery: 'trashed = false',
+      searchQuery: 'name contains ""',
     };
   }
 
@@ -106,10 +109,9 @@ class App extends Component {
    * Adds a new user to the list
    * @param {Object} accessToken the accessToken granted to the user by gapi.client.authorize()
    * @param {Object} idToken the accessToken granted to the user by gapi.client.authorize()
-    * @param {Object} code the code granted to the user by gapi.client.authorize()
+   * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   addUser = (accessToken, idToken, code) => {
-    console.log("Add User")
     const { email } = this.parseIDToken(idToken);
     const { userList } = this.state;
     const isDup = this.isDuplicateUser(email, userList);
@@ -128,6 +130,7 @@ class App extends Component {
           openFolders: [],
           ref: React.createRef(),
           sortedBy: 'folder, viewedByMeTime desc',
+          filteredBy: '',
         }],
       }));
       userId += 1;
@@ -171,8 +174,23 @@ class App extends Component {
     });
   }
 
-  filterFilesInAllAccounts = (query) => {
-    this.setQuery(query);
+  /**
+   * Saves the input from the search bar. Will not return folders, only files
+   * @param {string} searchInput from the searchbar.js
+   */
+  onFormSubmit = (searchInput) => {
+    let searchQuery;
+    if (searchInput === '') {
+      searchQuery = `name contains '${searchInput}'`;
+    } else {
+      searchQuery = `mimeType != 'application/vnd.google-apps.folder' and name contains '${searchInput}'`;
+    }
+    this.setState({ searchQuery });
+    this.refreshAllFunction();
+  }
+
+  filterFilesInAllAccounts = (filter) => {
+    this.setFilterQuery(filter);
     const { userList } = this.state;
     userList.forEach((user, i) => {
       const { email } = this.parseIDToken(userList[i].idToken);
@@ -180,104 +198,159 @@ class App extends Component {
     });
   }
 
-  setQuery = (query) => {
+  setFilterQuery = (filter) => {
     this.setState((prevState) => ({
-      query,
+      filterQuery: filter,
     }));
   }
-  
+
+  /**
+   * function which updates the filetypes displayed
+   * @param {number} userID the id of the user
+   * @param {String} filterBy the string which lists all the currently checked filters
+   * @param {String} firstChecked the index of the first checkbox checked
+   */
+  changeFilterType = (userId, filterBy, firstChecked) => {
+    this.setfilterType(userId, filterBy, firstChecked);
+    this.refreshAllFunction();
+  }
+
+  /**
+   * builds the Google search parameter to use in retrieving the files based upon which filters are selected (for filtering by file type)
+   * @param {number} userID the id of the user
+   * @param {String} filterBy the string which lists all the currently checked filters
+   * @param {String} firstChecked the index of the first checkbox checked
+   */
+  setfilterType = (userId, filterBy, firstChecked) => {
+    const { userList } = this.state;
+    const index = this.getAccountIndex(userId);
+    let fQuery = '';
+    if (filterBy.includes('Google Docs')) {
+      if (firstChecked === 0) {
+        fQuery += "mimeType = 'application/vnd.google-apps.document'";
+      } else {
+        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.document'`;
+      }
+    }
+    if (filterBy.includes('Google Sheets')) {
+      if (firstChecked === 1) {
+        fQuery += "mimeType = 'application/vnd.google-apps.spreadsheet'";
+      } else {
+        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.spreadsheet'`;
+      }
+    }
+    if (filterBy.includes('Google Slides')) {
+      if (firstChecked === 2) {
+        fQuery += "mimeType = 'application/vnd.google-apps.presentation'";
+      } else {
+        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.presentation'`;
+      }
+    }
+    if (filterBy.includes('PDF')) {
+      if (firstChecked === 3) {
+        fQuery += "mimeType = 'application/pdf'";
+      } else {
+        fQuery = `${fQuery} or mimeType = 'application/pdf'`;
+      }
+    }
+    if (firstChecked !== -1) {
+      fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.folder'`;
+    }
+    userList[index].filteredBy = fQuery;
+    this.setState((prevState) => ({
+      userList,
+    }));
+  }
+
   // Relies on api call putting folders in front via orderBy
   /**
-   * 
+   *
    * @param {*} index userList index of user
    * @param {*} email email of user whose files are being requested
    */
   getAndAssignFiles = (index, email) => {
     const user = this.state.userList[index];
     this.retrieveAllFiles((results) => {
-      this.setState((prevState) => {
-        const { userList } = prevState;
-        const updatedList = userList;
-        if (updatedList[index] === undefined) {
-          return;
-        }
-        console.log("Help")
-        // Initialize so there are not double
-        updatedList[index].folders = [];
-        updatedList[index].topLevelFolders = [];
-        updatedList[index].looseFiles = [];
-        // Put folders in own data struct
-        let i = -1;
-        while (++i < results.length && results[i].mimeType === 'application/vnd.google-apps.folder') {
-          // const newFile = results[i];
-          // newFile.children = [];
-          // updatedList[index].folders[results[i].id] = newFile;
-          updatedList[index].folders[results[i].id] = {
-            folder: results[i],
-            children: [],
-          };
-        }
-        /* Assign non-folder children to parent folder or lose-FileList if not children */
-        for (let j = i; j < results.length; j++) {
-          let np = true;
-          if (results[j].hasOwnProperty('parents')) {
-            for (let k = 0; k < results[j].parents.length; k++) {
-              if (updatedList[index].folders.hasOwnProperty(results[j].parents[k])) {
-                updatedList[index].folders[results[j].parents[k]].children.push(results[j]);
-                np = false;
-              }
-            }
-          }
-          if (np) {
-            updatedList[index].looseFiles.push(results[j]);
-          }
-        }
-        /* Assign folder children to parent folder or top level folder list if not children */
-        for (let j = 0; j < i; j++) {
-          let np = true;
-          if (results[j].hasOwnProperty('parents')) {
-            for (let k = 0; k < results[j].parents.length; k++) {
-              if (updatedList[index].folders.hasOwnProperty(results[j].parents[k])) {
-                updatedList[index].folders[results[j].parents[k]].children.push(results[j]);
-                np = false;
-              }
-            }
-          }
-          if (np) {
-            updatedList[index].topLevelFolders.push(updatedList[index].folders[results[j].id]);
-          }
-        }
-        /* Update file paths if a folder that was there is not anymore */
-        const oldOpenFolders = prevState.userList[index].openFolders;
-        for (let oId = 0; oId < oldOpenFolders.length; oId++) {
-          for (let pathIndex = 0; pathIndex < oldOpenFolders[oId].path.length; pathIndex++) {
-            const oldPath = oldOpenFolders[oId].path;
-            if (!prevState.userList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
-              if (pathIndex === 0) {
-                updatedList[index].openFolders.splice(oId, 1);
-              } else {
-                // Cut off the rest of the folders
-                updatedList[index].openFolders[oId].path.splice(pathIndex, (oldPath.length - 1) - pathIndex);
-                updatedList[index].openFolders[oId].displayed = prevState.userList[index].folders[oldPath[pathIndex - 1].id].children;
-              }
+      const updatedList = this.state.userList;
+      if (updatedList[index] === undefined) {
+        return;
+      }
+      // Initialize so there are not double
+      updatedList[index].folders = [];
+      updatedList[index].topLevelFolders = [];
+      updatedList[index].looseFiles = [];
+      // Put folders in own data struct
+      let i = -1;
+      while (++i < results.length && results[i].mimeType === 'application/vnd.google-apps.folder') {
+        // const newFile = results[i];
+        // newFile.children = [];
+        // updatedList[index].folders[results[i].id] = newFile;
+        updatedList[index].folders[results[i].id] = {
+          folder: results[i],
+          children: [],
+        };
+      }
+      /* Assign non-folder children to parent folder or lose-FileList if not children */
+      for (let j = i; j < results.length; j++) {
+        let np = true;
+        if (results[j].hasOwnProperty('parents')) {
+          for (let k = 0; k < results[j].parents.length; k++) {
+            if (updatedList[index].folders.hasOwnProperty(results[j].parents[k])) {
+              updatedList[index].folders[results[j].parents[k]].children.push(results[j]);
+              np = false;
             }
           }
         }
-        // Set new state
-        return {
-          userList: updatedList,
+        if (np) {
+          updatedList[index].looseFiles.push(results[j]);
         }
-      });
+      }
+      /* Assign folder children to parent folder or top level folder list if not children */
+      for (let j = 0; j < i; j++) {
+        let np = true;
+        if (results[j].hasOwnProperty('parents')) {
+          for (let k = 0; k < results[j].parents.length; k++) {
+            if (updatedList[index].folders.hasOwnProperty(results[j].parents[k])) {
+              updatedList[index].folders[results[j].parents[k]].children.push(results[j]);
+              np = false;
+            }
+          }
+        }
+        if (np) {
+          updatedList[index].topLevelFolders.push(updatedList[index].folders[results[j].id]);
+        }
+      }
+      /* Update file paths if a folder that was there is not anymore */
+      const oldOpenFolders = updatedList[index].openFolders;
+      for (let oId = 0; oId < updatedList[index].openFolders.length; oId++) {
+        let pathIndex = 0;
+        while (updatedList[index].openFolders[oId] && updatedList[index].openFolders[oId].path && pathIndex < updatedList[index].openFolders[oId].path.length) {
+          const oldPath = updatedList[index].openFolders[oId].path;
+          if (!this.state.userList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
+            if (pathIndex === 0) {
+              updatedList[index].openFolders.splice(oId, 1);
+            } else {
+              // Cut off the rest of the folders
+              updatedList[index].openFolders[oId].path.splice(pathIndex, (oldPath.length - 1) - pathIndex);
+              updatedList[index].openFolders[oId].displayed = this.state.userList[index].folders[oldPath[pathIndex - 1].id].children;
+            }
+          } else {
+            this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true);
+          }
+          pathIndex++;
+        }
+      }
+      this.setState({ userList: updatedList });
     }, email, user);
   }
 
   /**
-   * 
+   *
    * @param {*} userId Id of the user that is having a file opened
    * @param {*} oId Index of the path in the openFolders array
    * @param {*} folder Folder being opened
    */
-  openFolder = (userId, oId, folder) => {
+  openFolder = (userId, oId, folder, isUpdate) => {
     const index = this.getAccountIndex(userId);
     const updatedList = this.state.userList;
     const newOpenFolders = updatedList[index].openFolders;
@@ -285,13 +358,17 @@ class App extends Component {
     if (oId === null) {
       newOpenFolders.push({
         path: [folder],
-        displayed: updatedList[index].folders[folder.id].children
+        displayed: updatedList[index].folders[folder.id].children,
       });
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
     // If folder is not top level it is part of a filePath already
-    } else {
+    } else if (!isUpdate) {
       newOpenFolders[oId].path.push(folder);
+      newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
+      updatedList[index].openFolders = newOpenFolders;
+      this.setState({ userList: updatedList });
+    } else {
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
@@ -307,11 +384,11 @@ class App extends Component {
     const index = this.getAccountIndex(userId);
     const newUserList = this.state.userList;
     newUserList[index].openFolders.splice(oId, 1);
-    this.setState({userList: newUserList });
+    this.setState({ userList: newUserList });
   }
 
   /**
-   * 
+   *
    * @param {*} userId
    * @param {*} oId Index of entry in openFolders
    * @param {*} pId Index of folder in openFolders path array
@@ -323,7 +400,7 @@ class App extends Component {
     newOpenFolders.path.splice(pId + 1, (newOpenFolders.path.length) - (pId + 1));
     newOpenFolders.displayed = this.state.userList[index].folders[newOpenFolders.path[pId].id].children;
     updatedList[index].openFolders[oId] = newOpenFolders;
-    this.setState({userList: updatedList});
+    this.setState({ userList: updatedList });
   }
 
   /**
@@ -333,7 +410,9 @@ class App extends Component {
    * @param {String} email email of the user to keep automatically authenticating for each list request
    */
   retrieveAllFiles = (callback, email, user) => {
-    const { query } = this.state;
+    const { filterQuery, searchQuery } = this.state;
+    const fileTypeQuery = user.filteredBy;
+    const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
@@ -397,6 +476,11 @@ class App extends Component {
     });
   }
 
+  /**
+   * updates the sort Type when a new sort is selected
+   * @param {number} userID the id of the user
+   * @param {String} newSort the sort which has been selected
+   */
   changeSortedBy = (userId, newSort) => {
     const index = this.getAccountIndex(userId);
     const { userList } = this.state;
@@ -427,6 +511,7 @@ class App extends Component {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
     const { email } = this.parseIDToken(userToken);
+
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -440,18 +525,23 @@ class App extends Component {
           console.log(response.error);
           console.log('authorization error');
         }
-        const preParents = file.parents.join(',');
-        window.gapi.client.drive.files.update({
-          fileId: file.id,
-          addParents: newParentId,
-          removeParents: preParents,
-          fields: 'id, parents',
-        }).then((response) => {
-          if (response.error) {
-            console.log(response.error);
-          }
-          console.log(response);
-        });
+        if (file.parents === undefined) {
+          return;
+        }
+        if (window.confirm('Warning: moving a file to root will unshare it with everybody it is currently shared with.')) {
+          const preParents = file.parents.join(',');
+          window.gapi.client.drive.files.update({
+            fileId: file.id,
+            addParents: newParentId,
+            removeParents: preParents,
+            fields: 'id, parents',
+          }).then((response) => {
+            if (response.error) {
+              console.log(response.error);
+            }
+            console.log(response);
+          });
+        }
       });
     });
   }
@@ -636,6 +726,12 @@ class App extends Component {
     const addedAccount = userList.length > 0;
     return (
       <div>
+        <Header
+          addedAccount={addedAccount}
+          authorizeUser={this.authorizeUser}
+          onSubmit={this.onFormSubmit}
+          refreshAllFunc={this.refreshAllFunction}
+        />
         {addedAccount
           ? (
             <Layout
@@ -645,25 +741,18 @@ class App extends Component {
             >
               <div className="main-container">
                 <div className="main-content">
-                  <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-                  <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
-                    Refresh All
-                  </button>
-                  <>
-                    <span className="sync-message">
-                      {' '}
-                      Last Sync:
-                      {' '}
-                      {this.state.lastRefreshTime}
-                    </span>
-                  </>
+                  <span className="sync-message">
+                    {' '}
+                    Last Sync:
+                    {' '}
+                    {this.state.lastRefreshTime}
+                  </span>
                   <UserList
                     userList={userList}
                     parseIDToken={this.parseIDToken}
                     removeFunc={this.signOutFunction}
                     refreshFunc={this.refreshFunction}
                     fileUpload={this.fileUpload}
-                    createFunc={this.create}
                     sortFunc={this.changeSortedBy}
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
@@ -671,21 +760,31 @@ class App extends Component {
                     openFolder={this.openFolder}
                     closePath={this.closePath}
                     updatePath={this.updatePath}
+                    filterFunc={this.changeFilterType}
                   />
-                  <div>
-                    <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
+                  {uploadRequests.length > 0 && (
+                  <div className="request-progress-container">
+                    <div className="progress-header">
+                      Upload Progress
+                      <button type="button" className="close-progress-button" onClick={() => this.clearRequests()}>
+                        <FontAwesomeIcon className="close-progress-button" icon={faTimes} size="lg" />
+                      </button>
+                    </div>
                     {uploadRequests.map((requested) => (
                       <RequestProgressElement
                         requested={requested}
                       />
                     ))}
                   </div>
+                  )}
                 </div>
               </div>
             </Layout>
           )
           : (
-            <Welcome authorizeUser={() => this.authorizeUser()} />
+            <Welcome
+              authorizeUser={this.authorizeUser}
+            />
           )}
       </div>
     );

@@ -3,31 +3,6 @@
   height: 20px;
 }
 
-.main-button {
-  border-radius: 5px;
-  padding: 5px 10px;
-  height: 30px;
-  font-weight: bold;
-  color: var(--main-bg);
-}
-
-.main-button:hover {
-  cursor: pointer;
-  background-color: var(--main-bg);
-  color: var(--text);
-}
-
-.refresh {
-  border: 2px solid var(--blue);
-  background-color: var(--blue);
-}
-
-.add {
-  border: 2px solid var(--green);
-  background-color: var(--green);
-  margin-right: 5px;
-}
-
 .main-container {
   width: 85%;
   float: right;
@@ -41,4 +16,35 @@
 .sync-message {
   font-style: italic;
   color: var(--subtle2);
+}
+
+.request-progress-container {
+  position: fixed;
+  right: 15px;
+  bottom: 15px;
+  background-color: rgba(30, 30, 30, .8);
+  color: var(--main-bg);
+  padding: 10px 20px;
+  border-radius: 15px;
+  z-index: 3;
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.4);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.4);
+  box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.4);
+}
+
+.progress-header {
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.close-progress-button {
+  float: right;
+  background: none;
+  border: none;
+  color: var(--main-bg);
+}
+
+.close-progress-button:hover {
+  cursor: pointer;
+  color: var(--red);
 }

@@ -113,6 +113,35 @@ a:hover {
   color: var(--subtle2);
 }
 
+.menu-item:hover>.faGoogle {
+  color: #1c65db
+}
+
+.menu-item:hover>.faOpen {
+  color: #3f0cf5;
+}
+
+.menu-item:hover>.faShare {
+  color: #800080;
+}
+
+.menu-item:hover>.faArrowRight {
+  color: #f5037c;
+}
+
+.menu-item:hover>.faPencil {
+  color: #df9c0b;
+}
+
+.menu-item:hover>.faCopy {
+  color: #7ae005;
+}
+
+.menu-item:hover>.faStar {
+  color: #f4f806ea;
+}
+
+
 .sub-menu-move-to {
   display: none;
 }

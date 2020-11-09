@@ -5,27 +5,28 @@ import '../css/FileList.css';
 
 export default function OpenFolderList(props) {
   const {
-    userId, openFolderList, moveExternal, moveWithin, shareFile, loadAuth, email,
-    openFolder, closePath, updatePath
+    closePath, loadAuth, moveExternal, moveWithin, openFolder, openFolderList,
+    refreshFunc, shareFile, updatePath, userId,
   } = props;
 
   return (
     <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
       {openFolderList.map((pathObj, i) => (
         <OpenFolder
-          path={pathObj.path}
+          key={pathObj.path[0].id}
           children={pathObj.displayed}
-          oId={i}
-          userId={userId}
+          closePath={closePath}
           displayed
-          shareFile={shareFile}
+          loadAuth={loadAuth}
           moveExternal={moveExternal}
           moveWithin={moveWithin}
-          loadAuth={loadAuth}
-          email={email}
+          oId={i}
           openFolder={openFolder}
-          closePath={closePath}
+          path={pathObj.path}
+          refreshFunc={refreshFunc}
+          shareFile={shareFile}
           updatePath={updatePath}
+          userId={userId}
         />
       ))}
     </div>
@@ -33,12 +34,14 @@ export default function OpenFolderList(props) {
 }
 
 OpenFolderList.propTypes = {
-  fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
-  userId: PropTypes.number.isRequired,
-  filepathTraceFunc: PropTypes.func.isRequired,
-  openChildrenFunc: PropTypes.func.isRequired,
-  closeFolderFunc: PropTypes.func.isRequired,
+  closePath: PropTypes.func.isRequired,
+  loadAuth: PropTypes.func.isRequired,
+  moveExternal: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  openFolder: PropTypes.func.isRequired,
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  buildChildrenArray: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
+  shareFile: PropTypes.func.isRequired,
+  updatePath: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };

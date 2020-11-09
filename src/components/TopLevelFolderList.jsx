@@ -2,41 +2,42 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import File from './File';
 import '../css/FileList.css';
-import OpenFolder from './OpenFolder';
 
 export default function TopLevelFolderList(props) {
   const {
-    userId, topLevelFolderList, moveExternal, shareFile,
-    moveWithin, loadAuth, refreshFunc, email, openFolder
+    loadAuth, moveExternal, moveWithin, openFolder, refreshFunc, shareFile, topLevelFolderList, userId,
   } = props;
 
   return (
     <div className="topFolder">
-    <div className="file-list-container" style={{display: 'flex', flexDirection: 'row'}}>
-      {topLevelFolderList.map((folderObj) => (
-        <File
-          userId={userId}
-          data={folderObj.folder}
-          oId={null}
-          displayed
-          moveExternal={moveExternal}
-          shareFile={shareFile}
-          moveWithin={moveWithin}
-          openFolder={openFolder}
-          loadAuth={loadAuth}
-          refreshFunc={refreshFunc}
-          email={email}
-        />
-      ))}
-    </div>
+      <div className="file-list-container" style={{ display: 'flex', flexDirection: 'row' }}>
+        {topLevelFolderList.map((folderObj) => (
+          <File
+            key={folderObj.folder.id}
+            data={folderObj.folder}
+            displayed
+            loadAuth={loadAuth}
+            moveExternal={moveExternal}
+            moveWithin={moveWithin}
+            oId={null}
+            openFolder={openFolder}
+            refreshFunc={refreshFunc}
+            shareFile={shareFile}
+            userId={userId}
+          />
+        ))}
+      </div>
     </div>
   );
 }
 
 TopLevelFolderList.propTypes = {
-  fileList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  fileContainerStyles: PropTypes.objectOf(PropTypes.string).isRequired,
-  userId: PropTypes.number.isRequired,
+  loadAuth: PropTypes.func.isRequired,
+  moveExternal: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  openFolder: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
+  shareFile: PropTypes.func.isRequired,
   topLevelFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  openChildrenFunc: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };

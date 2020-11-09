@@ -107,12 +107,13 @@ deletePermission = (permId) => {
   // export default function File(props) {
   render() {
     const {
-      userId, data, oId, displayed, moveExternal, shareFile, moveWithin, loadAuth,
-      openFolder,
+      data, displayed, loadAuth, moveWithin, oId, openFolder, shareFile, userId,
     } = this.props;
+
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
     } = data;
+
     const copyFunc = loadAuth(userId, this.copy);
     const deleteFunc = loadAuth(userId, this.delete);
     const renameFunc = loadAuth(userId, this.rename);
@@ -125,7 +126,7 @@ deletePermission = (permId) => {
       // if file
         return (
           <div>
-            <ContextMenuTrigger id={id}>
+            <ContextMenuTrigger id={id + userId.toString()}>
               <a href={webViewLink} target="blank">
                 <div className="file-container">
                   <div className="file-image-container">
@@ -137,30 +138,30 @@ deletePermission = (permId) => {
                 </div>
               </a>
             </ContextMenuTrigger>
-            <ContextMenu className="context-menu" id={id}>
+            <ContextMenu className="context-menu" id={id + userId.toString()}>
               <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
-                <FontAwesomeIcon className="menu-icon" icon={faFolderOpen} />
+                <FontAwesomeIcon className="faOpen menu-icon" icon={faFolderOpen} />
                 Open
               </MenuItem>
               <hr className="divider" />
               <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
-                <FontAwesomeIcon className="menu-icon" icon={faShare} />
+                <FontAwesomeIcon className="faShare menu-icon" icon={faShare} />
                 Share
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
-                <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
+                <FontAwesomeIcon className="faArrowRight menu-icon" icon={faArrowRight} />
                 Move to Root
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => renameFunc()}>
-                <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
+                <FontAwesomeIcon className="faPencil menu-icon" icon={faPencilAlt} />
                 Rename
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => copyFunc()}>
-                <FontAwesomeIcon className="menu-icon" icon={faCopy} />
+                <FontAwesomeIcon className="faCopy menu-icon" icon={faCopy} />
                 Make a copy
               </MenuItem>
               <MenuItem className="menu-item" onClick={() => starFunc()}>
-                <FontAwesomeIcon className="menu-icon" icon={faStar} />
+                <FontAwesomeIcon className="faStar menu-icon" icon={faStar} />
                 { (starred) ? 'Remove From Starred' : 'Add to Starred' }
               </MenuItem>
               <hr className="divider" />
@@ -175,34 +176,34 @@ deletePermission = (permId) => {
       // if folder
       return (
         <div>
-          <ContextMenuTrigger id={id}>
-            <div className="folder-container" onClick={() =>  openFolder(userId, oId, data)}>
+          <ContextMenuTrigger id={id + userId.toString()}>
+            <div className="folder-container" onClick={() => openFolder(userId, oId, data)}>
               <div className="folder-content-container">
                 <img className="folder-img" src={iconLink} alt="File icon" />
                 <p className="folder-name">{name}</p>
               </div>
             </div>
           </ContextMenuTrigger>
-          <ContextMenu className="context-menu" id={id}>
+          <ContextMenu className="context-menu" id={id + userId.toString()}>
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
-              <FontAwesomeIcon className="menu-icon" icon={faGoogleDrive} />
+              <FontAwesomeIcon className="faGoogle menu-icon" icon={faGoogleDrive} />
               View on Google Drive
             </MenuItem>
             <hr className="divider" />
             <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
-              <FontAwesomeIcon className="menu-icon" icon={faShare} />
+              <FontAwesomeIcon className="faShare menu-icon" icon={faShare} />
               Share
             </MenuItem>
             <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
-              <FontAwesomeIcon className="menu-icon" icon={faArrowRight} />
+              <FontAwesomeIcon className="faArrowRight menu-icon" icon={faArrowRight} />
               Move to Root
             </MenuItem>
             <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
-              <FontAwesomeIcon className="menu-icon" icon={faPencilAlt} />
+              <FontAwesomeIcon className="faPencil menu-icon" icon={faPencilAlt} />
               Rename
             </MenuItem>
             <MenuItem className="menu-item" onClick={() => starFunc()}>
-              <FontAwesomeIcon className="menu-icon" icon={faStar} />
+              <FontAwesomeIcon className="faStar menu-icon" icon={faStar} />
               { (starred) ? 'Remove From Starred' : 'Add to Starred' }
             </MenuItem>
             <hr className="divider" />
@@ -218,15 +219,21 @@ deletePermission = (permId) => {
 }
 
 File.propTypes = {
-  userId: PropTypes.number.isRequired,
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
   displayed: PropTypes.bool.isRequired,
-  openFolder: PropTypes.func.isRequired,
-  // fileObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf()])),
+  loadAuth: PropTypes.func.isRequired,
+  moveExternal: PropTypes.func.isRequired,
+  moveWithin: PropTypes.func.isRequired,
+  oId: PropTypes.number,
+  openFolder: PropTypes.func,
+  refreshFunc: PropTypes.func.isRequired,
+  shareFile: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };
 
 File.defaultProps = {
-  fileObj: {},
+  oId: -1,
+  openFolder: () => { console.log('No open folder function found.'); },
 };
 
 export default File;

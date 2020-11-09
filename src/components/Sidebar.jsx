@@ -54,7 +54,7 @@ export default function Sidebar({ userList, parseIDToken, filterFilesInAllAccoun
           const { name, picture } = parseIDToken(user.idToken);
           const { ref } = user;
           return (
-            <div className="sidebar-user" onClick={() => scrollToggle(ref)}>
+            <div className="sidebar-user" key={user.id} onClick={() => scrollToggle(ref)}>
               <img className="sidebar-picture" src={picture} alt="Account profile" />
               {name}
             </div>
@@ -66,6 +66,7 @@ export default function Sidebar({ userList, parseIDToken, filterFilesInAllAccoun
 }
 
 Sidebar.propTypes = {
-  userList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  filterFilesInAllAccounts: PropTypes.func.isRequired,
   parseIDToken: PropTypes.func.isRequired,
+  userList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
