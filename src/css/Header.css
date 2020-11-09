@@ -1,7 +1,10 @@
 .header-container {
+  --header-padding: 4px;
+  --full-header-height: calc(100% - var(--header-padding)*2);
+
   height: calc(var(--header-margin) - 8px);
   width: 100%;
-  padding: 4px;
+  padding: var(--header-padding);
   background-color: var(--main-bg);
   position: fixed;
   top: 0;
@@ -13,13 +16,23 @@
 
 .logo {
   height: 100%;
+  float: left;
+}
+
+.search-container, .header-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-container {
+  height: var(--full-header-height);
+  position: absolute;
+  left: 15%;
 }
 
 .header-button-container {
   height: 100%;
   float: right;
-  display: flex;
-  align-items: center;
 }
 
 .main-button {

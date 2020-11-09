@@ -3,7 +3,6 @@ import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
 import Layout from './components/Layout';
 import Header from './components/Header';
-import SearchBar from './components/SearchBar';
 import Welcome from './components/Welcome';
 import { config } from './config';
 import './App.css';
@@ -729,6 +728,7 @@ class App extends Component {
         <Header
           addedAccount={addedAccount}
           authorizeUser={this.authorizeUser}
+          onSubmit={this.onFormSubmit}
           refreshAllFunc={this.refreshAllFunction}
         />
         {addedAccount
@@ -746,7 +746,6 @@ class App extends Component {
                     {' '}
                     {this.state.lastRefreshTime}
                   </span>
-                  <SearchBar onSubmit={this.onFormSubmit} />
                   <UserList
                     userList={userList}
                     parseIDToken={this.parseIDToken}
