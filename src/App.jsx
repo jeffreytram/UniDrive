@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
 import Layout from './components/Layout';
-import SearchBar from './components/SearchBar';
+import Header from './components/Header';
 import Welcome from './components/Welcome';
 import { config } from './config';
 import './App.css';
@@ -725,6 +727,12 @@ class App extends Component {
     const addedAccount = userList.length > 0;
     return (
       <div>
+        <Header
+          addedAccount={addedAccount}
+          authorizeUser={this.authorizeUser}
+          onSubmit={this.onFormSubmit}
+          refreshAllFunc={this.refreshAllFunction}
+        />
         {addedAccount
           ? (
             <Layout
@@ -734,19 +742,12 @@ class App extends Component {
             >
               <div className="main-container">
                 <div className="main-content">
-                  <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-                  <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
-                    Refresh All
-                  </button>
-                  <>
-                    <span className="sync-message">
-                      {' '}
-                      Last Sync:
-                      {' '}
-                      {this.state.lastRefreshTime}
-                    </span>
-                  </>
-                  <SearchBar onSubmit={this.onFormSubmit} />
+                  <span className="sync-message">
+                    {' '}
+                    Last Sync:
+                    {' '}
+                    {this.state.lastRefreshTime}
+                  </span>
                   <UserList
                     userList={userList}
                     parseIDToken={this.parseIDToken}
@@ -762,20 +763,29 @@ class App extends Component {
                     updatePath={this.updatePath}
                     filterFunc={this.changeFilterType}
                   />
-                  <div>
-                    <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
+                  {uploadRequests.length > 0 && (
+                  <div className="request-progress-container">
+                    <div className="progress-header">
+                      Upload Progress
+                      <button type="button" className="close-progress-button" onClick={() => this.clearRequests()}>
+                        <FontAwesomeIcon className="close-progress-button" icon={faTimes} size="lg" />
+                      </button>
+                    </div>
                     {uploadRequests.map((requested) => (
                       <RequestProgressElement
                         requested={requested}
                       />
                     ))}
                   </div>
+                  )}
                 </div>
               </div>
             </Layout>
           )
           : (
-            <Welcome authorizeUser={() => this.authorizeUser()} />
+            <Welcome
+              authorizeUser={this.authorizeUser}
+            />
           )}
       </div>
     );

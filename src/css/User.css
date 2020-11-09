@@ -22,7 +22,7 @@
 
 .user-banner:hover {
   cursor: pointer;
-  border-color: var(--blue);
+  outline: 1px solid var(--blue);
 }
 
 .profile-picture {

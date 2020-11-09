@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './Checklist.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import CheckBox from './CheckBox';
+import '../css/Checklist.css';
 
 class Checklist extends Component {
   constructor() {
@@ -21,7 +23,7 @@ class Checklist extends Component {
     this.setState((prevState) => {
       const display = prevState.displayed;
       return {
-        displayed: (display === 'none') ? 'block' : 'none',
+        displayed: (display === 'none') ? 'inline' : 'none',
       };
     });
   }
@@ -64,16 +66,17 @@ render() {
     <div className="Checklist">
       <button
         type="button"
-        className="ChecklistButton"
+        className="filter-toggle-button"
         onClick={() => this.viewToggle()}
         onKeyDown={() => this.viewToggle()}
       >
-        {' '}
-        Toggle Filter
-        {' '}
+        <FontAwesomeIcon icon={faFilter} />
+        Toggle Filters
       </button>
       <div style={{ display: this.state.displayed }} className="ChecklistItems">
-        <button type="button" onClick={() => this.handleAllChecked()}> Clear Filter </button>
+        <button type="button" className="clear-filters" onClick={() => this.handleAllChecked()}>
+          Clear filters
+        </button>
         <ul>
           {
           this.state.fruites.map((fruite, index) => (<CheckBox key={index} handleCheckChildElement={this.handleCheckChildElement} {...fruite} />))

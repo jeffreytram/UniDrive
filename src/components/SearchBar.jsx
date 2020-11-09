@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import '../css/SearchBar.css';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -28,15 +31,15 @@ class SearchBar extends Component {
     return (
       <div className="search-form">
         <form onSubmit={(e) => { e.preventDefault(); }}>
-          <label htmlFor="search">Search By File Name </label>
+          <FontAwesomeIcon className="search-icon" icon={faSearch}></FontAwesomeIcon>
           <input
             className="form-control"
-            type="input"
             name="search"
-            value={this.state.searchInput}
             onInput={this.inputUpdated}
+            placeholder="Search for a file..."
+            type="input"
+            value={this.state.searchInput}
           />
-          <button type="submit" onClick={() => this.submitSearchInput()}>Search</button>
         </form>
       </div>
     );
