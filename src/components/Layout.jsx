@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Header from './Header';
 import Sidebar from './Sidebar';
 
 export default function Layout({
@@ -8,7 +7,6 @@ export default function Layout({
 }) {
   return (
     <div>
-      <Header />
       <Sidebar
         userList={userList}
         parseIDToken={parseIDToken}

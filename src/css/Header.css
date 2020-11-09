@@ -14,3 +14,36 @@
 .logo {
   height: 100%;
 }
+
+.header-button-container {
+  height: 100%;
+  float: right;
+  display: flex;
+  align-items: center;
+}
+
+.main-button {
+  border-radius: 5px;
+  padding: 5px 10px;
+  height: 30px;
+  font-weight: bold;
+  color: var(--main-bg);
+  margin-right: 1vw;
+}
+
+.main-button:hover {
+  cursor: pointer;
+  background-color: var(--main-bg);
+  color: var(--text);
+}
+
+.refresh {
+  border: 2px solid var(--blue);
+  background-color: var(--blue);
+}
+
+.add {
+  border: 2px solid var(--green);
+  background-color: var(--green);
+  margin-right: 5px;
+}

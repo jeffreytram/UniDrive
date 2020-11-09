@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
 import Layout from './components/Layout';
+import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import Welcome from './components/Welcome';
 import { config } from './config';
@@ -725,6 +726,11 @@ class App extends Component {
     const addedAccount = userList.length > 0;
     return (
       <div>
+        <Header
+          addedAccount={addedAccount}
+          authorizeUser={this.authorizeUser}
+          refreshAllFunc={this.refreshAllFunction}
+        />
         {addedAccount
           ? (
             <Layout
@@ -734,18 +740,12 @@ class App extends Component {
             >
               <div className="main-container">
                 <div className="main-content">
-                  <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-                  <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
-                    Refresh All
-                  </button>
-                  <>
-                    <span className="sync-message">
-                      {' '}
-                      Last Sync:
-                      {' '}
-                      {this.state.lastRefreshTime}
-                    </span>
-                  </>
+                  <span className="sync-message">
+                    {' '}
+                    Last Sync:
+                    {' '}
+                    {this.state.lastRefreshTime}
+                  </span>
                   <SearchBar onSubmit={this.onFormSubmit} />
                   <UserList
                     userList={userList}
@@ -775,7 +775,9 @@ class App extends Component {
             </Layout>
           )
           : (
-            <Welcome authorizeUser={() => this.authorizeUser()} />
+            <Welcome
+              authorizeUser={this.authorizeUser}
+            />
           )}
       </div>
     );

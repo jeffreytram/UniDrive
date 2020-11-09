@@ -3,31 +3,6 @@
   height: 20px;
 }
 
-.main-button {
-  border-radius: 5px;
-  padding: 5px 10px;
-  height: 30px;
-  font-weight: bold;
-  color: var(--main-bg);
-}
-
-.main-button:hover {
-  cursor: pointer;
-  background-color: var(--main-bg);
-  color: var(--text);
-}
-
-.refresh {
-  border: 2px solid var(--blue);
-  background-color: var(--blue);
-}
-
-.add {
-  border: 2px solid var(--green);
-  background-color: var(--green);
-  margin-right: 5px;
-}
-
 .main-container {
   width: 85%;
   float: right;
