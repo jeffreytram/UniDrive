@@ -5,33 +5,29 @@ import '../css/FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    isDisplayed, loadAuth, looseFileList, moveExternal, moveWithin, refreshFunc, shareFile, userId,
+    loadAuth, looseFileList, moveExternal, moveWithin, refreshFunc, shareFile, userId,
   } = props;
 
-  if (isDisplayed) {
-    return (
-      <div className="file-list-container" style={{ display: 'flex', flexDirection: 'row' }}>
-        {looseFileList.map((file) => (
-          <File
-            key={file.id}
-            userId={userId}
-            data={file}
-            displayed
-            moveExternal={moveExternal}
-            shareFile={shareFile}
-            moveWithin={moveWithin}
-            loadAuth={loadAuth}
-            refreshFunc={refreshFunc}
-          />
-        ))}
-      </div>
-    );
-  }
-  return (null);
+  return (
+    <div className="file-list-container" style={{ display: 'flex', flexDirection: 'row' }}>
+      {looseFileList.map((file) => (
+        <File
+          key={file.id}
+          userId={userId}
+          data={file}
+          displayed
+          moveExternal={moveExternal}
+          shareFile={shareFile}
+          moveWithin={moveWithin}
+          loadAuth={loadAuth}
+          refreshFunc={refreshFunc}
+        />
+      ))}
+    </div>
+  );
 }
 
 LooseFileList.propTypes = {
-  isDisplayed: PropTypes.bool.isRequired,
   loadAuth: PropTypes.func.isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   moveExternal: PropTypes.func.isRequired,

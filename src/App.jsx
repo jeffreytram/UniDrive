@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import UserList from './components/UserList';
-import RequestProgressElement from './components/RequestProgressElement';
+import RequestProgress from './components/RequestProgress';
 import Layout from './components/Layout';
 import Header from './components/Header';
 import Welcome from './components/Welcome';
+import Loading from './components/Loading';
 import './App.css';
 
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
@@ -24,6 +23,7 @@ class App extends Component {
       lastRefreshTime: Date().substring(0, 21),
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
+      isLoading: false,
     };
   }
 
@@ -129,7 +129,7 @@ class App extends Component {
           looseFiles: [],
           openFolders: [],
           ref: React.createRef(),
-          sortedBy: 'folder, viewedByMeTime desc',
+          sortedBy: 'folder, createdTime desc',
           filteredBy: '',
         }],
       }));
@@ -155,6 +155,7 @@ class App extends Component {
    * @param {Object} files the file object to store
    */
   updateFiles = (index, email) => {
+    this.setState({ isLoading: true });
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -207,55 +208,23 @@ class App extends Component {
   /**
    * function which updates the filetypes displayed
    * @param {number} userID the id of the user
-   * @param {String} filterBy the string which lists all the currently checked filters
-   * @param {String} firstChecked the index of the first checkbox checked
+   * @param {Array} filterBy list of queries to filter by
    */
-  changeFilterType = (userId, filterBy, firstChecked) => {
-    this.setfilterType(userId, filterBy, firstChecked);
+  changeFilterType = (userId, filterBy) => {
+    this.setfilterType(userId, filterBy);
     this.refreshAllFunction();
   }
 
   /**
    * builds the Google search parameter to use in retrieving the files based upon which filters are selected (for filtering by file type)
    * @param {number} userID the id of the user
-   * @param {String} filterBy the string which lists all the currently checked filters
-   * @param {String} firstChecked the index of the first checkbox checked
+   * @param {Array} filterBy list of queries to filter by
    */
-  setfilterType = (userId, filterBy, firstChecked) => {
+  setfilterType = (userId, filterBy) => {
     const { userList } = this.state;
     const index = this.getAccountIndex(userId);
     let fQuery = '';
-    if (filterBy.includes('Google Docs')) {
-      if (firstChecked === 0) {
-        fQuery += "mimeType = 'application/vnd.google-apps.document'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.document'`;
-      }
-    }
-    if (filterBy.includes('Google Sheets')) {
-      if (firstChecked === 1) {
-        fQuery += "mimeType = 'application/vnd.google-apps.spreadsheet'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.spreadsheet'`;
-      }
-    }
-    if (filterBy.includes('Google Slides')) {
-      if (firstChecked === 2) {
-        fQuery += "mimeType = 'application/vnd.google-apps.presentation'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.presentation'`;
-      }
-    }
-    if (filterBy.includes('PDF')) {
-      if (firstChecked === 3) {
-        fQuery += "mimeType = 'application/pdf'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/pdf'`;
-      }
-    }
-    if (firstChecked !== -1) {
-      fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.folder'`;
-    }
+    if (filterBy) fQuery = filterBy.join(' or ');
     userList[index].filteredBy = fQuery;
     this.setState((prevState) => ({
       userList,
@@ -340,7 +309,7 @@ class App extends Component {
           pathIndex++;
         }
       }
-      this.setState({ userList: updatedList });
+      this.setState({ userList: updatedList, isLoading: false });
     }, email, user);
   }
 
@@ -696,7 +665,6 @@ class App extends Component {
               uploadResumable.setRequestHeader('X-Upload-Content-Type', contentType);
               uploadResumable.onreadystatechange = () => {
                 if (uploadResumable.readyState === XMLHttpRequest.DONE && uploadResumable.status === 200) {
-                  console.log(uploadResumable.response);
                   this.refreshAllFunction();
                 }
               };
@@ -722,7 +690,7 @@ class App extends Component {
   }
 
   render() {
-    const { userList, uploadRequests } = this.state;
+    const { userList, uploadRequests, isLoading } = this.state;
     const addedAccount = userList.length > 0;
     return (
       <div>
@@ -732,6 +700,9 @@ class App extends Component {
           onSubmit={this.onFormSubmit}
           refreshAllFunc={this.refreshAllFunction}
         />
+        {isLoading && (
+          <Loading />
+        )}
         {addedAccount
           ? (
             <Layout
@@ -763,19 +734,10 @@ class App extends Component {
                     filterFunc={this.changeFilterType}
                   />
                   {uploadRequests.length > 0 && (
-                  <div className="request-progress-container">
-                    <div className="progress-header">
-                      Upload Progress
-                      <button type="button" className="close-progress-button" onClick={() => this.clearRequests()}>
-                        <FontAwesomeIcon className="close-progress-button" icon={faTimes} size="lg" />
-                      </button>
-                    </div>
-                    {uploadRequests.map((requested) => (
-                      <RequestProgressElement
-                        requested={requested}
-                      />
-                    ))}
-                  </div>
+                    <RequestProgress
+                      uploadRequests={uploadRequests}
+                      clearRequests={this.clearRequests}
+                    />
                   )}
                 </div>
               </div>

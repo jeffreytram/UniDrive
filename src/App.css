@@ -17,34 +17,3 @@
   font-style: italic;
   color: var(--subtle2);
 }
-
-.request-progress-container {
-  position: fixed;
-  right: 15px;
-  bottom: 15px;
-  background-color: rgba(30, 30, 30, .8);
-  color: var(--main-bg);
-  padding: 10px 20px;
-  border-radius: 15px;
-  z-index: 3;
-  -webkit-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.4);
-  -moz-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.4);
-  box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.4);
-}
-
-.progress-header {
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
-.close-progress-button {
-  float: right;
-  background: none;
-  border: none;
-  color: var(--main-bg);
-}
-
-.close-progress-button:hover {
-  cursor: pointer;
-  color: var(--red);
-}
