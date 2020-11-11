@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-class RequestProgrssElement extends Component {
+class RequestProgressElement extends Component {
   constructor() {
     super();
     this.state = {
@@ -53,4 +53,4 @@ File.propTypes = {
   requested: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.object, PropTypes.string])).isRequired,
 };
 
-export default RequestProgrssElement;
+export default RequestProgressElement;

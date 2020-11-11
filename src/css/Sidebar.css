@@ -28,7 +28,12 @@
   margin-right: 5px;
 }
 
-.sidebar-item, .sidebar-user {
+.sidebar-item {
+  border: 1px solid rgba(0,0,0,0);
+  padding: 8px 20px;
+}
+
+.sidebar-user {
   border: 1px solid rgba(0,0,0,0);
   padding: 4px 8px;
 }
@@ -46,4 +51,9 @@
 
 .selected > svg > path {
   color: var(--text);
+}
+
+.sidebar-icon {
+  color: 'var(--subtle2)';
+  margin-right: 10px;
 }

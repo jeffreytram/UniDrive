@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import UserList from './components/UserList';
-import RequestProgressElement from './components/RequestProgressElement';
+import RequestProgress from './components/RequestProgress';
 import Layout from './components/Layout';
 import Header from './components/Header';
 import Welcome from './components/Welcome';
@@ -697,7 +695,6 @@ class App extends Component {
               uploadResumable.setRequestHeader('X-Upload-Content-Type', contentType);
               uploadResumable.onreadystatechange = () => {
                 if (uploadResumable.readyState === XMLHttpRequest.DONE && uploadResumable.status === 200) {
-                  console.log(uploadResumable.response);
                   this.refreshAllFunction();
                 }
               };
@@ -764,19 +761,10 @@ class App extends Component {
                     filterFunc={this.changeFilterType}
                   />
                   {uploadRequests.length > 0 && (
-                  <div className="request-progress-container">
-                    <div className="progress-header">
-                      Upload Progress
-                      <button type="button" className="close-progress-button" onClick={() => this.clearRequests()}>
-                        <FontAwesomeIcon className="close-progress-button" icon={faTimes} size="lg" />
-                      </button>
-                    </div>
-                    {uploadRequests.map((requested) => (
-                      <RequestProgressElement
-                        requested={requested}
-                      />
-                    ))}
-                  </div>
+                    <RequestProgress
+                      uploadRequests={uploadRequests}
+                      clearRequests={this.clearRequests}
+                    />
                   )}
                 </div>
               </div>

@@ -34,19 +34,19 @@ export default function Sidebar({ userList, parseIDToken, filterFilesInAllAccoun
   return (
     <div className="sidebar">
       <div className="sidebar-item selected" onClick={(event) => handleClick(event.target, '')}>
-        <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faHome} size="2x" />
+        <FontAwesomeIcon className="sidebar-icon" icon={faHome} size="lg" />
         All Files
       </div>
       <div className="sidebar-item" onClick={(event) => handleClick(event.target, 'my drives')}>
-        <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faGoogleDrive} size="2x" />
+        <FontAwesomeIcon className="sidebar-icon" icon={faGoogleDrive} size="lg" />
         My Drive Files
       </div>
       <div className="sidebar-item" onClick={(event) => handleClick(event.target, 'shared')}>
-        <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faShareSquare} size="2x" />
+        <FontAwesomeIcon className="sidebar-icon" icon={faShareSquare} size="lg" />
         Shared
       </div>
       <div className="sidebar-item" onClick={(event) => handleClick(event.target, 'starred')}>
-        <FontAwesomeIcon style={{ color: 'var(--subtle2)' }} icon={faStar} size="2x" />
+        <FontAwesomeIcon className="sidebar-icon" icon={faStar} size="lg" />
         Starred
       </div>
       <div className="sidebar-user-container">
