@@ -4,6 +4,7 @@ import RequestProgress from './components/RequestProgress';
 import Layout from './components/Layout';
 import Header from './components/Header';
 import Welcome from './components/Welcome';
+import Loading from './components/Loading';
 import { config } from './config';
 import './App.css';
 
@@ -23,6 +24,7 @@ class App extends Component {
       lastRefreshTime: Date().substring(0, 21),
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
+      isLoading: false,
     };
   }
 
@@ -154,6 +156,7 @@ class App extends Component {
    * @param {Object} files the file object to store
    */
   updateFiles = (index, email) => {
+    this.setState({ isLoading: true });
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -307,7 +310,7 @@ class App extends Component {
           pathIndex++;
         }
       }
-      this.setState({ userList: updatedList });
+      this.setState({ userList: updatedList, isLoading: false });
     }, email, user);
   }
 
@@ -688,7 +691,7 @@ class App extends Component {
   }
 
   render() {
-    const { userList, uploadRequests } = this.state;
+    const { userList, uploadRequests, isLoading } = this.state;
     const addedAccount = userList.length > 0;
     return (
       <div>
@@ -698,6 +701,9 @@ class App extends Component {
           onSubmit={this.onFormSubmit}
           refreshAllFunc={this.refreshAllFunction}
         />
+        {isLoading && (
+          <Loading />
+        )}
         {addedAccount
           ? (
             <Layout

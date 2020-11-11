@@ -256,17 +256,18 @@ class User extends Component {
             closePath={closePath}
             updatePath={updatePath}
           />
-          <LooseFileList
-            userId={userId}
-            looseFileList={looseFileList}
-            shareFile={loadAuth(userId, this.shareFile)}
-            moveWithin={moveWithin}
-            isDisplayed={looseFilesIsDisplayed}
-            loadAuth={loadAuth}
-            moveExternal={moveExternal}
-            refreshFunc={refreshFunc}
-            email={email}
-          />
+          {looseFilesIsDisplayed && (
+            <LooseFileList
+              userId={userId}
+              looseFileList={looseFileList}
+              shareFile={loadAuth(userId, this.shareFile)}
+              moveWithin={moveWithin}
+              loadAuth={loadAuth}
+              moveExternal={moveExternal}
+              refreshFunc={refreshFunc}
+              email={email}
+            />
+          )}
         </div>
       </ContextMenuTrigger>
     );
