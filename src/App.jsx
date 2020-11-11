@@ -128,7 +128,7 @@ class App extends Component {
           looseFiles: [],
           openFolders: [],
           ref: React.createRef(),
-          sortedBy: 'folder, viewedByMeTime desc',
+          sortedBy: 'folder, createdTime desc',
           filteredBy: '',
         }],
       }));
@@ -206,55 +206,23 @@ class App extends Component {
   /**
    * function which updates the filetypes displayed
    * @param {number} userID the id of the user
-   * @param {String} filterBy the string which lists all the currently checked filters
-   * @param {String} firstChecked the index of the first checkbox checked
+   * @param {Array} filterBy list of queries to filter by
    */
-  changeFilterType = (userId, filterBy, firstChecked) => {
-    this.setfilterType(userId, filterBy, firstChecked);
+  changeFilterType = (userId, filterBy) => {
+    this.setfilterType(userId, filterBy);
     this.refreshAllFunction();
   }
 
   /**
    * builds the Google search parameter to use in retrieving the files based upon which filters are selected (for filtering by file type)
    * @param {number} userID the id of the user
-   * @param {String} filterBy the string which lists all the currently checked filters
-   * @param {String} firstChecked the index of the first checkbox checked
+   * @param {Array} filterBy list of queries to filter by
    */
-  setfilterType = (userId, filterBy, firstChecked) => {
+  setfilterType = (userId, filterBy) => {
     const { userList } = this.state;
     const index = this.getAccountIndex(userId);
     let fQuery = '';
-    if (filterBy.includes('Google Docs')) {
-      if (firstChecked === 0) {
-        fQuery += "mimeType = 'application/vnd.google-apps.document'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.document'`;
-      }
-    }
-    if (filterBy.includes('Google Sheets')) {
-      if (firstChecked === 1) {
-        fQuery += "mimeType = 'application/vnd.google-apps.spreadsheet'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.spreadsheet'`;
-      }
-    }
-    if (filterBy.includes('Google Slides')) {
-      if (firstChecked === 2) {
-        fQuery += "mimeType = 'application/vnd.google-apps.presentation'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.presentation'`;
-      }
-    }
-    if (filterBy.includes('PDF')) {
-      if (firstChecked === 3) {
-        fQuery += "mimeType = 'application/pdf'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/pdf'`;
-      }
-    }
-    if (firstChecked !== -1) {
-      fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.folder'`;
-    }
+    if (filterBy) fQuery = filterBy.join(' or ');
     userList[index].filteredBy = fQuery;
     this.setState((prevState) => ({
       userList,

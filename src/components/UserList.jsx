@@ -24,8 +24,7 @@ export default function UserList(props) {
           looseFileList={user.looseFiles}
           openFolderList={user.openFolders}
           sortFunc={sortFunc}
-          filterFunc = {filterFunc}
-          currentSort={user.sortedBy}
+          filterFunc={filterFunc}
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           moveExternal={moveExternal}
