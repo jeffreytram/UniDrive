@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Cookies from 'universal-cookie';
 import UserList from './components/UserList';
 import RequestProgressElement from './components/RequestProgressElement';
 import Layout from './components/Layout';
@@ -6,7 +7,6 @@ import SearchBar from './components/SearchBar';
 import Welcome from './components/Welcome';
 import { config } from './config';
 import './App.css';
-import Cookies from 'universal-cookie';
 
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
 const discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
@@ -15,23 +15,17 @@ const CLIENT_ID = config.web.client_id;
 const ready = true;
 let userId = 1;
 const cookies = new Cookies();
-//cookies expire in 10
+// cookies expire in 10
 const d = new Date();
-    var year = d.getFullYear();
-    var month = d.getMonth();
-    var day = d.getDate();
+const year = d.getFullYear();
+const month = d.getMonth();
+const day = d.getDate();
 const cookieExpire = new Date(year + 20, month, day);
 
 const cookieOptions = {
   path: '/',
   expires: cookieExpire,
-  //domain: 'localhost:3000',
-  // secure: true,
- // httpOnly: true,
-  //sameSite: true
-}
-
-
+};
 
 class App extends Component {
   constructor() {
@@ -51,8 +45,8 @@ class App extends Component {
     script.src = 'https://apis.google.com/js/api.js';
     document.body.appendChild(script);
     setTimeout(() => {
-      this.startUp()
-    }, 1000)
+      this.startUp();
+    }, 1000);
     this.interval = setInterval(() => {
       this.refreshAllFunction();
     }, 300000);
@@ -60,6 +54,16 @@ class App extends Component {
 
   handleClientLoad = () => {
     window.gapi.load('client:auth');
+  }
+
+  /**
+   * Retrieves the cookies and authorizes each user
+   */
+  startUp = () => {
+    const cookie = cookies.getAll();
+    Object.values(cookie).forEach((email) => {
+      this.reAuthorizeUser(email);
+    });
   }
 
   /**
@@ -112,6 +116,7 @@ class App extends Component {
       });
     });
   }
+
   /**
    * Handles user sign in by storing all the information gained from the
    * authrizeUser() function above
@@ -332,9 +337,6 @@ class App extends Component {
       // Put folders in own data struct
       let i = -1;
       while (++i < results.length && results[i].mimeType === 'application/vnd.google-apps.folder') {
-        // const newFile = results[i];
-        // newFile.children = [];
-        // updatedList[index].folders[results[i].id] = newFile;
         updatedList[index].folders[results[i].id] = {
           folder: results[i],
           children: [],
@@ -771,25 +773,14 @@ class App extends Component {
     });
   }
 
-startUp = () => {
-  let cookie = cookies.getAll();
-    for (const email in cookie) {
-      this.reAuthorizeUser(email);
-    }
-  }
-
-
-
   render() {
     const { userList, uploadRequests } = this.state;
-    const addedAccount = userList.length > 0;
-    let cookie = cookies.getAll();
+    const cookie = cookies.getAll();
+    const addedAccount = !(Object.keys(cookie).length === 0 && cookie.constructor === Object);
     return (
       <div>
-        {!(Object.keys(cookie).length === 0 && cookie.constructor === Object)
-
-          ?
-          ( 
+        {addedAccount
+          ? (
             <Layout
               userList={userList}
               parseIDToken={this.parseIDToken}
@@ -838,7 +829,6 @@ startUp = () => {
             </Layout>
           )
           : (
-            
             <Welcome authorizeUser={() => this.authorizeUser()} />
           )}
       </div>
