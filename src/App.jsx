@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Cookies from 'universal-cookie';
 import UserList from './components/UserList';
 import RequestProgress from './components/RequestProgress';
 import Layout from './components/Layout';
@@ -14,6 +15,18 @@ const API_KEY = config.web.api_key;
 const CLIENT_ID = config.web.client_id;
 const ready = true;
 let userId = 1;
+const cookies = new Cookies();
+// cookies expire in 10
+const d = new Date();
+const year = d.getFullYear();
+const month = d.getMonth();
+const day = d.getDate();
+const cookieExpire = new Date(year + 20, month, day);
+
+const cookieOptions = {
+  path: '/',
+  expires: cookieExpire,
+};
 
 class App extends Component {
   constructor() {
@@ -33,6 +46,9 @@ class App extends Component {
     script.onload = this.handleClientLoad;
     script.src = 'https://apis.google.com/js/api.js';
     document.body.appendChild(script);
+    setTimeout(() => {
+      this.startUp();
+    }, 1000);
     this.interval = setInterval(() => {
       this.refreshAllFunction();
     }, 300000);
@@ -40,6 +56,16 @@ class App extends Component {
 
   handleClientLoad = () => {
     window.gapi.load('client:auth');
+  }
+
+  /**
+   * Retrieves the cookies and authorizes each user
+   */
+  startUp = () => {
+    const cookie = cookies.getAll();
+    Object.values(cookie).forEach((email) => {
+      this.reAuthorizeUser(email);
+    });
   }
 
   /**
@@ -54,6 +80,30 @@ class App extends Component {
         scope: SCOPE,
         responseType: 'id_token permission code',
         prompt: 'select_account',
+        discoveryDocs: [discoveryUrl, 'https:googleapis.com/discovery/v1/apis/profile/v1/rest'],
+      }, (response) => {
+        if (response.error) {
+          console.log(response.error);
+          console.log('authorization error');
+          return;
+        }
+        const accessToken = response.access_token;
+        const idToken = response.id_token;
+        const { code } = response;
+        this.signInFunction(accessToken, idToken, code);
+      });
+    });
+  }
+
+  reAuthorizeUser = (email) => {
+    window.gapi.load('client:auth', () => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        responseType: 'id_token permission code',
+        prompt: 'none',
+        login_hint: email,
         discoveryDocs: [discoveryUrl, 'https:googleapis.com/discovery/v1/apis/profile/v1/rest'],
       }, (response) => {
         if (response.error) {
@@ -102,6 +152,11 @@ class App extends Component {
             userList: newUserList,
           };
         });
+        const index = this.getAccountIndex(id);
+        const { userList } = this.state;
+        const userInfo = this.parseIDToken(userList[index].idToken);
+        const { email } = userInfo;
+        cookies.remove(email, cookieOptions);
       }
     }
   }
@@ -134,6 +189,7 @@ class App extends Component {
           filteredBy: '',
         }],
       }));
+      cookies.set(email, email, cookieOptions);
       userId += 1;
     } else {
       console.log('Email is already in UserList');
@@ -252,9 +308,6 @@ class App extends Component {
       // Put folders in own data struct
       let i = -1;
       while (++i < results.length && results[i].mimeType === 'application/vnd.google-apps.folder') {
-        // const newFile = results[i];
-        // newFile.children = [];
-        // updatedList[index].folders[results[i].id] = newFile;
         updatedList[index].folders[results[i].id] = {
           folder: results[i],
           children: [],
@@ -692,7 +745,8 @@ class App extends Component {
 
   render() {
     const { userList, uploadRequests, isLoading } = this.state;
-    const addedAccount = userList.length > 0;
+    const cookie = cookies.getAll();
+    const addedAccount = !(Object.keys(cookie).length === 0 && cookie.constructor === Object);
     return (
       <div>
         <Header
