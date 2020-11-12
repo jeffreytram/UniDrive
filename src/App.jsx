@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import Cookies from 'universal-cookie';
 import UserList from './components/UserList';
-import RequestProgressElement from './components/RequestProgressElement';
+import RequestProgress from './components/RequestProgress';
 import Layout from './components/Layout';
-import SearchBar from './components/SearchBar';
+import Header from './components/Header';
 import Welcome from './components/Welcome';
+import Loading from './components/Loading';
 import { config } from './config';
 import './App.css';
 
@@ -36,6 +37,7 @@ class App extends Component {
       lastRefreshTime: Date().substring(0, 21),
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
+      isLoading: false,
     };
   }
 
@@ -183,7 +185,7 @@ class App extends Component {
           looseFiles: [],
           openFolders: [],
           ref: React.createRef(),
-          sortedBy: 'folder, viewedByMeTime desc',
+          sortedBy: 'folder, createdTime desc',
           filteredBy: '',
         }],
       }));
@@ -210,6 +212,7 @@ class App extends Component {
    * @param {Object} files the file object to store
    */
   updateFiles = (index, email) => {
+    this.setState({ isLoading: true });
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -262,55 +265,23 @@ class App extends Component {
   /**
    * function which updates the filetypes displayed
    * @param {number} userID the id of the user
-   * @param {String} filterBy the string which lists all the currently checked filters
-   * @param {String} firstChecked the index of the first checkbox checked
+   * @param {Array} filterBy list of queries to filter by
    */
-  changeFilterType = (userId, filterBy, firstChecked) => {
-    this.setfilterType(userId, filterBy, firstChecked);
+  changeFilterType = (userId, filterBy) => {
+    this.setfilterType(userId, filterBy);
     this.refreshAllFunction();
   }
 
   /**
    * builds the Google search parameter to use in retrieving the files based upon which filters are selected (for filtering by file type)
    * @param {number} userID the id of the user
-   * @param {String} filterBy the string which lists all the currently checked filters
-   * @param {String} firstChecked the index of the first checkbox checked
+   * @param {Array} filterBy list of queries to filter by
    */
-  setfilterType = (userId, filterBy, firstChecked) => {
+  setfilterType = (userId, filterBy) => {
     const { userList } = this.state;
     const index = this.getAccountIndex(userId);
     let fQuery = '';
-    if (filterBy.includes('Google Docs')) {
-      if (firstChecked === 0) {
-        fQuery += "mimeType = 'application/vnd.google-apps.document'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.document'`;
-      }
-    }
-    if (filterBy.includes('Google Sheets')) {
-      if (firstChecked === 1) {
-        fQuery += "mimeType = 'application/vnd.google-apps.spreadsheet'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.spreadsheet'`;
-      }
-    }
-    if (filterBy.includes('Google Slides')) {
-      if (firstChecked === 2) {
-        fQuery += "mimeType = 'application/vnd.google-apps.presentation'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.presentation'`;
-      }
-    }
-    if (filterBy.includes('PDF')) {
-      if (firstChecked === 3) {
-        fQuery += "mimeType = 'application/pdf'";
-      } else {
-        fQuery = `${fQuery} or mimeType = 'application/pdf'`;
-      }
-    }
-    if (firstChecked !== -1) {
-      fQuery = `${fQuery} or mimeType = 'application/vnd.google-apps.folder'`;
-    }
+    if (filterBy) fQuery = filterBy.join(' or ');
     userList[index].filteredBy = fQuery;
     this.setState((prevState) => ({
       userList,
@@ -392,7 +363,7 @@ class App extends Component {
           pathIndex++;
         }
       }
-      this.setState({ userList: updatedList });
+      this.setState({ userList: updatedList, isLoading: false });
     }, email, user);
   }
 
@@ -748,7 +719,6 @@ class App extends Component {
               uploadResumable.setRequestHeader('X-Upload-Content-Type', contentType);
               uploadResumable.onreadystatechange = () => {
                 if (uploadResumable.readyState === XMLHttpRequest.DONE && uploadResumable.status === 200) {
-                  console.log(uploadResumable.response);
                   this.refreshAllFunction();
                 }
               };
@@ -774,11 +744,20 @@ class App extends Component {
   }
 
   render() {
-    const { userList, uploadRequests } = this.state;
+    const { userList, uploadRequests, isLoading } = this.state;
     const cookie = cookies.getAll();
     const addedAccount = !(Object.keys(cookie).length === 0 && cookie.constructor === Object);
     return (
       <div>
+        <Header
+          addedAccount={addedAccount}
+          authorizeUser={this.authorizeUser}
+          onSubmit={this.onFormSubmit}
+          refreshAllFunc={this.refreshAllFunction}
+        />
+        {isLoading && (
+          <Loading />
+        )}
         {addedAccount
           ? (
             <Layout
@@ -788,19 +767,12 @@ class App extends Component {
             >
               <div className="main-container">
                 <div className="main-content">
-                  <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-                  <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
-                    Refresh All
-                  </button>
-                  <>
-                    <span className="sync-message">
-                      {' '}
-                      Last Sync:
-                      {' '}
-                      {this.state.lastRefreshTime}
-                    </span>
-                  </>
-                  <SearchBar onSubmit={this.onFormSubmit} />
+                  <span className="sync-message">
+                    {' '}
+                    Last Sync:
+                    {' '}
+                    {this.state.lastRefreshTime}
+                  </span>
                   <UserList
                     userList={userList}
                     parseIDToken={this.parseIDToken}
@@ -816,20 +788,20 @@ class App extends Component {
                     updatePath={this.updatePath}
                     filterFunc={this.changeFilterType}
                   />
-                  <div>
-                    <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
-                    {uploadRequests.map((requested) => (
-                      <RequestProgressElement
-                        requested={requested}
-                      />
-                    ))}
-                  </div>
+                  {uploadRequests.length > 0 && (
+                    <RequestProgress
+                      uploadRequests={uploadRequests}
+                      clearRequests={this.clearRequests}
+                    />
+                  )}
                 </div>
               </div>
             </Layout>
           )
           : (
-            <Welcome authorizeUser={() => this.authorizeUser()} />
+            <Welcome
+              authorizeUser={this.authorizeUser}
+            />
           )}
       </div>
     );
