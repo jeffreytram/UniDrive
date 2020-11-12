@@ -19,22 +19,60 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
     { value: "mimeType = 'application/pdf'", label: 'PDF' },
   ];
 
-  const sortCustomStyles = {
-    container: (provided) => ({
+  const customStyles = (container) => ({
+    container,
+    control: (provided) => ({
       ...provided,
-      display: 'inline-block',
-      width: '180px',
+      borderRadius: '0',
+      minHeight: '1px',
+      height: '32px',
     }),
-  };
+    input: (provided) => ({
+      ...provided,
+      minHeight: '1px',
+    }),
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      minHeight: '1px',
+      paddingTop: '0',
+      paddingBottom: '0',
+    }),
+    indicatorSeparator: (provided) => ({
+      ...provided,
+      minHeight: '1px',
+      height: '16px',
+    }),
+    clearIndicator: (provided) => ({
+      ...provided,
+      minHeight: '1px',
+    }),
+    valueContainer: (provided) => ({
+      ...provided,
+      minHeight: '1px',
+      height: '32px',
+      paddingTop: '0',
+      paddingBottom: '0',
+      marginBottom: '4px',
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      minHeight: '1px',
+      paddingBottom: '2px',
+    }),
+  });
 
-  const filterCustomStyles = {
-    container: (provided) => ({
-      ...provided,
-      display: 'inline-block',
-      width: 'auto',
-      minWidth: '150px',
-    }),
-  };
+  const sortContainer = (provided) => ({
+    ...provided,
+    display: 'inline-block',
+    width: '180px',
+  });
+
+  const filterContainer = (provided) => ({
+    ...provided,
+    display: 'inline-block',
+    width: 'auto',
+    minWidth: '150px',
+  });
 
   const handleFilterChange = (selected) => {
     if (selected) {
@@ -46,19 +84,23 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
 
   return (
     <div className="filter-container">
+      Sort by: &nbsp;
       <Select
         defaultValue={sortOptions[0]}
+        isSearchable={false}
         options={sortOptions}
         onChange={(selected) => sortFunc(userId, selected.value)}
-        styles={sortCustomStyles}
+        styles={customStyles(sortContainer)}
       />
+      &nbsp; &nbsp; &nbsp; &nbsp;
+      Filter by: &nbsp;
       <Select
         closeMenuOnSelect={false}
         isMulti
         options={filterOptions}
         onChange={(selected) => handleFilterChange(selected)}
-        placeholder="Filter by..."
-        styles={filterCustomStyles}
+        placeholder="File type..."
+        styles={customStyles(filterContainer)}
       />
     </div>
   );
