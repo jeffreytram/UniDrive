@@ -23,7 +23,7 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
     container,
     control: (provided) => ({
       ...provided,
-      borderRadius: '0',
+      borderRadius: '5px',
       minHeight: '1px',
       height: '32px',
     }),
@@ -55,6 +55,11 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
       marginBottom: '4px',
     }),
     singleValue: (provided) => ({
+      ...provided,
+      minHeight: '1px',
+      paddingBottom: '2px',
+    }),
+    placeholder: (provided) => ({
       ...provided,
       minHeight: '1px',
       paddingBottom: '2px',
@@ -92,7 +97,7 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
         onChange={(selected) => sortFunc(userId, selected.value)}
         styles={customStyles(sortContainer)}
       />
-      &nbsp; &nbsp; &nbsp; &nbsp;
+      &nbsp; &nbsp; &nbsp;
       Filter by: &nbsp;
       <Select
         closeMenuOnSelect={false}
