@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import SearchBar from './SearchBar';
 import icon from './images/unidrive-logo.png';
 import '../css/Header.css';
 
 export default function Header({
-  addedAccount, authorizeUser, onSubmit, refreshAllFunc,
+  addedAccount, onSubmit, refreshAllFunc, syncMessage,
 }) {
   return (
     <div className="header-container">
@@ -21,11 +21,15 @@ export default function Header({
       )}
       {addedAccount && (
       <div className="header-button-container">
-        <button type="button" className="main-button add" id="signin-btn" onClick={() => authorizeUser()}>
-          <FontAwesomeIcon icon={faUserPlus} size="lg"/>
+        <button type="button" className="header-button" id="signin-btn" onClick={() => refreshAllFunc()}>
+          <FontAwesomeIcon icon={faSyncAlt} size="lg" />
+          {' '}
+          Sync now
         </button>
-        <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => refreshAllFunc()}>
-          Refresh All
+        <button type="button" disabled className="sync-message">
+          Last synced:
+          {' '}
+          {syncMessage}
         </button>
       </div>
       )}
@@ -35,7 +39,7 @@ export default function Header({
 
 Header.propTypes = {
   addedAccount: PropTypes.bool.isRequired,
-  authorizeUser: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   refreshAllFunc: PropTypes.func.isRequired,
+  syncMessage: PropTypes.string.isRequired,
 };

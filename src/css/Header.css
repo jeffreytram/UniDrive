@@ -1,7 +1,6 @@
 .header-container {
   --header-padding: 4px;
   --full-header-height: calc(100% - var(--header-padding)*2);
-
   height: calc(var(--header-margin) - 8px);
   width: 100%;
   padding: var(--header-padding);
@@ -30,37 +29,29 @@
   left: 15%;
 }
 
+.sync-message {
+  font-style: italic;
+  color: var(--subtle2);
+  margin-right: 20px;
+  font-size: 14px;
+}
+
 .header-button-container {
   height: 100%;
   float: right;
 }
 
-.main-button {
+.header-button {
+  border: none;
   border-radius: 5px;
-  padding: 5px 10px;
-  height: 30px;
-  font-weight: bold;
+  background: none;
+  color: var(--blue);
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.header-button:hover {
   color: var(--main-bg);
-  margin-right: 1vw;
-}
-
-.main-button:hover {
   cursor: pointer;
-  background-color: var(--main-bg);
-  color: var(--text);
-}
-
-.refresh {
-  border: 2px solid var(--blue);
   background-color: var(--blue);
-}
-
-.add {
-  border: 2px solid var(--green);
-  background-color: var(--green);
-  margin-right: 5px;
-}
-
-.add:hover {
-  color: var(--green);
 }

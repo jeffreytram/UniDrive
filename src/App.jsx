@@ -751,9 +751,9 @@ class App extends Component {
       <div>
         <Header
           addedAccount={addedAccount}
-          authorizeUser={this.authorizeUser}
           onSubmit={this.onFormSubmit}
           refreshAllFunc={this.refreshAllFunction}
+          syncMessage={this.state.lastRefreshTime}
         />
         {isLoading && (
           <Loading />
@@ -761,18 +761,13 @@ class App extends Component {
         {addedAccount
           ? (
             <Layout
-              userList={userList}
-              parseIDToken={this.parseIDToken}
+              authorizeUser={this.authorizeUser}
               filterFilesInAllAccounts={this.filterFilesInAllAccounts}
+              parseIDToken={this.parseIDToken}
+              userList={userList}
             >
               <div className="main-container">
                 <div className="main-content">
-                  <span className="sync-message">
-                    {' '}
-                    Last Sync:
-                    {' '}
-                    {this.state.lastRefreshTime}
-                  </span>
                   <UserList
                     userList={userList}
                     parseIDToken={this.parseIDToken}

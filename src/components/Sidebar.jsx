@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShareSquare, faStar, faHome } from '@fortawesome/free-solid-svg-icons';
+import {
+  faUserPlus, faShareSquare, faStar, faHome,
+} from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import '../css/Sidebar.css';
 
-export default function Sidebar({ userList, parseIDToken, filterFilesInAllAccounts }) {
+export default function Sidebar({
+  authorizeUser, filterFilesInAllAccounts, parseIDToken, userList,
+}) {
   const scrollToggle = (ref) => {
     userList.forEach((user) => {
       user.ref.current.style.display = 'none';
@@ -33,6 +37,11 @@ export default function Sidebar({ userList, parseIDToken, filterFilesInAllAccoun
 
   return (
     <div className="sidebar">
+      <button type="button" className="sidebar-add-button" id="signin-btn" onClick={() => authorizeUser()}>
+        <FontAwesomeIcon icon={faUserPlus} size="lg" />
+        &nbsp;
+        Add Account
+      </button>
       <div className="sidebar-item selected" onClick={(event) => handleClick(event.target, '')}>
         <FontAwesomeIcon className="sidebar-icon" icon={faHome} size="lg" />
         All Files
@@ -66,6 +75,7 @@ export default function Sidebar({ userList, parseIDToken, filterFilesInAllAccoun
 }
 
 Sidebar.propTypes = {
+  authorizeUser: PropTypes.func.isRequired,
   filterFilesInAllAccounts: PropTypes.func.isRequired,
   parseIDToken: PropTypes.func.isRequired,
   userList: PropTypes.arrayOf(PropTypes.object).isRequired,

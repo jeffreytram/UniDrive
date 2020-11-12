@@ -29,12 +29,12 @@
 }
 
 .sidebar-item {
-  border: 1px solid rgba(0,0,0,0);
+  border: 1px solid rgba(0, 0, 0, 0);
   padding: 8px 20px;
 }
 
 .sidebar-user {
-  border: 1px solid rgba(0,0,0,0);
+  border: 1px solid rgba(0, 0, 0, 0);
   padding: 4px 8px;
 }
 
@@ -49,11 +49,29 @@
   font-weight: 600;
 }
 
-.selected > svg > path {
+.selected>svg>path {
   color: var(--text);
 }
 
 .sidebar-icon {
   color: 'var(--subtle2)';
   margin-right: 10px;
+}
+
+.sidebar-add-button {
+  display: block;
+  margin: 15px auto;
+  width: 80%;
+  height: 40px;
+  border: 2px solid var(--green);
+  border-radius: 5px;
+  background-color: var(--green);
+  color: var(--main-bg);
+  font-weight: bold;
+}
+
+.sidebar-add-button:hover {
+  cursor: pointer;
+  color: var(--green);
+  background-color: var(--main-bg);
 }
