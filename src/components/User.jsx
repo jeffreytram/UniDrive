@@ -152,6 +152,7 @@ class User extends Component {
         >
           <img className="profile-picture" src={picture} alt="Account profile" />
           <span className="profile-text">
+            {' '}
             <span className="profile-name">{name}</span>
             {' '}
             <span className="profile-email">

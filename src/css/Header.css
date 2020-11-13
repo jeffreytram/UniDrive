@@ -31,7 +31,9 @@
 
 .sync-message {
   font-style: italic;
-  color: var(--subtle2);
+  border: 1px solid var(--text);
+  background: none;
+  color: var(--text);
   margin-right: 20px;
   font-size: 14px;
 }
@@ -45,7 +47,6 @@
   border: none;
   border-radius: 5px;
   background: none;
-  color: var(--blue);
   padding: 5px;
   margin-right: 10px;
 }
@@ -53,5 +54,20 @@
 .header-button:hover {
   color: var(--main-bg);
   cursor: pointer;
+}
+
+.refresh {
+  color: var(--blue);
+}
+
+.refresh:hover {
   background-color: var(--blue);
+}
+
+.toggle-theme {
+  color: var(--text);
+}
+
+.toggle-theme:hover { 
+  background-color: var(--text);
 }

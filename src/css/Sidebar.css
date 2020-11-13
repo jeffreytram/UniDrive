@@ -2,7 +2,7 @@
   margin: 0;
   width: 15%;
   color: var(--text);
-  background-color: var(--sub-bg);
+  background-color: var(--main-bg);
   position: fixed;
   height: 100%;
   overflow: hidden;
@@ -39,7 +39,8 @@
 }
 
 .sidebar-item:hover, .sidebar-user:hover {
-  border: 1px solid var(--text);
+  border: 2px solid var(--subtle1);
+  border-radius: 0 20px 20px 0;
   cursor: pointer;
   font-weight: 600;
 }
@@ -47,6 +48,7 @@
 .selected {
   background-color: var(--subtle1);
   font-weight: 600;
+  border-radius: 0 20px 20px 0;
 }
 
 .selected>svg>path {
@@ -65,13 +67,13 @@
   height: 40px;
   border: 2px solid var(--green);
   border-radius: 5px;
-  background-color: var(--green);
-  color: var(--main-bg);
+  background-color: var(--main-bg);
+  color: var(--green);
   font-weight: bold;
 }
 
 .sidebar-add-button:hover {
   cursor: pointer;
-  color: var(--green);
-  background-color: var(--main-bg);
+  color: var(--main-bg);
+  background-color: var(--green);
 }

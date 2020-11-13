@@ -2,4 +2,9 @@
   margin: 15px 0px;
   display: flex;
   align-items: center;
+  color: var(--text);
+}
+
+.filter-container div:hover {
+  cursor: pointer;
 }

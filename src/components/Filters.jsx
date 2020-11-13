@@ -26,6 +26,7 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
       borderRadius: '5px',
       minHeight: '1px',
       height: '32px',
+      backgroundColor: 'var(--sub-bg)',
     }),
     input: (provided) => ({
       ...provided,
@@ -58,11 +59,25 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
       ...provided,
       minHeight: '1px',
       paddingBottom: '2px',
+      color: 'var(--text)',
     }),
     placeholder: (provided) => ({
       ...provided,
       minHeight: '1px',
       paddingBottom: '2px',
+    }),
+    menu: (provided) => ({
+      ...provided,
+      background: 'var(--sub-bg)',
+    }),
+    option: (provided, { isFocused, isSelected }) => ({
+      ...provided,
+      color: isSelected ? 'white' : isFocused ? '#303030' : 'var(--text)',
+      cursor: isFocused ? 'pointer' : 'default',
+    }),
+    multiValueRemove: (provided) => ({
+      ...provided,
+      color: '#303030',
     }),
   });
 
