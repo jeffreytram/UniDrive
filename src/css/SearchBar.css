@@ -8,6 +8,7 @@
   padding: 6px 2px 2px 30px;
   width: 20vw;
   background-color: var(--main-bg);
+  color: var(--text);
 }
 
 .search-icon {

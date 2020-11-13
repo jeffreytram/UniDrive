@@ -3,7 +3,7 @@
   left: 50%;
   top: 30%;
   transform: translate(-50%, -50%);
-  background-color: rgba(30, 30, 30, .6);
+  background-color: var(--bg-alpha);
   padding: 25px;
   z-index: 4;
   border-radius: 10px;
@@ -27,7 +27,7 @@
   position: absolute;
   left: 8px;
   width: 16px;
-  background: #fff;
+  background: var(--main-bg);
   animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
 

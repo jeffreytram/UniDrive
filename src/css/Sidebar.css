@@ -2,7 +2,7 @@
   margin: 0;
   width: 15%;
   color: var(--text);
-  background-color: var(--sub-bg);
+  background-color: var(--main-bg);
   position: fixed;
   height: 100%;
   overflow: hidden;
@@ -29,17 +29,18 @@
 }
 
 .sidebar-item {
-  border: 1px solid rgba(0,0,0,0);
+  border: 1px solid rgba(0, 0, 0, 0);
   padding: 8px 20px;
 }
 
 .sidebar-user {
-  border: 1px solid rgba(0,0,0,0);
+  border: 1px solid rgba(0, 0, 0, 0);
   padding: 4px 8px;
 }
 
 .sidebar-item:hover, .sidebar-user:hover {
-  border: 1px solid var(--text);
+  border: 2px solid var(--subtle1);
+  border-radius: 0 20px 20px 0;
   cursor: pointer;
   font-weight: 600;
 }
@@ -47,13 +48,32 @@
 .selected {
   background-color: var(--subtle1);
   font-weight: 600;
+  border-radius: 0 20px 20px 0;
 }
 
-.selected > svg > path {
+.selected>svg>path {
   color: var(--text);
 }
 
 .sidebar-icon {
   color: 'var(--subtle2)';
   margin-right: 10px;
+}
+
+.sidebar-add-button {
+  display: block;
+  margin: 15px auto;
+  width: 80%;
+  height: 40px;
+  border: 2px solid var(--green);
+  border-radius: 5px;
+  background-color: var(--main-bg);
+  color: var(--green);
+  font-weight: bold;
+}
+
+.sidebar-add-button:hover {
+  cursor: pointer;
+  color: var(--main-bg);
+  background-color: var(--green);
 }

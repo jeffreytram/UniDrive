@@ -1,7 +1,6 @@
 .header-container {
   --header-padding: 4px;
   --full-header-height: calc(100% - var(--header-padding)*2);
-
   height: calc(var(--header-margin) - 8px);
   width: 100%;
   padding: var(--header-padding);
@@ -30,37 +29,45 @@
   left: 15%;
 }
 
+.sync-message {
+  font-style: italic;
+  border: 1px solid var(--text);
+  background: none;
+  color: var(--text);
+  margin-right: 20px;
+  font-size: 14px;
+}
+
 .header-button-container {
   height: 100%;
   float: right;
 }
 
-.main-button {
+.header-button {
+  border: none;
   border-radius: 5px;
-  padding: 5px 10px;
-  height: 30px;
-  font-weight: bold;
-  color: var(--main-bg);
-  margin-right: 1vw;
+  background: none;
+  padding: 5px;
+  margin-right: 10px;
 }
 
-.main-button:hover {
+.header-button:hover {
+  color: var(--main-bg);
   cursor: pointer;
-  background-color: var(--main-bg);
-  color: var(--text);
 }
 
 .refresh {
-  border: 2px solid var(--blue);
+  color: var(--blue);
+}
+
+.refresh:hover {
   background-color: var(--blue);
 }
 
-.add {
-  border: 2px solid var(--green);
-  background-color: var(--green);
-  margin-right: 5px;
+.toggle-theme {
+  color: var(--text);
 }
 
-.add:hover {
-  color: var(--green);
+.toggle-theme:hover { 
+  background-color: var(--text);
 }

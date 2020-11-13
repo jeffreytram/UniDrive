@@ -12,8 +12,3 @@
 .main-content {
   margin: 10px;
 }
-
-.sync-message {
-  font-style: italic;
-  color: var(--subtle2);
-}

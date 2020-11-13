@@ -12,9 +12,21 @@ body {
   --subtle1: lightgray;
   --subtle2: gray;
   --header-margin: 45px;
+  --bg-alpha: rgba(30, 30, 30, .8);
   background-color: var(--main-bg);
   background-image: url('../src/components/images/bg-img.svg');
   background-size: 100%;
+}
+
+body.dark-theme {
+  --main-bg:  #202020;
+  --sub-bg: #353535;
+  --text: #fafafa;
+  --subtle1: #404040;
+  --subtle2: #808080;
+  --bg-alpha: rgba(250, 250, 250, .8);
+  background-image: none;
+
 }
 
 code {
