@@ -36,7 +36,13 @@ export default function Header({
       {addedAccount && (
       <div className="header-button-container">
         <button type="button" className="header-button toggle-theme" onClick={() => toggleTheme()}>
-          <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} size="lg" />
+          <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} size="lg" title="Toggle theme" />
+          {' '}
+          Toggle
+          {' '}
+          {theme === 'light' ? 'dark' : 'light'}
+          {' '}
+          theme
         </button>
         <button type="button" className="header-button refresh" id="signin-btn" onClick={() => refreshAllFunc()}>
           <FontAwesomeIcon icon={faSyncAlt} size="lg" />
