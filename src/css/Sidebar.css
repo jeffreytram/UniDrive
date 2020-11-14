@@ -1,63 +1,61 @@
 .sidebar {
   margin: 0;
-  width: 15%;
+  width: var(--sidebar-width);
   color: var(--text);
   background-color: var(--main-bg);
   position: fixed;
-  height: 100%;
+  height: calc(100% - var(--header-margin));
   overflow: hidden;
   margin-top: var(--header-margin);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sidebar-icon {
   color: var(--subtle2);
 }
 
-.content {
-  height: 100%;
-}
-
-.sidebar-user-container {
-  margin-top: 70px;
-}
-
 .sidebar-picture {
   height: 20px;
   vertical-align: text-bottom;
   border-radius: 10px;
-  margin-right: 5px;
 }
 
 .sidebar-item {
   border: 1px solid rgba(0, 0, 0, 0);
-  padding: 8px 20px;
+  padding: 8px 0;
 }
 
 .sidebar-user {
   border: 1px solid rgba(0, 0, 0, 0);
-  padding: 4px 8px;
+  padding: 4px 0px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .sidebar-item:hover, .sidebar-user:hover {
-  border: 2px solid var(--subtle1);
-  border-radius: 0 20px 20px 0;
   cursor: pointer;
   font-weight: 600;
+  background-color: var(--hover-color);
 }
 
 .selected {
   background-color: var(--subtle1);
   font-weight: 600;
+}
+
+.selected.expand, .sidebar-item.expand, .sidebar-user.expand {
   border-radius: 0 20px 20px 0;
 }
 
-.selected>svg>path {
+.selected>svg>path, .sidebar-item:hover>svg>path, .collapse-button:hover>svg>path {
   color: var(--text);
 }
 
 .sidebar-icon {
   color: 'var(--subtle2)';
-  margin-right: 10px;
 }
 
 .sidebar-add-button {
@@ -76,4 +74,42 @@
   cursor: pointer;
   color: var(--main-bg);
   background-color: var(--green);
+}
+
+.sidebar-user-container {
+  margin-top: 20px;
+  overflow: hidden auto;
+  max-height: 50vh;
+  scrollbar-width: none;
+}
+
+.collapse-container {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.collapse-button {
+  background: none;
+  border: none;
+  color: var(--text);
+}
+
+.collapse-button:hover {
+  cursor: pointer;
+}
+
+/* Min Sidebar CSS */
+
+.collapse {
+  width: 100%;
+  text-align: center;
+}
+
+.sidebar-item.expand, .sidebar-user.expand {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.collapse-container.expand {
+  text-align: right;
 }
