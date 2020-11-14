@@ -13,7 +13,7 @@ body {
   --subtle2: gray;
   --header-margin: 45px;
   --bg-alpha: rgba(30, 30, 30, .8);
-  --sidebar-width: 225px;
+  --sidebar-width: 60px;
   --hover-color: rgba(66, 133, 244, .2);
   background-color: var(--main-bg);
   background-image: url('../src/components/images/bg-img.svg');

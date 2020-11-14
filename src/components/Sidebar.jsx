@@ -10,7 +10,8 @@ import '../css/Sidebar.css';
 export default function Sidebar({
   authorizeUser, filterFilesInAllAccounts, parseIDToken, userList,
 }) {
-  const [expand, setExpand] = useState(true);
+  const [expand, setExpand] = useState(false);
+  const body = document.getElementsByTagName('body')[0];
 
   const scrollToggle = (ref) => {
     userList.forEach((user) => {
@@ -20,15 +21,15 @@ export default function Sidebar({
     window.scrollTo(0, ref.current.offsetTop - 100);
   };
 
+  //el.addEventListener("transitionend", updateTransition, true);
   const toggleExpand = () => {
     const sidebarItem = document.getElementsByClassName('collapsible');
-    const body = document.getElementsByTagName('body')[0];
     Array.from(sidebarItem).forEach((item) => {
       if (expand) {
-        item.classList.replace('expand', 'collapse');
+        item.classList.add('collapse');
         body.style.setProperty('--sidebar-width', '60px');
       } else {
-        item.classList.replace('collapse', 'expand');
+        item.classList.remove('collapse');
         body.style.setProperty('--sidebar-width', '225px');
       }
     });
@@ -59,19 +60,19 @@ export default function Sidebar({
           <FontAwesomeIcon icon={faUserPlus} size="lg" title="Add an Account" />
           {expand ? ' Add Account' : ''}
         </button>
-        <div className="sidebar-item collapsible expand selected" onClick={(event) => handleClick(event.target, '')}>
+        <div className="sidebar-item collapsible collapse selected" onClick={(event) => handleClick(event.target, '')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faHome} size="lg" title="All Files" />
           {expand ? ' All Files' : ''}
         </div>
-        <div className="sidebar-item collapsible expand" onClick={(event) => handleClick(event.target, 'my drives')}>
+        <div className="sidebar-item collapsible collapse" onClick={(event) => handleClick(event.target, 'my drives')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faGoogleDrive} size="lg" title="My Drive Files" />
           {expand ? ' My Drive Files' : ''}
         </div>
-        <div className="sidebar-item collapsible expand" onClick={(event) => handleClick(event.target, 'shared')}>
+        <div className="sidebar-item collapsible collapse" onClick={(event) => handleClick(event.target, 'shared')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faShareSquare} size="lg" title="Shared" />
           {expand ? ' Shared' : ''}
         </div>
-        <div className="sidebar-item collapsible expand" onClick={(event) => handleClick(event.target, 'starred')}>
+        <div className="sidebar-item collapsible collapse" onClick={(event) => handleClick(event.target, 'starred')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faStar} size="lg" title="Starred" />
           {expand ? ' Starred' : ''}
         </div>
@@ -81,7 +82,7 @@ export default function Sidebar({
             const { name, picture } = parseIDToken(user.idToken);
             const { ref } = user;
             return (
-              <div className="sidebar-user collapsible expand" key={user.id} onClick={() => scrollToggle(ref)}>
+              <div className="sidebar-user collapsible collapse" key={user.id} onClick={() => scrollToggle(ref)}>
                 <img className="sidebar-picture" src={picture} alt="Account profile" />
                 {expand ? ` ${name}` : ''}
               </div>
