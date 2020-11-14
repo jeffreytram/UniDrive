@@ -7,7 +7,6 @@
   width: calc(100% - var(--sidebar-width));
   float: right;
   margin-top: var(--header-margin);
-  transition: width .2s;
 }
 
 .main-content {

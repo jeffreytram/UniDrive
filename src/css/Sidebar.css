@@ -10,8 +10,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: width .2s;
-  white-space: nowrap;
 }
 
 .sidebar-icon {
