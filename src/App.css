@@ -4,7 +4,7 @@
 }
 
 .main-container {
-  width: 85%;
+  width: calc(100% - var(--sidebar-width));
   float: right;
   margin-top: var(--header-margin);
 }

@@ -26,7 +26,7 @@
 .search-container {
   height: var(--full-header-height);
   position: absolute;
-  left: 15%;
+  left: 225px;
 }
 
 .sync-message {
@@ -48,7 +48,7 @@
   border-radius: 5px;
   background: none;
   padding: 5px;
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
 .header-button:hover {

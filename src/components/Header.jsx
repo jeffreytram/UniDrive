@@ -36,12 +36,10 @@ export default function Header({
       {addedAccount && (
       <div className="header-button-container">
         <button type="button" className="header-button toggle-theme" onClick={() => toggleTheme()}>
-          <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} size="lg" />
+          <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} size="lg" title="Toggle theme" />
         </button>
         <button type="button" className="header-button refresh" id="signin-btn" onClick={() => refreshAllFunc()}>
-          <FontAwesomeIcon icon={faSyncAlt} size="lg" />
-          {' '}
-          Sync now
+          <FontAwesomeIcon icon={faSyncAlt} size="lg" title="Sync all accounts" />
         </button>
         <button type="button" disabled className="sync-message">
           Last synced:
