@@ -11,6 +11,7 @@ export default function Sidebar({
   authorizeUser, filterFilesInAllAccounts, parseIDToken, userList,
 }) {
   const [expand, setExpand] = useState(false);
+  const [keepExpanded, setKeepExpanded] = useState(false);
   const body = document.getElementsByTagName('body')[0];
 
   const scrollToggle = (ref) => {
@@ -21,11 +22,10 @@ export default function Sidebar({
     window.scrollTo(0, ref.current.offsetTop - 100);
   };
 
-  //el.addEventListener("transitionend", updateTransition, true);
-  const toggleExpand = () => {
+  const toggleKeepExpanded = () => {
     const sidebarItem = document.getElementsByClassName('collapsible');
     Array.from(sidebarItem).forEach((item) => {
-      if (expand) {
+      if (keepExpanded) {
         item.classList.add('collapse');
         body.style.setProperty('--sidebar-width', '60px');
       } else {
@@ -33,8 +33,29 @@ export default function Sidebar({
         body.style.setProperty('--sidebar-width', '225px');
       }
     });
+    setKeepExpanded(!keepExpanded);
+  };
 
-    setExpand(!expand);
+  const setExpanded = () => {
+    const sidebarItem = document.getElementsByClassName('collapsible');
+    Array.from(sidebarItem).forEach((item) => {
+      if (!expand) {
+        item.classList.remove('collapse');
+        body.style.setProperty('--sidebar-width', '225px');
+        setExpand(true);
+      }
+    });
+  };
+
+  const setCollapsed = () => {
+    const sidebarItem = document.getElementsByClassName('collapsible');
+    Array.from(sidebarItem).forEach((item) => {
+      if (expand) {
+        item.classList.add('collapse');
+        body.style.setProperty('--sidebar-width', '60px');
+        setExpand(false);
+      }
+    });
   };
 
   const handleClick = (target, filter) => {
@@ -53,8 +74,9 @@ export default function Sidebar({
     }
     filterFilesInAllAccounts(query);
   };
+
   return (
-    <div className="sidebar">
+    <div className="sidebar" onMouseEnter={() => (!keepExpanded) && setExpanded()} onMouseLeave={() => (!keepExpanded) && setCollapsed()}>
       <div>
         <button type="button" className="sidebar-add-button" id="signin-btn" onClick={() => authorizeUser()}>
           <FontAwesomeIcon icon={faUserPlus} size="lg" title="Add an Account" />
@@ -90,9 +112,9 @@ export default function Sidebar({
           })}
         </div>
       </div>
-      <div className="collapse-container collapsible expand">
-        <button type="button" className="collapse-button" onClick={() => toggleExpand()}>
-          <FontAwesomeIcon icon={expand ? faCaretSquareLeft : faCaretSquareRight} size="lg" title={expand ? 'Collapse sidebar' : 'Expand sidebar'} />
+      <div className="collapse-container collapsible collapse">
+        <button type="button" className="collapse-button" onClick={() => toggleKeepExpanded()}>
+          <FontAwesomeIcon icon={keepExpanded ? faCaretSquareLeft : faCaretSquareRight} size="lg" title={keepExpanded ? 'Collapse' : 'Keep expanded'} />
         </button>
       </div>
     </div>
