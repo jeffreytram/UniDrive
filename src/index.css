@@ -15,6 +15,7 @@ body {
   --bg-alpha: rgba(30, 30, 30, .8);
   --sidebar-width: 225px;
   --hover-color: rgba(66, 133, 244, .2);
+  --shadow-color: rgba(50, 50, 50, 0.4);
   background-color: var(--main-bg);
   background-image: url('../src/components/images/bg-img.svg');
   background-size: 100%;
@@ -27,6 +28,7 @@ body.dark-theme {
   --subtle1: #404040;
   --subtle2: #808080;
   --bg-alpha: rgba(250, 250, 250, .8);
+  --shadow-color: rgba(0, 0, 0, .5);
   background-image: none;
 
 }
