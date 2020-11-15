@@ -1,18 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Header from './Header';
 import Sidebar from './Sidebar';
 
 export default function Layout({
-  children, filterFilesInAllAccounts, parseIDToken, userList,
+  authorizeUser, children, filterFilesInAllAccounts, parseIDToken, userList,
 }) {
   return (
     <div>
-      <Header />
       <Sidebar
-        userList={userList}
-        parseIDToken={parseIDToken}
+        authorizeUser={authorizeUser}
         filterFilesInAllAccounts={filterFilesInAllAccounts}
+        parseIDToken={parseIDToken}
+        userList={userList}
       />
       {children}
     </div>
@@ -20,6 +19,7 @@ export default function Layout({
 }
 
 Layout.propTypes = {
+  authorizeUser: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
   filterFilesInAllAccounts: PropTypes.func.isRequired,
   parseIDToken: PropTypes.func.isRequired,

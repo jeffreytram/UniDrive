@@ -3,42 +3,12 @@
   height: 20px;
 }
 
-.main-button {
-  border-radius: 5px;
-  padding: 5px 10px;
-  height: 30px;
-  font-weight: bold;
-  color: var(--main-bg);
-}
-
-.main-button:hover {
-  cursor: pointer;
-  background-color: var(--main-bg);
-  color: var(--text);
-}
-
-.refresh {
-  border: 2px solid var(--blue);
-  background-color: var(--blue);
-}
-
-.add {
-  border: 2px solid var(--green);
-  background-color: var(--green);
-  margin-right: 5px;
-}
-
 .main-container {
-  width: 85%;
+  width: calc(100% - var(--sidebar-width));
   float: right;
   margin-top: var(--header-margin);
 }
 
 .main-content {
   margin: 10px;
-}
-
-.sync-message {
-  font-style: italic;
-  color: var(--subtle2);
 }

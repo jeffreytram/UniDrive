@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import Cookies from 'universal-cookie';
 import UserList from './components/UserList';
-import RequestProgressElement from './components/RequestProgressElement';
+import RequestProgress from './components/RequestProgress';
 import Layout from './components/Layout';
-import SearchBar from './components/SearchBar';
+import Header from './components/Header';
 import Welcome from './components/Welcome';
+import Loading from './components/Loading';
 import { config } from './config';
 import './App.css';
 
@@ -13,6 +15,18 @@ const API_KEY = config.web.api_key;
 const CLIENT_ID = config.web.client_id;
 const ready = true;
 let userId = 1;
+const cookies = new Cookies();
+// cookies expire in 10
+const d = new Date();
+const year = d.getFullYear();
+const month = d.getMonth();
+const day = d.getDate();
+const cookieExpire = new Date(year + 20, month, day);
+
+const cookieOptions = {
+  path: '/',
+  expires: cookieExpire,
+};
 
 class App extends Component {
   constructor() {
@@ -23,6 +37,7 @@ class App extends Component {
       lastRefreshTime: Date().substring(0, 21),
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
+      isLoading: false,
     };
   }
 
@@ -31,6 +46,9 @@ class App extends Component {
     script.onload = this.handleClientLoad;
     script.src = 'https://apis.google.com/js/api.js';
     document.body.appendChild(script);
+    setTimeout(() => {
+      this.startUp();
+    }, 1000);
     this.interval = setInterval(() => {
       this.refreshAllFunction();
     }, 300000);
@@ -38,6 +56,16 @@ class App extends Component {
 
   handleClientLoad = () => {
     window.gapi.load('client:auth');
+  }
+
+  /**
+   * Retrieves the cookies and authorizes each user
+   */
+  startUp = () => {
+    const cookie = cookies.getAll();
+    Object.values(cookie).forEach((email) => {
+      this.reAuthorizeUser(email);
+    });
   }
 
   /**
@@ -52,6 +80,30 @@ class App extends Component {
         scope: SCOPE,
         responseType: 'id_token permission code',
         prompt: 'select_account',
+        discoveryDocs: [discoveryUrl, 'https:googleapis.com/discovery/v1/apis/profile/v1/rest'],
+      }, (response) => {
+        if (response.error) {
+          console.log(response.error);
+          console.log('authorization error');
+          return;
+        }
+        const accessToken = response.access_token;
+        const idToken = response.id_token;
+        const { code } = response;
+        this.signInFunction(accessToken, idToken, code);
+      });
+    });
+  }
+
+  reAuthorizeUser = (email) => {
+    window.gapi.load('client:auth', () => {
+      window.gapi.auth2.authorize({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPE,
+        responseType: 'id_token permission code',
+        prompt: 'none',
+        login_hint: email,
         discoveryDocs: [discoveryUrl, 'https:googleapis.com/discovery/v1/apis/profile/v1/rest'],
       }, (response) => {
         if (response.error) {
@@ -100,6 +152,11 @@ class App extends Component {
             userList: newUserList,
           };
         });
+        const index = this.getAccountIndex(id);
+        const { userList } = this.state;
+        const userInfo = this.parseIDToken(userList[index].idToken);
+        const { email } = userInfo;
+        cookies.remove(email, cookieOptions);
       }
     }
   }
@@ -128,9 +185,11 @@ class App extends Component {
           looseFiles: [],
           openFolders: [],
           ref: React.createRef(),
-          sortedBy: 'folder, viewedByMeTime desc',
+          sortedBy: 'folder, createdTime desc',
+          filteredBy: '',
         }],
       }));
+      cookies.set(email, email, cookieOptions);
       userId += 1;
     } else {
       console.log('Email is already in UserList');
@@ -153,6 +212,7 @@ class App extends Component {
    * @param {Object} files the file object to store
    */
   updateFiles = (index, email) => {
+    this.setState({ isLoading: true });
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -202,6 +262,32 @@ class App extends Component {
     }));
   }
 
+  /**
+   * function which updates the filetypes displayed
+   * @param {number} userID the id of the user
+   * @param {Array} filterBy list of queries to filter by
+   */
+  changeFilterType = (userId, filterBy) => {
+    this.setfilterType(userId, filterBy);
+    this.refreshAllFunction();
+  }
+
+  /**
+   * builds the Google search parameter to use in retrieving the files based upon which filters are selected (for filtering by file type)
+   * @param {number} userID the id of the user
+   * @param {Array} filterBy list of queries to filter by
+   */
+  setfilterType = (userId, filterBy) => {
+    const { userList } = this.state;
+    const index = this.getAccountIndex(userId);
+    let fQuery = '';
+    if (filterBy) fQuery = filterBy.join(' or ');
+    userList[index].filteredBy = fQuery;
+    this.setState((prevState) => ({
+      userList,
+    }));
+  }
+
   // Relies on api call putting folders in front via orderBy
   /**
    *
@@ -222,9 +308,6 @@ class App extends Component {
       // Put folders in own data struct
       let i = -1;
       while (++i < results.length && results[i].mimeType === 'application/vnd.google-apps.folder') {
-        // const newFile = results[i];
-        // newFile.children = [];
-        // updatedList[index].folders[results[i].id] = newFile;
         updatedList[index].folders[results[i].id] = {
           folder: results[i],
           children: [],
@@ -281,7 +364,7 @@ class App extends Component {
           this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true);
         }
       }
-      this.setState({ userList: updatedList });
+      this.setState({ userList: updatedList, isLoading: false });
     }, email, user);
   }
 
@@ -352,7 +435,8 @@ class App extends Component {
    */
   retrieveAllFiles = (callback, email, user) => {
     const { filterQuery, searchQuery } = this.state;
-    const query = `${filterQuery} and ${searchQuery}`;
+    const fileTypeQuery = user.filteredBy;
+    const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
@@ -416,6 +500,11 @@ class App extends Component {
     });
   }
 
+  /**
+   * updates the sort Type when a new sort is selected
+   * @param {number} userID the id of the user
+   * @param {String} newSort the sort which has been selected
+   */
   changeSortedBy = (userId, newSort) => {
     const index = this.getAccountIndex(userId);
     const { userList } = this.state;
@@ -446,6 +535,7 @@ class App extends Component {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
     const { email } = this.parseIDToken(userToken);
+
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -459,18 +549,23 @@ class App extends Component {
           console.log(response.error);
           console.log('authorization error');
         }
-        const preParents = file.parents.join(',');
-        window.gapi.client.drive.files.update({
-          fileId: file.id,
-          addParents: newParentId,
-          removeParents: preParents,
-          fields: 'id, parents',
-        }).then((response) => {
-          if (response.error) {
-            console.log(response.error);
-          }
-          console.log(response);
-        });
+        if (file.parents === undefined) {
+          return;
+        }
+        if (window.confirm('Warning: moving a file to root will unshare it with everybody it is currently shared with.')) {
+          const preParents = file.parents.join(',');
+          window.gapi.client.drive.files.update({
+            fileId: file.id,
+            addParents: newParentId,
+            removeParents: preParents,
+            fields: 'id, parents',
+          }).then((response) => {
+            if (response.error) {
+              console.log(response.error);
+            }
+            console.log(response);
+          });
+        }
       });
     });
   }
@@ -625,7 +720,6 @@ class App extends Component {
               uploadResumable.setRequestHeader('X-Upload-Content-Type', contentType);
               uploadResumable.onreadystatechange = () => {
                 if (uploadResumable.readyState === XMLHttpRequest.DONE && uploadResumable.status === 200) {
-                  console.log(uploadResumable.response);
                   this.refreshAllFunction();
                 }
               };
@@ -651,32 +745,30 @@ class App extends Component {
   }
 
   render() {
-    const { userList, uploadRequests } = this.state;
-    const addedAccount = userList.length > 0;
+    const { userList, uploadRequests, isLoading } = this.state;
+    const cookie = cookies.getAll();
+    const addedAccount = !(Object.keys(cookie).length === 0 && cookie.constructor === Object);
     return (
       <div>
+        <Header
+          addedAccount={addedAccount}
+          onSubmit={this.onFormSubmit}
+          refreshAllFunc={this.refreshAllFunction}
+          syncMessage={this.state.lastRefreshTime}
+        />
+        {isLoading && (
+          <Loading />
+        )}
         {addedAccount
           ? (
             <Layout
-              userList={userList}
-              parseIDToken={this.parseIDToken}
+              authorizeUser={this.authorizeUser}
               filterFilesInAllAccounts={this.filterFilesInAllAccounts}
+              parseIDToken={this.parseIDToken}
+              userList={userList}
             >
               <div className="main-container">
                 <div className="main-content">
-                  <button type="button" className="main-button add" id="signin-btn" onClick={() => this.authorizeUser()}>Add an Account</button>
-                  <button type="button" className="main-button refresh" id="refreshAll-btn" onClick={() => this.refreshAllFunction()}>
-                    Refresh All
-                  </button>
-                  <>
-                    <span className="sync-message">
-                      {' '}
-                      Last Sync:
-                      {' '}
-                      {this.state.lastRefreshTime}
-                    </span>
-                  </>
-                  <SearchBar onSubmit={this.onFormSubmit} />
                   <UserList
                     userList={userList}
                     parseIDToken={this.parseIDToken}
@@ -690,21 +782,22 @@ class App extends Component {
                     openFolder={this.openFolder}
                     closePath={this.closePath}
                     updatePath={this.updatePath}
+                    filterFunc={this.changeFilterType}
                   />
-                  <div>
-                    <button type="button" onClick={() => this.clearRequests()}> Clear Uploads </button>
-                    {uploadRequests.map((requested) => (
-                      <RequestProgressElement
-                        requested={requested}
-                      />
-                    ))}
-                  </div>
+                  {uploadRequests.length > 0 && (
+                    <RequestProgress
+                      uploadRequests={uploadRequests}
+                      clearRequests={this.clearRequests}
+                    />
+                  )}
                 </div>
               </div>
             </Layout>
           )
           : (
-            <Welcome authorizeUser={() => this.authorizeUser()} />
+            <Welcome
+              authorizeUser={this.authorizeUser}
+            />
           )}
       </div>
     );

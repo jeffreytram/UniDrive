@@ -17,7 +17,7 @@ class OpenFolder extends Component {
   render() {
     const {
       children, closePath, displayed, loadAuth, moveExternal, moveWithin,
-      oId, openFolder, path, shareFile, updatePath, userId,
+      oId, openFolder, path, refreshFunc, shareFile, updatePath, userId,
     } = this.props;
 
     return (
@@ -40,15 +40,16 @@ class OpenFolder extends Component {
           {children.map((file) => (
             <File
               key={file.id}
-              userId={userId}
               data={file}
-              oId={oId}
               displayed={displayed}
-              moveExternal={moveExternal}
-              shareFile={shareFile}
-              moveWithin={moveWithin}
               loadAuth={loadAuth}
+              moveExternal={moveExternal}
+              moveWithin={moveWithin}
+              oId={oId}
               openFolder={openFolder}
+              refreshFunc={refreshFunc}
+              shareFile={shareFile}
+              userId={userId}
             />
           ))}
         </div>

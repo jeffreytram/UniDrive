@@ -1,42 +1,44 @@
 .sidebar {
   margin: 0;
-  width: 15%;
+  width: var(--sidebar-width);
   color: var(--text);
-  background-color: var(--sub-bg);
+  background-color: var(--main-bg);
   position: fixed;
-  height: 100%;
+  height: calc(100% - var(--header-margin));
   overflow: hidden;
   margin-top: var(--header-margin);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sidebar-icon {
   color: var(--subtle2);
 }
 
-.content {
-  height: 100%;
-}
-
-.sidebar-user-container {
-  margin-top: 70px;
-}
-
 .sidebar-picture {
   height: 20px;
   vertical-align: text-bottom;
   border-radius: 10px;
-  margin-right: 5px;
 }
 
-.sidebar-item, .sidebar-user {
-  border: 1px solid rgba(0,0,0,0);
-  padding: 4px 8px;
+.sidebar-item {
+  border: 1px solid rgba(0, 0, 0, 0);
+  padding: 8px 15px;
+}
+
+.sidebar-user {
+  border: 1px solid rgba(0, 0, 0, 0);
+  padding: 4px 15px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .sidebar-item:hover, .sidebar-user:hover {
-  border: 1px solid var(--text);
   cursor: pointer;
   font-weight: 600;
+  background-color: var(--hover-color);
 }
 
 .selected {
@@ -44,6 +46,63 @@
   font-weight: 600;
 }
 
-.selected > svg > path {
+.selected, .sidebar-item, .sidebar-user {
+  border-radius: 0 20px 20px 0;
+}
+
+.selected.collapse, .sidebar-item.collapse, .sidebar-user.collapse {
+  border-radius: 0;
+}
+
+.selected>svg>path, .sidebar-item:hover>svg>path, .collapse-button:hover>svg>path {
   color: var(--text);
+}
+
+.sidebar-icon {
+  color: 'var(--subtle2)';
+}
+
+.sidebar-add-button {
+  display: block;
+  margin: 15px auto;
+  width: 80%;
+  height: 40px;
+  border: 2px solid var(--green);
+  border-radius: 5px;
+  background-color: var(--main-bg);
+  color: var(--green);
+  font-weight: bold;
+}
+
+.sidebar-add-button:hover {
+  cursor: pointer;
+  color: var(--main-bg);
+  background-color: var(--green);
+}
+
+.sidebar-user-container {
+  margin-top: 20px;
+  overflow: hidden auto;
+  max-height: 50vh;
+  scrollbar-width: none;
+}
+
+.collapse-container {
+  width: 100%;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+.collapse-container.collapse {
+  text-align: center;
+}
+
+.collapse-button {
+  background: none;
+  border: none;
+  color: var(--text);
+}
+
+.collapse-button:hover {
+  cursor: pointer;
 }
