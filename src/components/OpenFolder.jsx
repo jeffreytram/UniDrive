@@ -12,13 +12,21 @@ class OpenFolder extends Component {
     };
   }
 
-  /* Props contains: Name, Link, Image */
-  // export default function File(props) {
   render() {
     const {
       children, closePath, displayed, loadAuth, moveExternal, moveWithin,
       oId, openFolder, path, refreshFunc, shareFile, updatePath, userId,
     } = this.props;
+
+    const folderList = [];
+    const fileList = [];
+    children.forEach((file) => {
+      if (file.mimeType === 'application/vnd.google-apps.folder') {
+        folderList.push(file);
+      } else {
+        fileList.push(file);
+      }
+    });
 
     return (
       <div className="open-folder">
@@ -35,9 +43,27 @@ class OpenFolder extends Component {
             />
           ))}
         </div>
-
-        <div className="current-folder">
-          {children.map((file) => (
+        {folderList.length > 0 && (
+          <div className="open-folder-folder-list">
+            {folderList.map((file) => (
+              <File
+                key={file.id}
+                data={file}
+                displayed={displayed}
+                loadAuth={loadAuth}
+                moveExternal={moveExternal}
+                moveWithin={moveWithin}
+                oId={oId}
+                openFolder={openFolder}
+                refreshFunc={refreshFunc}
+                shareFile={shareFile}
+                userId={userId}
+              />
+            ))}
+          </div>
+        )}
+        <div className="open-folder-file-list">
+          {fileList.map((file) => (
             <File
               key={file.id}
               data={file}
@@ -70,6 +96,7 @@ OpenFolder.propTypes = {
   openFolder: PropTypes.func.isRequired,
   path: PropTypes.arrayOf(PropTypes.object).isRequired,
   shareFile: PropTypes.func.isRequired,
+  refreshFunc: PropTypes.func.isRequired,
   updatePath: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
 };
