@@ -99,6 +99,7 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
     display: 'inline-block',
     width: 'auto',
     minWidth: '150px',
+    zIndex: "4"
     
   });
 
