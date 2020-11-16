@@ -304,7 +304,7 @@ class App extends Component {
         return;
       }
       // Initialize so there are not double
-      updatedList[index].folders;
+      updatedList[index].folders = {};
       updatedList[index].topLevelFolders = [];
       updatedList[index].looseFiles = [];
       // Put folders in own data struct
@@ -346,24 +346,26 @@ class App extends Component {
         }
       }
       /* Update file paths if a folder that was there is not anymore */
-      const oldOpenFolders = updatedList[index].openFolders;
-      for (let oId = 0; oId < updatedList[index].openFolders.length; oId++) {
-        if (updatedList[index].openFolders[oId] && updatedList[index].openFolders[oId].path) {
-          let pathIndex = 0;
-          while (pathIndex < updatedList[index].openFolders[oId].path.length) {
-            const oldPath = updatedList[index].openFolders[oId].path;
-            if (!this.state.userList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
-              if (pathIndex === 0) {
-                updatedList[index].openFolders.splice(oId, 1);
-              } else {
-                // Cut off the rest of the folders
-                updatedList[index].openFolders[oId].path.splice(pathIndex, (oldPath.length - 1) - pathIndex);
-                updatedList[index].openFolders[oId].displayed = this.state.userList[index].folders[oldPath[pathIndex - 1].id].children;
-              }
+      const newOpenFolders = updatedList[index].openFolders;
+      for (let oId = 0; oId < newOpenFolders.length; oId++) {
+        let pathIndex = 0;
+        while (newOpenFolders[oId] && newOpenFolders[oId].path && pathIndex < newOpenFolders[oId].path.length) {
+          const oldPath = newOpenFolders[oId].path;
+          if (!updatedList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
+            if (pathIndex === 0) {
+              newOpenFolders.splice(oId, 1);
+              oId--;
+            } else {
+              // Cut off the rest of the folders
+              newOpenFolders[oId].path.splice(pathIndex, (oldPath.length - pathIndex));
+              // newOpenFolders[oId].displayed = updatedList[index].folders[oldPath[pathIndex - 1].id].children;
             }
-            pathIndex++;
           }
-          this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true);
+          pathIndex++;
+        }
+        updatedList[index].openFolders = newOpenFolders;
+        if (newOpenFolders[oId] && newOpenFolders[oId].path) {
+          this.openFolder(updatedList[index].id, oId, newOpenFolders[oId].path[newOpenFolders[oId].path.length - 1], true);
         }
       }
       this.setState({ userList: updatedList, isLoading: false });
