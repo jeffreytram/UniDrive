@@ -378,7 +378,7 @@ class App extends Component {
     const updatedList = this.state.userList;
     const newOpenFolders = updatedList[index].openFolders;
     // If folder is topLevel, we will pass in null oId for these, create new open folder
-    if (oId === null) {
+    if (oId === -1) {
       newOpenFolders.push({
         path: [folder],
         displayed: updatedList[index].folders[folder.id].children,

@@ -17,7 +17,7 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
     { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.spreadsheet'", label: 'Google Sheets' },
     { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.presentation'", label: 'Google Slides' },
     { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/pdf'", label: 'PDF' },
-    { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType contains 'image/'", label: 'Images' },
+    { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType contains 'image/' ", label: 'Images' },
     { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType contains 'video/'", label: 'Videos' },
     { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType contains 'text/'", label: 'Text' },
     { value: "mimeType = 'application/vnd.google-apps.folder' or not mimeType contains 'text/'" +
@@ -99,6 +99,7 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
     display: 'inline-block',
     width: 'auto',
     minWidth: '150px',
+    
   });
 
   const handleFilterChange = (selected) => {

@@ -21,6 +21,7 @@ export default function LooseFileList(props) {
           moveWithin={moveWithin}
           loadAuth={loadAuth}
           refreshFunc={refreshFunc}
+          oId = {-1}
         />
       ))}
     </div>
