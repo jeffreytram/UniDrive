@@ -1,4 +1,5 @@
 .open-folder {
+  margin: 20px 20px;
   margin: 20px 30px;
   width: 100%;
 }
@@ -15,4 +16,19 @@
 
 .open-folder-folder-list {
   padding-bottom: 15px;
+}
+
+.close-folder-btn {
+  background-color: var(--main-bg);
+  border: 1px solid var(--text);
+  padding: 2px 10px;
+  border-radius: 5px;
+  margin-right: 10px;
+  color: var(--text);
+}
+
+.close-folder-btn:hover {
+  background-color: var(--text);
+  color: var(--main-bg);
+  cursor: pointer;
 }

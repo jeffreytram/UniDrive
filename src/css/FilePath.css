@@ -1,11 +1,12 @@
-.btn {
+.path-btn {
   border: none;
   background-color: inherit;
-  padding: 5px 5px;
+  padding: 5px 10px;
   margin: 10px 5px;
   font-size: 16px;
   cursor: pointer;
   display: inline-block;
+  color: var(--blue);
 }
 
 .file-path {
@@ -14,11 +15,7 @@
 
 /* On mouse-over */
 
-.btn:hover {
+.path-btn:hover {
   outline: 1px solid var(--text);
   background: var(--main-bg);
-}
-
-.info {
-  color: var(--blue);
 }

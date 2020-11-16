@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import '../css/File.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import '../css/FilePath.css';
 
 class Filepath extends Component {
@@ -16,15 +17,13 @@ class Filepath extends Component {
     } = this.props;
 
     return (
-
       <span className="file-path">
         <span>
           {' '}
-          &rarr;
-          <button type="button" className="btn info" onClick={() => updatePath(userId, oId, pIndex)}>{folder.name}</button>
+          <FontAwesomeIcon icon={faChevronRight} />
+          <button type="button" className="path-btn" onClick={() => updatePath(userId, oId, pIndex)}>{folder.name}</button>
         </span>
       </span>
-
     );
   }
 }
