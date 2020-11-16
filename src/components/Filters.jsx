@@ -5,10 +5,10 @@ import '../css/Filters.css';
 
 export default function Filters({ filterFunc, sortFunc, userId }) {
   const sortOptions = [
+    { value: 'folder, viewedByMeTime desc', label: 'Last Opened by Me' },
     { value: 'folder, createdTime desc', label: 'Newest' },
     { value: 'folder, createdTime', label: 'Oldest' },
     { value: 'folder, name', label: 'By Name' },
-    { value: 'folder, viewedByMeTime desc', label: 'Last Opened by Me' },
     { value: 'folder, modifiedTime desc', label: 'Last Modified' },
   ];
 

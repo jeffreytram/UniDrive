@@ -64,7 +64,9 @@ class App extends Component {
   startUp = () => {
     const cookie = cookies.getAll();
     Object.values(cookie).forEach((email) => {
+      if (email != 'light' && email != 'dark') {
       this.reAuthorizeUser(email);
+      }
     });
   }
 
@@ -185,7 +187,7 @@ class App extends Component {
           looseFiles: [],
           openFolders: [],
           ref: React.createRef(),
-          sortedBy: 'folder, createdTime desc',
+          sortedBy: 'folder, viewedByMeTime desc',
           filteredBy: '',
         }],
       }));

@@ -6,20 +6,50 @@ import SearchBar from './SearchBar';
 import icon from './images/unidrive-logo.png';
 import iconWhite from './images/unidrive-logo-white.png';
 import '../css/Header.css';
+import Cookies from 'universal-cookie';
 
 export default function Header({
-  addedAccount, onSubmit, refreshAllFunc, syncMessage,
+  addedAccount, onSubmit, refreshAllFunc, syncMessage
 }) {
-  const [theme, setTheme] = useState('light');
+
+const d = new Date();
+const year = d.getFullYear();
+const month = d.getMonth();
+const day = d.getDate();
+  const cookieExpire = new Date(year + 20, month, day);
+
+  const cookieOptions = {
+    path: '/',
+    expires: cookieExpire,
+  };
+
+  const cookies = new Cookies()
+  const cookie = cookies.getAll();
+  let currentTheme = 'light';
+  Object.values(cookie).forEach((cook) => {
+    if (cook === "dark") {
+    currentTheme = 'dark'
+    }
+  });
+
+  
+  const [theme, setTheme] = useState(currentTheme);
+  
+  const body = document.getElementsByTagName('body')[0];
+
+  if (theme === "dark") {
+  body.classList.add('dark-theme')
+  };
 
   const toggleTheme = () => {
-    const body = document.getElementsByTagName('body')[0];
-    if (body.classList.contains('dark-theme')) {
+    if (theme === "dark") {
       body.classList.remove('dark-theme');
       setTheme('light');
+      cookies.set("theme", 'light', cookieOptions)
     } else {
       body.classList.add('dark-theme');
       setTheme('dark');
+      cookies.set("theme", 'dark', cookieOptions)
     }
   };
 
