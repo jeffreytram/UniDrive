@@ -119,10 +119,10 @@ deletePermission = (permId) => {
           <button type="button" className="path-btn" onClick={() => updatePath(userId, oId, pIndex)}>{folder.name}</button>
             </ContextMenuTrigger>
             <ContextMenu className="context-menu" id={folder.id + userId.toString() + oId.toString()}>
-              <MenuItem className="menu-item" onClick={() => updatePath(userId, oId, pIndex)}>
-                <FontAwesomeIcon className="faOpen menu-icon" icon={faFolderOpen} />
-                Open
-              </MenuItem>
+            <MenuItem className="menu-item" onClick={() => window.open(folder.webViewLink, 'blank')}>
+              <FontAwesomeIcon className="faGoogle menu-icon" icon={faGoogleDrive} />
+              View on Google Drive
+            </MenuItem>
               <hr className="divider" />
               <MenuItem className="menu-item" onClick={() => shareFile(folder.id, window.prompt('Email Address of sharee: '))}>
                 <FontAwesomeIcon className="faShare menu-icon" icon={faShare} />
