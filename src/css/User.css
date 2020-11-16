@@ -33,6 +33,7 @@
 
 .profile-name {
   font-weight: bold;
+  text-overflow: ellipsis;
 }
 
 .profile-email {
