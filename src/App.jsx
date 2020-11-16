@@ -63,8 +63,6 @@ class App extends Component {
    */
   startUp = () => {
     const cookie = cookies.getAll();
-    console.log(Object.values(cookie))
-    console.log(cookies)
     Object.values(cookie).forEach((email) => {
       this.reAuthorizeUser(email);
 
@@ -409,7 +407,7 @@ class App extends Component {
     const index = this.getAccountIndex(userId);
     const updatedList = this.state.userList;
     const newOpenFolders = updatedList[index].openFolders;
-    // If folder is topLevel, we will pass in null oId for these, create new open folder
+    // If folder is topLevel, we will pass in -1 oId for these, create new open folder
     if (oId === -1) {
       newOpenFolders.push({
         path: [folder],
@@ -425,7 +423,9 @@ class App extends Component {
       this.setState({ userList: updatedList });
     } else {
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
+
       updatedList[index].openFolders = newOpenFolders;
+      
       this.setState({ userList: updatedList });
     }
   }
