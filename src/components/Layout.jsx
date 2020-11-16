@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 
 export default function Layout({
   authorizeUser, children, filterFilesInAllAccounts, parseIDToken, userList,
+  starFilter
 }) {
   return (
     <div>
@@ -12,6 +13,7 @@ export default function Layout({
         filterFilesInAllAccounts={filterFilesInAllAccounts}
         parseIDToken={parseIDToken}
         userList={userList}
+        starFilter={starFilter}
       />
       {children}
     </div>
