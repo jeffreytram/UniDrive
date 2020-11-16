@@ -1,13 +1,18 @@
 .open-folder {
-  margin: 20px 10px;
+  margin: 20px 30px;
+  width: 100%;
 }
 
 .file-path-container {
   width: 100%;
 }
 
-.current-folder {
+.open-folder-folder-list, .open-folder-file-list {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.open-folder-folder-list {
+  padding-bottom: 15px;
 }
