@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Sidebar from './Sidebar';
 
 export default function Layout({
-  authorizeUser, children, filterFilesInAllAccounts, parseIDToken, userList,
+  authorizeUser, children, filterFilesInAllAccounts, parseIDToken, userList, removeAllAccounts,
 }) {
   return (
     <div>
@@ -12,6 +12,7 @@ export default function Layout({
         filterFilesInAllAccounts={filterFilesInAllAccounts}
         parseIDToken={parseIDToken}
         userList={userList}
+        removeAllAccounts = {removeAllAccounts}
       />
       {children}
     </div>
@@ -24,4 +25,6 @@ Layout.propTypes = {
   filterFilesInAllAccounts: PropTypes.func.isRequired,
   parseIDToken: PropTypes.func.isRequired,
   userList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  removeAllAccountsAccounts: PropTypes.func.isRequired,
+
 };

@@ -16,7 +16,7 @@ const CLIENT_ID = config.web.client_id;
 const ready = true;
 let userId = 1;
 const cookies = new Cookies();
-// cookies expire in 10
+// cookies expire in 20 years
 const d = new Date();
 const year = d.getFullYear();
 const month = d.getMonth();
@@ -63,8 +63,11 @@ class App extends Component {
    */
   startUp = () => {
     const cookie = cookies.getAll();
+    console.log(Object.values(cookie))
+    console.log(cookies)
     Object.values(cookie).forEach((email) => {
       this.reAuthorizeUser(email);
+
     });
   }
 
@@ -143,8 +146,22 @@ class App extends Component {
    *  Removes the specified user from the userList array, then updates the State
    * @param {number} id attribute of the specific User to be removed in the UserList array
    */
-  signOutFunction = (id) => {
-    if (ready) {
+  signOutFunction = (id, removeAll) => {
+    const {isLoading } = this.state;
+    if (!isLoading) {
+      if (removeAll) {
+        this.setState((prevState) => {
+          const newUserList = prevState.userList.filter((user) => user.id !== id);
+          return {
+            userList: newUserList,
+          };
+        });
+        const index = this.getAccountIndex(id);
+        const { userList } = this.state;
+        const userInfo = this.parseIDToken(userList[index].idToken);
+        const { email } = userInfo;
+        cookies.remove(email, cookieOptions);
+    } else {
       if (window.confirm('Are you sure you want to remove this account?')) {
         this.setState((prevState) => {
           const newUserList = prevState.userList.filter((user) => user.id !== id);
@@ -159,6 +176,19 @@ class App extends Component {
         cookies.remove(email, cookieOptions);
       }
     }
+  }
+  }
+
+  removeAllAccounts = () => {
+    const {isLoading } = this.state;
+    if (!isLoading) {
+      const { userList } = this.state;
+      if (confirm("Are you sure you want to remove all accounts?")) {
+        for (let i = 0; i < userList.length; i++) {
+          this.signOutFunction(userList[i].id, true)
+      }
+    }
+  }
   }
 
   /**
@@ -307,8 +337,6 @@ class App extends Component {
       updatedList[index].looseFiles = [];
       // Put folders in own data struct
       for (let i = 0; i < results.length; i++) {
-      console.log(results[i].parents)
-      console.log(results[i])
       }
       let i = -1;
       while (++i < results.length && results[i].mimeType === 'application/vnd.google-apps.folder') {
@@ -770,6 +798,7 @@ class App extends Component {
               filterFilesInAllAccounts={this.filterFilesInAllAccounts}
               parseIDToken={this.parseIDToken}
               userList={userList}
+              removeAllAccounts = {this.removeAllAccounts}
             >
               <div className="main-container">
                 <div className="main-content">
