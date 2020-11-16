@@ -23,7 +23,7 @@ class OpenFolder extends Component {
     return (
       <div className="open-folder">
         <div className="file-path-container">
-          <button type="button" className="copy-btn" onClick={() => closePath(oId, userId)}>Close</button>
+          <button type="button" className="close-folder-btn" onClick={() => closePath(oId, userId)}>Close</button>
           {path.map((folder, i) => (
             <FilePath
               key={folder.id}
