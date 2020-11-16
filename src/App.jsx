@@ -306,6 +306,10 @@ class App extends Component {
       updatedList[index].topLevelFolders = [];
       updatedList[index].looseFiles = [];
       // Put folders in own data struct
+      for (let i = 0; i < results.length; i++) {
+      console.log(results[i].parents)
+      console.log(results[i])
+      }
       let i = -1;
       while (++i < results.length && results[i].mimeType === 'application/vnd.google-apps.folder') {
         updatedList[index].folders[results[i].id] = {
@@ -548,7 +552,8 @@ class App extends Component {
           console.log(response.error);
           console.log('authorization error');
         }
-        if (file.parents === undefined) {
+        if (file.parents === undefined || (file.parents.length === 1 && file.parents[0][0] === '0' && file.parents[0][1] === 'A')) {
+          alert("File is already in root")
           return;
         }
         if (window.confirm('Warning: moving a file to root will unshare it with everybody it is currently shared with.')) {
