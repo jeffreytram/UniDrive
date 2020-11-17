@@ -11,6 +11,7 @@ import Filters from './Filters';
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
+import { loadAuth } from '../logic/auth/auth';
 import '../css/User.css';
 
 class User extends Component {
@@ -135,13 +136,13 @@ class User extends Component {
     const { looseFilesIsDisplayed } = this.state;
 
     const {
-      closePath, filterFunc, idToken, loadAuth, looseFileList, moveExternal,
+      closePath, filterFunc, idToken, looseFileList, moveExternal,
       moveWithin, openFolder, openFolderList, parseIDToken, refreshFunc, removeFunc, sortFunc,
       topLevelFolderList, updatePath, userId,
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
-    const createFunc = loadAuth(userId, this.create);
+    const createFunc = loadAuth(email, this.create);
     return (
       <ContextMenuTrigger className="user" id={userId.toString()}>
         <button
@@ -234,39 +235,36 @@ class User extends Component {
             userId={userId}
           />
           <TopLevelFolderList
+            email={email}
             userId={userId}
             topLevelFolderList={topLevelFolderList}
-            shareFile={loadAuth(userId, this.shareFile)}
+            shareFile={loadAuth(email, this.shareFile)}
             moveWithin={moveWithin}
-            loadAuth={loadAuth}
             moveExternal={moveExternal}
             refreshFunc={refreshFunc}
-            email={email}
             openFolder={openFolder}
           />
           <OpenFolderList
+            email={email}
             userId={userId}
             openFolderList={openFolderList}
-            shareFile={loadAuth(userId, this.shareFile)}
+            shareFile={loadAuth(email, this.shareFile)}
             moveWithin={moveWithin}
-            loadAuth={loadAuth}
             moveExternal={moveExternal}
             refreshFunc={refreshFunc}
-            email={email}
             openFolder={openFolder}
             closePath={closePath}
             updatePath={updatePath}
           />
           {looseFilesIsDisplayed && (
             <LooseFileList
+              email={email}
               userId={userId}
               looseFileList={looseFileList}
-              shareFile={loadAuth(userId, this.shareFile)}
+              shareFile={loadAuth(email, this.shareFile)}
               moveWithin={moveWithin}
-              loadAuth={loadAuth}
               moveExternal={moveExternal}
               refreshFunc={refreshFunc}
-              email={email}
             />
           )}
         </div>
@@ -284,7 +282,6 @@ User.propTypes = {
     PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   ]).isRequired,
   idToken: PropTypes.string.isRequired,
-  loadAuth: PropTypes.func.isRequired,
   looseFileList: PropTypes.arrayOf(PropTypes.object).isRequired,
   moveExternal: PropTypes.func.isRequired,
   moveWithin: PropTypes.func.isRequired,

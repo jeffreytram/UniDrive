@@ -5,12 +5,12 @@ import {
   faChevronRight,
   faArrowRight, faPencilAlt, faShare, faTrash, faStar,
 } from '@fortawesome/free-solid-svg-icons';
-import '../css/FilePath.css';
 import {
   ContextMenu, MenuItem, ContextMenuTrigger,
 } from 'react-contextmenu';
-
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
+import { loadAuth } from '../logic/auth/auth';
+import '../css/FilePath.css';
 
 class Filepath extends Component {
   constructor() {
@@ -98,15 +98,15 @@ deletePermission = (permId) => {
 
   render() {
     const {
-      folder, oId, pIndex, updatePath, userId, shareFile, moveWithin, loadAuth,
+      email, folder, oId, pIndex, updatePath, userId, shareFile, moveWithin,
     } = this.props;
 
-    const deleteFunc = loadAuth(userId, this.delete);
-    const renameFunc = loadAuth(userId, this.rename);
-    const starFunc = loadAuth(userId, this.star);
-    const findPermissionFunc = loadAuth(userId, this.findPermission);
-    const findFilePermissionFunc = loadAuth(userId, this.findFilePermission);
-    const deletePermissionFunc = loadAuth(userId, this.deletePermission);
+    const deleteFunc = loadAuth(email, this.delete);
+    const renameFunc = loadAuth(email, this.rename);
+    const starFunc = loadAuth(email, this.star);
+    const findPermissionFunc = loadAuth(email, this.findPermission);
+    const findFilePermissionFunc = loadAuth(email, this.findFilePermission);
+    const deletePermissionFunc = loadAuth(email, this.deletePermission);
     return (
       <span className="file-path">
         <span>
@@ -151,6 +151,7 @@ deletePermission = (permId) => {
 
 Filepath.propTypes = {
   folder: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
+  email: PropTypes.string.isRequired,
   oId: PropTypes.number.isRequired,
   pIndex: PropTypes.number.isRequired,
   updatePath: PropTypes.func.isRequired,

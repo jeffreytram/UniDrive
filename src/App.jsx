@@ -120,8 +120,8 @@ class App extends Component {
   }
 
   /**
-   * Handles user sign in by storing all the information gained from the
-   * authrizeUser() function above
+   * Handles user sign in by adding the user and storing all the information gained from the
+   * authorizeUser() function above
    * @param {Object} accessToken the accessToken granted to the user by gapi.client.authorize()
    * @param {Object} idToken the accessToken granted to the user by gapi.client.authorize()
     * @param {Object} code the code granted to the user by gapi.client.authorize()
@@ -332,8 +332,6 @@ class App extends Component {
       updatedList[index].topLevelFolders = [];
       updatedList[index].looseFiles = [];
       // Put folders in own data struct
-      for (let i = 0; i < results.length; i++) {
-      }
       let i = -1;
       while (++i < results.length && results[i].mimeType === 'application/vnd.google-apps.folder') {
         updatedList[index].folders[results[i].id] = {
@@ -647,27 +645,6 @@ class App extends Component {
     });
   }
 
-  loadAuthorize = (id, func) => {
-    const email = this.getEmailFromUserId(id);
-    return (...args) => {
-      window.gapi.client.load('drive', 'v3').then(() => {
-        window.gapi.auth2.authorize({
-          apiKey: API_KEY,
-          clientId: CLIENT_ID,
-          scope: SCOPE,
-          prompt: 'none',
-          login_hint: email,
-          discoveryDocs: [discoveryUrl],
-        }, (response) => {
-          if (response.error) {
-            console.log(response.error);
-          }
-          func.call(this, ...args);
-        });
-      });
-    };
-  }
-
   starredFilter = () => {
     this.setState({ isLoading: true, starred: true });
     const { userList } = this.state;
@@ -854,7 +831,6 @@ class App extends Component {
                     sortFunc={this.changeSortedBy}
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
-                    loadAuth={this.loadAuthorize}
                     openFolder={this.openFolder}
                     closePath={this.closePath}
                     updatePath={this.updatePath}

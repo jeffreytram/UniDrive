@@ -5,7 +5,7 @@ import '../css/FileList.css';
 
 export default function OpenFolderList(props) {
   const {
-    closePath, loadAuth, moveExternal, moveWithin, openFolder, openFolderList,
+    closePath, email, moveExternal, moveWithin, openFolder, openFolderList,
     refreshFunc, shareFile, updatePath, userId,
   } = props;
 
@@ -17,7 +17,7 @@ export default function OpenFolderList(props) {
           children={pathObj.displayed}
           closePath={closePath}
           displayed
-          loadAuth={loadAuth}
+          email={email}
           moveExternal={moveExternal}
           moveWithin={moveWithin}
           oId={i}
@@ -35,7 +35,7 @@ export default function OpenFolderList(props) {
 
 OpenFolderList.propTypes = {
   closePath: PropTypes.func.isRequired,
-  loadAuth: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
   moveExternal: PropTypes.func.isRequired,
   moveWithin: PropTypes.func.isRequired,
   openFolder: PropTypes.func.isRequired,
