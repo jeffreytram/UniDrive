@@ -64,7 +64,7 @@ class App extends Component {
   startUp = () => {
     const cookie = cookies.getAll();
     Object.values(cookie).forEach((email) => {
-      this.reAuthorizeUser(email);
+      this.authorizeUser(email);
     });
   }
 
@@ -72,38 +72,17 @@ class App extends Component {
    * Signs a new user into Google, and then begins the process of storing all of their information
    * Returns an idToken, an AccessToken, and a Code, all unique to the user in a Response object
    */
-  authorizeUser = () => {
+  authorizeUser = (email) => {
+    const prompt = (email) ? 'none' : 'select_account';
+    const loginHint = (email) || 'none';
     window.gapi.load('client:auth', () => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
         scope: SCOPE,
         responseType: 'id_token permission code',
-        prompt: 'select_account',
-        discoveryDocs: [discoveryUrl, 'https:googleapis.com/discovery/v1/apis/profile/v1/rest'],
-      }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-          return;
-        }
-        const accessToken = response.access_token;
-        const idToken = response.id_token;
-        const { code } = response;
-        this.signInFunction(accessToken, idToken, code);
-      });
-    });
-  }
-
-  reAuthorizeUser = (email) => {
-    window.gapi.load('client:auth', () => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        responseType: 'id_token permission code',
-        prompt: 'none',
-        login_hint: email,
+        prompt,
+        login_hint: loginHint,
         discoveryDocs: [discoveryUrl, 'https:googleapis.com/discovery/v1/apis/profile/v1/rest'],
       }, (response) => {
         if (response.error) {
