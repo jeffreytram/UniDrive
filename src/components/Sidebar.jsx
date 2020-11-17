@@ -8,7 +8,8 @@ import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import '../css/Sidebar.css';
 
 export default function Sidebar({
-  authorizeUser, filterFilesInAllAccounts, parseIDToken, userList, removeAllAccounts
+  authorizeUser, filterFilesInAllAccounts, parseIDToken, userList, removeAllAccounts,
+  starFilter,
 }) {
   const [expand, setExpand] = useState(true);
   const body = document.getElementsByTagName('body')[0];
@@ -47,7 +48,8 @@ export default function Sidebar({
     } else if (filter === 'shared') {
       query += ' and not "me" in owners';
     } else if (filter === 'starred') {
-      query += ' and starred=true';
+      starFilter();
+      return;
     }
     filterFilesInAllAccounts(query);
   };
