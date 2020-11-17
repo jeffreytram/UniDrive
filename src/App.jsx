@@ -38,6 +38,7 @@ class App extends Component {
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
       isLoading: false,
+      starred: false,
     };
   }
 
@@ -248,6 +249,7 @@ class App extends Component {
   }
 
   filterFilesInAllAccounts = (filter) => {
+    this.setState({ starred: false, })
     this.setFilterQuery(filter);
     const { userList } = this.state;
     userList.forEach((user, i) => {
@@ -302,7 +304,7 @@ class App extends Component {
         return;
       }
       // Initialize so there are not double
-      updatedList[index].folders = [];
+      updatedList[index].folders = {};
       updatedList[index].topLevelFolders = [];
       updatedList[index].looseFiles = [];
       // Put folders in own data struct
@@ -344,26 +346,32 @@ class App extends Component {
         }
       }
       /* Update file paths if a folder that was there is not anymore */
-      const oldOpenFolders = updatedList[index].openFolders;
-      for (let oId = 0; oId < updatedList[index].openFolders.length; oId++) {
+      const newOpenFolders = updatedList[index].openFolders;
+      for (let oId = 0; oId < newOpenFolders.length; oId++) {
         let pathIndex = 0;
-        while (updatedList[index].openFolders[oId] && updatedList[index].openFolders[oId].path && pathIndex < updatedList[index].openFolders[oId].path.length) {
-          const oldPath = updatedList[index].openFolders[oId].path;
-          if (!this.state.userList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
+        while (newOpenFolders[oId] && newOpenFolders[oId].path && pathIndex < newOpenFolders[oId].path.length) {
+          const oldPath = newOpenFolders[oId].path;
+          if (!updatedList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
             if (pathIndex === 0) {
-              updatedList[index].openFolders.splice(oId, 1);
+              newOpenFolders.splice(oId, 1);
+              oId--;
             } else {
               // Cut off the rest of the folders
-              updatedList[index].openFolders[oId].path.splice(pathIndex, (oldPath.length - 1) - pathIndex);
-              updatedList[index].openFolders[oId].displayed = this.state.userList[index].folders[oldPath[pathIndex - 1].id].children;
+              newOpenFolders[oId].path.splice(pathIndex, (oldPath.length - pathIndex));
+              // newOpenFolders[oId].displayed = updatedList[index].folders[oldPath[pathIndex - 1].id].children;
             }
-          } else {
-            this.openFolder(updatedList[index].id, oId, oldOpenFolders[oId].path[oldOpenFolders[oId].path.length - 1], true);
           }
           pathIndex++;
         }
+        updatedList[index].openFolders = newOpenFolders;
+        if (newOpenFolders[oId] && newOpenFolders[oId].path) {
+          this.openFolder(updatedList[index].id, oId, newOpenFolders[oId].path[newOpenFolders[oId].path.length - 1], true);
+        }
       }
       this.setState({ userList: updatedList, isLoading: false });
+      if (this.state.starred === true) {
+        this.starredFilter();
+      }
     }, email, user);
   }
 
@@ -631,6 +639,44 @@ class App extends Component {
     };
   }
 
+  starredFilter = () => {
+    this.setState({ isLoading: true, starred: true });
+    const { userList } = this.state;
+    const updatedList = userList;
+    for (let i = 0; i < updatedList.length; i++) {
+      const starred = [];
+      for (const prop in updatedList[i].folders) {
+        if (updatedList[i].folders[prop].folder.starred) {
+          starred.push(updatedList[i].folders[prop]);
+        }
+      }
+      updatedList[i].topLevelFolders = starred;
+      starred.forEach((f, k) => {
+        updatedList[i].topLevelFolders[k] = f;
+      });
+      updatedList[i].looseFiles = updatedList[i].looseFiles.filter((file) => file.starred);
+      const newOpenFolders = updatedList[i].openFolders;
+      for (let oId = 0; oId < updatedList[i].openFolders.length; oId++) {
+        let del = true;
+        if (newOpenFolders[oId] && newOpenFolders[oId].path && newOpenFolders[oId].path[0]) {
+          for (let k = 0; k < updatedList[i].topLevelFolders.length; k++) {
+            if (updatedList[i].topLevelFolders[k].id === newOpenFolders[oId].path[0].id) {
+              del = false;
+              break;
+            }
+          }
+          if (del) {
+            newOpenFolders.splice(oId, 1);
+          }
+        }
+      }
+      updatedList[i].openFolders = newOpenFolders;
+    }
+    this.setState({
+      userList: updatedList, isLoading: false
+    });
+  }
+
   /**
    * Refreshes all the files being displayed within an account
    * @param {Number} id the unique id granted to the user when placed within the userList
@@ -765,6 +811,7 @@ class App extends Component {
               filterFilesInAllAccounts={this.filterFilesInAllAccounts}
               parseIDToken={this.parseIDToken}
               userList={userList}
+              starFilter={this.starredFilter}
             >
               <div className="main-container">
                 <div className="main-content">
