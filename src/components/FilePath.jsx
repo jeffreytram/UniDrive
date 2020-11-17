@@ -9,7 +9,7 @@ import {
   ContextMenu, MenuItem, ContextMenuTrigger,
 } from 'react-contextmenu';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
-import { loadAuth } from '../logic/auth/auth';
+import { loadAuthParam } from '../logic/auth';
 import '../css/FilePath.css';
 
 class Filepath extends Component {
@@ -35,39 +35,39 @@ class Filepath extends Component {
     });
   }
 
-findPermission = (findFilePermi, deletePermi) => {
-  window.gapi.client.drive.about.get({
-    fields: '*',
-  }).then((response) => {
-    console.log(response);
-    const permId = response.result.user.permissionId;
-    findFilePermi(permId, deletePermi);
-  });
-}
+  findPermission = (findFilePermi, deletePermi) => {
+    window.gapi.client.drive.about.get({
+      fields: '*',
+    }).then((response) => {
+      console.log(response);
+      const permId = response.result.user.permissionId;
+      findFilePermi(permId, deletePermi);
+    });
+  }
 
-findFilePermission = (permId, deletePermi) => {
-  console.log(permId);
-  window.gapi.client.drive.permissions.get({
-    fileId: this.props.folder.id,
-    permissionId: permId,
-  }).then((response) => {
-    console.log(response);
-    deletePermi(response.result.id);
-  }, (error) => {
-    alert('Error: There is a permission error with this file. Try removing through Google Drive directly');
-  });
-}
+  findFilePermission = (permId, deletePermi) => {
+    console.log(permId);
+    window.gapi.client.drive.permissions.get({
+      fileId: this.props.folder.id,
+      permissionId: permId,
+    }).then((response) => {
+      console.log(response);
+      deletePermi(response.result.id);
+    }, (error) => {
+      alert('Error: There is a permission error with this file. Try removing through Google Drive directly');
+    });
+  }
 
-deletePermission = (permId) => {
-  const refreshFunction = this.props.refreshFunc;
-  const { userId } = this.props;
-  window.gapi.client.drive.permissions.delete({
-    fileId: this.props.folder.id,
-    permissionId: permId,
-  }).then((response) => {
-    refreshFunction(userId);
-  });
-}
+  deletePermission = (permId) => {
+    const refreshFunction = this.props.refreshFunc;
+    const { userId } = this.props;
+    window.gapi.client.drive.permissions.delete({
+      fileId: this.props.folder.id,
+      permissionId: permId,
+    }).then((response) => {
+      refreshFunction(userId);
+    });
+  }
 
   rename = () => {
     const fileId = this.props.folder.id;
@@ -101,12 +101,12 @@ deletePermission = (permId) => {
       email, folder, oId, pIndex, updatePath, userId, shareFile, moveWithin,
     } = this.props;
 
-    const deleteFunc = loadAuth(email, this.delete);
-    const renameFunc = loadAuth(email, this.rename);
-    const starFunc = loadAuth(email, this.star);
-    const findPermissionFunc = loadAuth(email, this.findPermission);
-    const findFilePermissionFunc = loadAuth(email, this.findFilePermission);
-    const deletePermissionFunc = loadAuth(email, this.deletePermission);
+    const deleteFunc = loadAuthParam(email, this.delete);
+    const renameFunc = loadAuthParam(email, this.rename);
+    const starFunc = loadAuthParam(email, this.star);
+    const findPermissionFunc = loadAuthParam(email, this.findPermission);
+    const findFilePermissionFunc = loadAuthParam(email, this.findFilePermission);
+    const deletePermissionFunc = loadAuthParam(email, this.deletePermission);
     return (
       <span className="file-path">
         <span>

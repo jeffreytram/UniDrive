@@ -11,7 +11,7 @@ import Filters from './Filters';
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
-import { loadAuth, parseIDToken } from '../logic/auth/auth';
+import { loadAuthParam, parseIDToken } from '../logic/auth';
 import '../css/User.css';
 
 class User extends Component {
@@ -142,7 +142,7 @@ class User extends Component {
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
-    const createFunc = loadAuth(email, this.create);
+    const createFunc = loadAuthParam(email, this.create);
     return (
       <ContextMenuTrigger className="user" id={userId.toString()}>
         <button
@@ -238,7 +238,7 @@ class User extends Component {
             email={email}
             userId={userId}
             topLevelFolderList={topLevelFolderList}
-            shareFile={loadAuth(email, this.shareFile)}
+            shareFile={loadAuthParam(email, this.shareFile)}
             moveWithin={moveWithin}
             moveExternal={moveExternal}
             refreshFunc={refreshFunc}
@@ -248,7 +248,7 @@ class User extends Component {
             email={email}
             userId={userId}
             openFolderList={openFolderList}
-            shareFile={loadAuth(email, this.shareFile)}
+            shareFile={loadAuthParam(email, this.shareFile)}
             moveWithin={moveWithin}
             moveExternal={moveExternal}
             refreshFunc={refreshFunc}
@@ -261,7 +261,7 @@ class User extends Component {
               email={email}
               userId={userId}
               looseFileList={looseFileList}
-              shareFile={loadAuth(email, this.shareFile)}
+              shareFile={loadAuthParam(email, this.shareFile)}
               moveWithin={moveWithin}
               moveExternal={moveExternal}
               refreshFunc={refreshFunc}

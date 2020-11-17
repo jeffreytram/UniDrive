@@ -8,7 +8,7 @@ import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
   ContextMenu, MenuItem, ContextMenuTrigger,
 } from 'react-contextmenu';
-import { loadAuth } from '../logic/auth/auth';
+import { loadAuthParam } from '../logic/auth';
 import '../css/File.css';
 
 class File extends Component {
@@ -115,13 +115,13 @@ deletePermission = (permId) => {
       id, webViewLink, iconLink, name, mimeType, starred,
     } = data;
 
-    const copyFunc = loadAuth(email, this.copy);
-    const deleteFunc = loadAuth(email, this.delete);
-    const renameFunc = loadAuth(email, this.rename);
-    const starFunc = loadAuth(email, this.star);
-    const findPermissionFunc = loadAuth(email, this.findPermission);
-    const findFilePermissionFunc = loadAuth(email, this.findFilePermission);
-    const deletePermissionFunc = loadAuth(email, this.deletePermission);
+    const copyFunc = loadAuthParam(email, this.copy);
+    const deleteFunc = loadAuthParam(email, this.delete);
+    const renameFunc = loadAuthParam(email, this.rename);
+    const starFunc = loadAuthParam(email, this.star);
+    const findPermissionFunc = loadAuthParam(email, this.findPermission);
+    const findFilePermissionFunc = loadAuthParam(email, this.findFilePermission);
+    const deletePermissionFunc = loadAuthParam(email, this.deletePermission);
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file

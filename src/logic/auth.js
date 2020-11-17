@@ -1,4 +1,4 @@
-import { config } from '../../config';
+import { config } from '../config';
 
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
 const discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
@@ -21,7 +21,7 @@ export const parseIDToken = (token) => {
  * Signs a new user into Google, and then begins the process of storing all of their information
  * Returns an idToken, an AccessToken, and a Code, all unique to the user in a Response object
  */
-export const authorizeUserTest = (email, func) => {
+export const authorizeUserHelper = (email, func) => {
   const prompt = (email) ? 'none' : 'select_account';
   const loginHint = (email) || 'none';
   window.gapi.load('client:auth', () => {
@@ -47,7 +47,25 @@ export const authorizeUserTest = (email, func) => {
   });
 };
 
-export const loadAuth = (email, func) => (...args) => {
+export const loadAuth = (email, func) => {
+  window.gapi.client.load('drive', 'v3').then(() => {
+    window.gapi.auth2.authorize({
+      apiKey: API_KEY,
+      clientId: CLIENT_ID,
+      scope: SCOPE,
+      prompt: 'none',
+      login_hint: email,
+      discoveryDocs: [discoveryUrl],
+    }, (response) => {
+      if (response.error) {
+        console.log(response.error);
+      }
+      func();
+    });
+  });
+};
+
+export const loadAuthParam = (email, func) => (...args) => {
   window.gapi.client.load('drive', 'v3').then(() => {
     window.gapi.auth2.authorize({
       apiKey: API_KEY,
@@ -64,5 +82,3 @@ export const loadAuth = (email, func) => (...args) => {
     });
   });
 };
-
-export const name = 'hi';

@@ -5,7 +5,7 @@ import {
   faCaretSquareLeft, faCaretSquareRight, faUserPlus, faShareSquare, faStar, faHome, faUserSlash
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
-import { parseIDToken } from '../logic/auth/auth';
+import { parseIDToken } from '../logic/auth';
 import '../css/Sidebar.css';
 
 export default function Sidebar({
