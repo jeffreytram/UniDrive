@@ -7,6 +7,7 @@ import Header from './components/Header';
 import Welcome from './components/Welcome';
 import Loading from './components/Loading';
 import { config } from './config';
+import { authorizeUserTest, parseIDToken } from './logic/auth/auth';
 import './App.css';
 
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
@@ -68,34 +69,8 @@ class App extends Component {
     });
   }
 
-  /**
-   * Signs a new user into Google, and then begins the process of storing all of their information
-   * Returns an idToken, an AccessToken, and a Code, all unique to the user in a Response object
-   */
   authorizeUser = (email) => {
-    const prompt = (email) ? 'none' : 'select_account';
-    const loginHint = (email) || 'none';
-    window.gapi.load('client:auth', () => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        responseType: 'id_token permission code',
-        prompt,
-        login_hint: loginHint,
-        discoveryDocs: [discoveryUrl, 'https:googleapis.com/discovery/v1/apis/profile/v1/rest'],
-      }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-          return;
-        }
-        const accessToken = response.access_token;
-        const idToken = response.id_token;
-        const { code } = response;
-        this.signInFunction(accessToken, idToken, code);
-      });
-    });
+    authorizeUserTest(email, this.signInFunction);
   }
 
   /**
@@ -106,7 +81,7 @@ class App extends Component {
     * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   signInFunction = (accessToken, idToken, code) => {
-    const userInfo = this.parseIDToken(idToken);
+    const userInfo = parseIDToken(idToken);
     const { email } = userInfo;
     const isDup = this.addUser(accessToken, idToken, code);
     if (isDup) {
@@ -134,7 +109,7 @@ class App extends Component {
         });
         const index = this.getAccountIndex(id);
         const { userList } = this.state;
-        const userInfo = this.parseIDToken(userList[index].idToken);
+        const userInfo = parseIDToken(userList[index].idToken);
         const { email } = userInfo;
         cookies.remove(email, cookieOptions);
       } else if (window.confirm('Are you sure you want to remove this account?')) {
@@ -146,7 +121,7 @@ class App extends Component {
         });
         const index = this.getAccountIndex(id);
         const { userList } = this.state;
-        const userInfo = this.parseIDToken(userList[index].idToken);
+        const userInfo = parseIDToken(userList[index].idToken);
         const { email } = userInfo;
         cookies.remove(email, cookieOptions);
       }
@@ -172,7 +147,7 @@ class App extends Component {
    * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   addUser = (accessToken, idToken, code) => {
-    const { email } = this.parseIDToken(idToken);
+    const { email } = parseIDToken(idToken);
     const { userList } = this.state;
     const isDup = this.isDuplicateUser(email, userList);
     if (!isDup) {
@@ -203,7 +178,7 @@ class App extends Component {
 
   isDuplicateUser = (email, userList) => {
     for (let i = 0; i < userList.length; i++) {
-      if (email === this.parseIDToken(userList[i].idToken).email) {
+      if (email === parseIDToken(userList[i].idToken).email) {
         return true;
       }
     }
@@ -256,7 +231,7 @@ class App extends Component {
     this.setFilterQuery(filter);
     const { userList } = this.state;
     userList.forEach((user, i) => {
-      const { email } = this.parseIDToken(userList[i].idToken);
+      const { email } = parseIDToken(userList[i].idToken);
       this.updateFiles(i, email);
     });
   }
@@ -520,21 +495,9 @@ class App extends Component {
   changeSortedBy = (userId, newSort) => {
     const index = this.getAccountIndex(userId);
     const { userList } = this.state;
-    const { email } = this.parseIDToken(userList[index].idToken);
+    const { email } = parseIDToken(userList[index].idToken);
     userList[index].sortedBy = newSort;
     this.updateFiles(index, email);
-  }
-
-  /**
-   * Decrypts the JSON string idToken in order to access the encrytped user information held within
-   * @param {Object} token the idToken of the user
-   */
-  parseIDToken = (token) => {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      return null;
-    }
   }
 
   /**
@@ -546,7 +509,7 @@ class App extends Component {
   moveWithin = (userId, file, newParentId) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
-    const { email } = this.parseIDToken(userToken);
+    const { email } = parseIDToken(userToken);
 
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
@@ -590,7 +553,7 @@ class App extends Component {
   getEmailFromUserId(userId) {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
-    return this.parseIDToken(userToken).email;
+    return parseIDToken(userToken).email;
   }
 
   moveExternal = (userId, fileId, newUserId) => {
@@ -672,7 +635,7 @@ class App extends Component {
   refreshFunction = (id) => {
     const index = this.getAccountIndex(id);
     const { userList } = this.state;
-    const userInfo = this.parseIDToken(userList[index].idToken);
+    const userInfo = parseIDToken(userList[index].idToken);
     const { email } = userInfo;
     this.updateFiles(index, email);
   }
@@ -693,7 +656,7 @@ class App extends Component {
   refreshAllFunction = () => {
     const { userList } = this.state;
     for (let i = 0; i < userList.length; i++) {
-      const userInfo = this.parseIDToken(userList[i].idToken);
+      const userInfo = parseIDToken(userList[i].idToken);
       const { email } = userInfo;
       this.updateFiles(i, email);
     }
@@ -718,7 +681,7 @@ class App extends Component {
    * @param {*} fileUpl File to be uploaded
    */
   fileUpload = (idToken, file) => {
-    const { email } = this.parseIDToken(idToken);
+    const { email } = parseIDToken(idToken);
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -794,7 +757,6 @@ class App extends Component {
             <Layout
               authorizeUser={this.authorizeUser}
               filterFilesInAllAccounts={this.filterFilesInAllAccounts}
-              parseIDToken={this.parseIDToken}
               removeAllAccounts={this.removeAllAccounts}
               starFilter={this.starredFilter}
               userList={userList}
@@ -803,7 +765,6 @@ class App extends Component {
                 <div className="main-content">
                   <UserList
                     userList={userList}
-                    parseIDToken={this.parseIDToken}
                     removeFunc={this.signOutFunction}
                     refreshFunc={this.refreshFunction}
                     fileUpload={this.fileUpload}

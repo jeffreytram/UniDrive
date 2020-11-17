@@ -11,7 +11,7 @@ import Filters from './Filters';
 import LooseFileList from './LooseFileList';
 import TopLevelFolderList from './TopLevelFolderList';
 import OpenFolderList from './OpenFolderList';
-import { loadAuth } from '../logic/auth/auth';
+import { loadAuth, parseIDToken } from '../logic/auth/auth';
 import '../css/User.css';
 
 class User extends Component {
@@ -137,7 +137,7 @@ class User extends Component {
 
     const {
       closePath, filterFunc, idToken, looseFileList, moveExternal,
-      moveWithin, openFolder, openFolderList, parseIDToken, refreshFunc, removeFunc, sortFunc,
+      moveWithin, openFolder, openFolderList, refreshFunc, removeFunc, sortFunc,
       topLevelFolderList, updatePath, userId,
     } = this.props;
 
@@ -287,7 +287,6 @@ User.propTypes = {
   moveWithin: PropTypes.func.isRequired,
   openFolder: PropTypes.func.isRequired,
   openFolderList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  parseIDToken: PropTypes.func.isRequired,
   refreshFunc: PropTypes.func.isRequired,
   removeFunc: PropTypes.func.isRequired,
   sortFunc: PropTypes.func.isRequired,
