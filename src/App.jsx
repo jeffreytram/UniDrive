@@ -65,7 +65,9 @@ class App extends Component {
   startUp = () => {
     const cookie = cookies.getAll();
     Object.values(cookie).forEach((email) => {
-      this.authorizeUser(email);
+      if (email !== 'light' && email !== 'dark') {
+        this.authorizeUser(email);
+      }
     });
   }
 
@@ -164,7 +166,7 @@ class App extends Component {
           looseFiles: [],
           openFolders: [],
           ref: React.createRef(),
-          sortedBy: 'folder, createdTime desc',
+          sortedBy: 'folder, viewedByMeTime desc',
           filteredBy: '',
         }],
       }));
@@ -691,7 +693,7 @@ class App extends Component {
   render() {
     const { userList, uploadRequests, isLoading } = this.state;
     const cookie = cookies.getAll();
-    const addedAccount = !(Object.keys(cookie).length === 0 && cookie.constructor === Object);
+    const addedAccount = !((Object.keys(cookie).length === 0 || (Object.keys(cookie).length === 1 && Object.keys(cookie).includes('theme'))) && cookie.constructor === Object);
     return (
       <div>
         <Header
