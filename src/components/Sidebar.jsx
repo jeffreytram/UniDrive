@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCaretSquareLeft, faCaretSquareRight, faUserPlus, faShareSquare, faStar, faHome,
+  faCaretSquareLeft, faCaretSquareRight, faUserPlus, faShareSquare, faStar, faHome, faUserSlash
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import '../css/Sidebar.css';
 
 export default function Sidebar({
-  authorizeUser, filterFilesInAllAccounts, parseIDToken, userList,
-  starFilter
+  authorizeUser, filterFilesInAllAccounts, parseIDToken, userList, removeAllAccounts,
+  starFilter,
 }) {
   const [expand, setExpand] = useState(true);
   const body = document.getElementsByTagName('body')[0];
@@ -60,6 +60,10 @@ export default function Sidebar({
           <FontAwesomeIcon icon={faUserPlus} size="lg" title="Add an Account" />
           {expand ? ' Add Account' : ''}
         </button>
+        <button type="button" className="sidebar-remove-button" id="remove-btn" onClick={() => removeAllAccounts()}>
+          <FontAwesomeIcon icon={faUserSlash} size="lg" title="Remove All Accounts" />
+          {expand ? ' Remove All Accounts' : ''}
+        </button>
         <div className="sidebar-item collapsible selected" onClick={(event) => handleClick(event.target, '')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faHome} size="lg" title="All Files" />
           {expand ? ' All Files' : ''}
@@ -104,4 +108,5 @@ Sidebar.propTypes = {
   filterFilesInAllAccounts: PropTypes.func.isRequired,
   parseIDToken: PropTypes.func.isRequired,
   userList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  removeAllAccounts: PropTypes.func.isRequired,
 };

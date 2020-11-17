@@ -19,7 +19,7 @@ export default function TopLevelFolderList(props) {
             loadAuth={loadAuth}
             moveExternal={moveExternal}
             moveWithin={moveWithin}
-            oId={null}
+            oId={-1}
             openFolder={openFolder}
             refreshFunc={refreshFunc}
             shareFile={shareFile}

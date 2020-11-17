@@ -40,6 +40,11 @@ class OpenFolder extends Component {
               pIndex={i}
               folder={folder}
               updatePath={updatePath}
+              openFolder={openFolder}
+              refreshFunc={refreshFunc}
+              shareFile={shareFile}
+              moveWithin={moveWithin}
+              loadAuth={loadAuth}
             />
           ))}
         </div>
