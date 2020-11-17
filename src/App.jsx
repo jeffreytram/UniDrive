@@ -601,7 +601,7 @@ class App extends Component {
             if (response.error) {
               console.log(response.error);
             }
-            console.log(response);
+            this.refreshFunction(userId);
           });
         }
       });
