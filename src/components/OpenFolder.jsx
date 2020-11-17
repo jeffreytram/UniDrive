@@ -14,7 +14,7 @@ class OpenFolder extends Component {
 
   render() {
     const {
-      children, closePath, displayed, loadAuth, moveExternal, moveWithin,
+      children, closePath, displayed, email, moveExternal, moveWithin,
       oId, openFolder, path, refreshFunc, shareFile, updatePath, userId,
     } = this.props;
 
@@ -35,6 +35,7 @@ class OpenFolder extends Component {
           {path.map((folder, i) => (
             <FilePath
               key={folder.id}
+              email={email}
               userId={userId}
               oId={oId}
               pIndex={i}
@@ -44,7 +45,6 @@ class OpenFolder extends Component {
               refreshFunc={refreshFunc}
               shareFile={shareFile}
               moveWithin={moveWithin}
-              loadAuth={loadAuth}
             />
           ))}
         </div>
@@ -55,7 +55,7 @@ class OpenFolder extends Component {
                 key={file.id}
                 data={file}
                 displayed={displayed}
-                loadAuth={loadAuth}
+                email={email}
                 moveExternal={moveExternal}
                 moveWithin={moveWithin}
                 oId={oId}
@@ -73,7 +73,7 @@ class OpenFolder extends Component {
               key={file.id}
               data={file}
               displayed={displayed}
-              loadAuth={loadAuth}
+              email={email}
               moveExternal={moveExternal}
               moveWithin={moveWithin}
               oId={oId}
@@ -94,7 +94,7 @@ OpenFolder.propTypes = {
   children: PropTypes.arrayOf(PropTypes.object).isRequired,
   closePath: PropTypes.func.isRequired,
   displayed: PropTypes.bool.isRequired,
-  loadAuth: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
   moveExternal: PropTypes.func.isRequired,
   moveWithin: PropTypes.func.isRequired,
   oId: PropTypes.number.isRequired,

@@ -5,10 +5,11 @@ import {
   faCaretSquareLeft, faCaretSquareRight, faUserPlus, faShareSquare, faStar, faHome, faUserSlash
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
+import { parseIDToken } from '../logic/auth';
 import '../css/Sidebar.css';
 
 export default function Sidebar({
-  authorizeUser, filterFilesInAllAccounts, parseIDToken, userList, removeAllAccounts,
+  authorizeUser, filterFilesInAllAccounts, userList, removeAllAccounts,
   starFilter,
 }) {
   const [expand, setExpand] = useState(true);
@@ -106,7 +107,6 @@ export default function Sidebar({
 Sidebar.propTypes = {
   authorizeUser: PropTypes.func.isRequired,
   filterFilesInAllAccounts: PropTypes.func.isRequired,
-  parseIDToken: PropTypes.func.isRequired,
   userList: PropTypes.arrayOf(PropTypes.object).isRequired,
   removeAllAccounts: PropTypes.func.isRequired,
 };

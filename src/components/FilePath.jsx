@@ -5,12 +5,12 @@ import {
   faChevronRight,
   faArrowRight, faPencilAlt, faShare, faTrash, faStar,
 } from '@fortawesome/free-solid-svg-icons';
-import '../css/FilePath.css';
 import {
   ContextMenu, MenuItem, ContextMenuTrigger,
 } from 'react-contextmenu';
-
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
+import { loadAuthParam } from '../logic/auth';
+import '../css/FilePath.css';
 
 class Filepath extends Component {
   constructor() {
@@ -35,39 +35,39 @@ class Filepath extends Component {
     });
   }
 
-findPermission = (findFilePermi, deletePermi) => {
-  window.gapi.client.drive.about.get({
-    fields: '*',
-  }).then((response) => {
-    console.log(response);
-    const permId = response.result.user.permissionId;
-    findFilePermi(permId, deletePermi);
-  });
-}
+  findPermission = (findFilePermi, deletePermi) => {
+    window.gapi.client.drive.about.get({
+      fields: '*',
+    }).then((response) => {
+      console.log(response);
+      const permId = response.result.user.permissionId;
+      findFilePermi(permId, deletePermi);
+    });
+  }
 
-findFilePermission = (permId, deletePermi) => {
-  console.log(permId);
-  window.gapi.client.drive.permissions.get({
-    fileId: this.props.folder.id,
-    permissionId: permId,
-  }).then((response) => {
-    console.log(response);
-    deletePermi(response.result.id);
-  }, (error) => {
-    alert('Error: There is a permission error with this file. Try removing through Google Drive directly');
-  });
-}
+  findFilePermission = (permId, deletePermi) => {
+    console.log(permId);
+    window.gapi.client.drive.permissions.get({
+      fileId: this.props.folder.id,
+      permissionId: permId,
+    }).then((response) => {
+      console.log(response);
+      deletePermi(response.result.id);
+    }, (error) => {
+      alert('Error: There is a permission error with this file. Try removing through Google Drive directly');
+    });
+  }
 
-deletePermission = (permId) => {
-  const refreshFunction = this.props.refreshFunc;
-  const { userId } = this.props;
-  window.gapi.client.drive.permissions.delete({
-    fileId: this.props.folder.id,
-    permissionId: permId,
-  }).then((response) => {
-    refreshFunction(userId);
-  });
-}
+  deletePermission = (permId) => {
+    const refreshFunction = this.props.refreshFunc;
+    const { userId } = this.props;
+    window.gapi.client.drive.permissions.delete({
+      fileId: this.props.folder.id,
+      permissionId: permId,
+    }).then((response) => {
+      refreshFunction(userId);
+    });
+  }
 
   rename = () => {
     const fileId = this.props.folder.id;
@@ -98,15 +98,15 @@ deletePermission = (permId) => {
 
   render() {
     const {
-      folder, oId, pIndex, updatePath, userId, shareFile, moveWithin, loadAuth,
+      email, folder, oId, pIndex, updatePath, userId, shareFile, moveWithin,
     } = this.props;
 
-    const deleteFunc = loadAuth(userId, this.delete);
-    const renameFunc = loadAuth(userId, this.rename);
-    const starFunc = loadAuth(userId, this.star);
-    const findPermissionFunc = loadAuth(userId, this.findPermission);
-    const findFilePermissionFunc = loadAuth(userId, this.findFilePermission);
-    const deletePermissionFunc = loadAuth(userId, this.deletePermission);
+    const deleteFunc = loadAuthParam(email, this.delete);
+    const renameFunc = loadAuthParam(email, this.rename);
+    const starFunc = loadAuthParam(email, this.star);
+    const findPermissionFunc = loadAuthParam(email, this.findPermission);
+    const findFilePermissionFunc = loadAuthParam(email, this.findFilePermission);
+    const deletePermissionFunc = loadAuthParam(email, this.deletePermission);
     return (
       <span className="file-path">
         <span>
@@ -151,6 +151,7 @@ deletePermission = (permId) => {
 
 Filepath.propTypes = {
   folder: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
+  email: PropTypes.string.isRequired,
   oId: PropTypes.number.isRequired,
   pIndex: PropTypes.number.isRequired,
   updatePath: PropTypes.func.isRequired,
