@@ -13,7 +13,6 @@ const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https:
 const discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const API_KEY = config.web.api_key;
 const CLIENT_ID = config.web.client_id;
-const ready = true;
 let userId = 1;
 const cookies = new Cookies();
 // cookies expire in 20 years
@@ -66,7 +65,6 @@ class App extends Component {
     const cookie = cookies.getAll();
     Object.values(cookie).forEach((email) => {
       this.reAuthorizeUser(email);
-
     });
   }
 
@@ -146,7 +144,7 @@ class App extends Component {
    * @param {number} id attribute of the specific User to be removed in the UserList array
    */
   signOutFunction = (id, removeAll) => {
-    const {isLoading } = this.state;
+    const { isLoading } = this.state;
     if (!isLoading) {
       if (removeAll) {
         this.setState((prevState) => {
@@ -160,8 +158,7 @@ class App extends Component {
         const userInfo = this.parseIDToken(userList[index].idToken);
         const { email } = userInfo;
         cookies.remove(email, cookieOptions);
-    } else {
-      if (window.confirm('Are you sure you want to remove this account?')) {
+      } else if (window.confirm('Are you sure you want to remove this account?')) {
         this.setState((prevState) => {
           const newUserList = prevState.userList.filter((user) => user.id !== id);
           return {
@@ -176,18 +173,17 @@ class App extends Component {
       }
     }
   }
-  }
 
   removeAllAccounts = () => {
-    const {isLoading } = this.state;
+    const { isLoading } = this.state;
     if (!isLoading) {
       const { userList } = this.state;
-      if (confirm("Are you sure you want to remove all accounts?")) {
+      if (window.confirm('Are you sure you want to remove all accounts?')) {
         for (let i = 0; i < userList.length; i++) {
-          this.signOutFunction(userList[i].id, true)
+          this.signOutFunction(userList[i].id, true);
+        }
       }
     }
-  }
   }
 
   /**
@@ -277,7 +273,7 @@ class App extends Component {
   }
 
   filterFilesInAllAccounts = (filter) => {
-    this.setState({ starred: false, })
+    this.setState({ starred: false });
     this.setFilterQuery(filter);
     const { userList } = this.state;
     userList.forEach((user, i) => {
@@ -433,7 +429,7 @@ class App extends Component {
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
 
       updatedList[index].openFolders = newOpenFolders;
-      
+
       this.setState({ userList: updatedList });
     }
   }
@@ -589,7 +585,7 @@ class App extends Component {
           console.log('authorization error');
         }
         if (file.parents === undefined || (file.parents.length === 1 && file.parents[0][0] === '0' && file.parents[0][1] === 'A')) {
-          alert("File is already in root")
+          alert('File is already in root');
           return;
         }
         if (window.confirm('Warning: moving a file to root will unshare it with everybody it is currently shared with.')) {
@@ -706,7 +702,7 @@ class App extends Component {
       updatedList[i].openFolders = newOpenFolders;
     }
     this.setState({
-      userList: updatedList, isLoading: false
+      userList: updatedList, isLoading: false,
     });
   }
 
@@ -843,7 +839,7 @@ class App extends Component {
               authorizeUser={this.authorizeUser}
               filterFilesInAllAccounts={this.filterFilesInAllAccounts}
               parseIDToken={this.parseIDToken}
-              removeAllAccounts = {this.removeAllAccounts}
+              removeAllAccounts={this.removeAllAccounts}
               starFilter={this.starredFilter}
               userList={userList}
             >
