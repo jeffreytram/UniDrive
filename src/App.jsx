@@ -360,11 +360,15 @@ class App extends Component {
               newOpenFolders[oId].path.splice(pathIndex, (oldPath.length - pathIndex));
               // newOpenFolders[oId].displayed = updatedList[index].folders[oldPath[pathIndex - 1].id].children;
             }
+          } else {
+            newOpenFolders[oId].path[pathIndex] = updatedList[index].folders[oldPath[pathIndex].id];
           }
           pathIndex++;
         }
         updatedList[index].openFolders = newOpenFolders;
         if (newOpenFolders[oId] && newOpenFolders[oId].path) {
+          // let pIndex = newOpenFolders[oId].path.length - 1;
+          // updatedList[index].openFolders[oId].displayed = updatedList[index].folders[newOpenFolders[oId].path[pIndex].id].children;
           this.openFolder(updatedList[index].id, oId, newOpenFolders[oId].path[newOpenFolders[oId].path.length - 1], true);
         }
       }
