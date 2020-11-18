@@ -7,16 +7,16 @@ import Header from './components/Header';
 import Welcome from './components/Welcome';
 import Loading from './components/Loading';
 import { config } from './config';
+import { authorizeUserHelper, loadAuth, parseIDToken } from './logic/auth';
 import './App.css';
 
 const SCOPE = 'profile email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
 const discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const API_KEY = config.web.api_key;
 const CLIENT_ID = config.web.client_id;
-const ready = true;
 let userId = 1;
 const cookies = new Cookies();
-// cookies expire in 10
+// cookies expire in 20 years
 const d = new Date();
 const year = d.getFullYear();
 const month = d.getMonth();
@@ -65,70 +65,25 @@ class App extends Component {
   startUp = () => {
     const cookie = cookies.getAll();
     Object.values(cookie).forEach((email) => {
-      this.reAuthorizeUser(email);
+      if (email !== 'light' && email !== 'dark') {
+        this.authorizeUser(email);
+      }
     });
+  }
+
+  authorizeUser = (email) => {
+    authorizeUserHelper(email, this.signInFunction);
   }
 
   /**
-   * Signs a new user into Google, and then begins the process of storing all of their information
-   * Returns an idToken, an AccessToken, and a Code, all unique to the user in a Response object
-   */
-  authorizeUser = () => {
-    window.gapi.load('client:auth', () => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        responseType: 'id_token permission code',
-        prompt: 'select_account',
-        discoveryDocs: [discoveryUrl, 'https:googleapis.com/discovery/v1/apis/profile/v1/rest'],
-      }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-          return;
-        }
-        const accessToken = response.access_token;
-        const idToken = response.id_token;
-        const { code } = response;
-        this.signInFunction(accessToken, idToken, code);
-      });
-    });
-  }
-
-  reAuthorizeUser = (email) => {
-    window.gapi.load('client:auth', () => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        responseType: 'id_token permission code',
-        prompt: 'none',
-        login_hint: email,
-        discoveryDocs: [discoveryUrl, 'https:googleapis.com/discovery/v1/apis/profile/v1/rest'],
-      }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-          return;
-        }
-        const accessToken = response.access_token;
-        const idToken = response.id_token;
-        const { code } = response;
-        this.signInFunction(accessToken, idToken, code);
-      });
-    });
-  }
-
-  /**
-   * Handles user sign in by storing all the information gained from the
-   * authrizeUser() function above
+   * Handles user sign in by adding the user and storing all the information gained from the
+   * authorizeUser() function above
    * @param {Object} accessToken the accessToken granted to the user by gapi.client.authorize()
    * @param {Object} idToken the accessToken granted to the user by gapi.client.authorize()
     * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   signInFunction = (accessToken, idToken, code) => {
-    const userInfo = this.parseIDToken(idToken);
+    const userInfo = parseIDToken(idToken);
     const { email } = userInfo;
     const isDup = this.addUser(accessToken, idToken, code);
     if (isDup) {
@@ -144,9 +99,10 @@ class App extends Component {
    *  Removes the specified user from the userList array, then updates the State
    * @param {number} id attribute of the specific User to be removed in the UserList array
    */
-  signOutFunction = (id) => {
-    if (ready) {
-      if (window.confirm('Are you sure you want to remove this account?')) {
+  signOutFunction = (id, removeAll) => {
+    const { isLoading } = this.state;
+    if (!isLoading) {
+      if (removeAll) {
         this.setState((prevState) => {
           const newUserList = prevState.userList.filter((user) => user.id !== id);
           return {
@@ -155,9 +111,33 @@ class App extends Component {
         });
         const index = this.getAccountIndex(id);
         const { userList } = this.state;
-        const userInfo = this.parseIDToken(userList[index].idToken);
+        const userInfo = parseIDToken(userList[index].idToken);
         const { email } = userInfo;
         cookies.remove(email, cookieOptions);
+      } else if (window.confirm('Are you sure you want to remove this account?')) {
+        this.setState((prevState) => {
+          const newUserList = prevState.userList.filter((user) => user.id !== id);
+          return {
+            userList: newUserList,
+          };
+        });
+        const index = this.getAccountIndex(id);
+        const { userList } = this.state;
+        const userInfo = parseIDToken(userList[index].idToken);
+        const { email } = userInfo;
+        cookies.remove(email, cookieOptions);
+      }
+    }
+  }
+
+  removeAllAccounts = () => {
+    const { isLoading } = this.state;
+    if (!isLoading) {
+      const { userList } = this.state;
+      if (window.confirm('Are you sure you want to remove all accounts?')) {
+        for (let i = 0; i < userList.length; i++) {
+          this.signOutFunction(userList[i].id, true);
+        }
       }
     }
   }
@@ -169,7 +149,7 @@ class App extends Component {
    * @param {Object} code the code granted to the user by gapi.client.authorize()
    */
   addUser = (accessToken, idToken, code) => {
-    const { email } = this.parseIDToken(idToken);
+    const { email } = parseIDToken(idToken);
     const { userList } = this.state;
     const isDup = this.isDuplicateUser(email, userList);
     if (!isDup) {
@@ -186,7 +166,7 @@ class App extends Component {
           looseFiles: [],
           openFolders: [],
           ref: React.createRef(),
-          sortedBy: 'folder, createdTime desc',
+          sortedBy: 'folder, viewedByMeTime desc',
           filteredBy: '',
         }],
       }));
@@ -200,7 +180,7 @@ class App extends Component {
 
   isDuplicateUser = (email, userList) => {
     for (let i = 0; i < userList.length; i++) {
-      if (email === this.parseIDToken(userList[i].idToken).email) {
+      if (email === parseIDToken(userList[i].idToken).email) {
         return true;
       }
     }
@@ -214,23 +194,7 @@ class App extends Component {
    */
   updateFiles = (index, email) => {
     this.setState({ isLoading: true });
-    window.gapi.client.load('drive', 'v3').then(() => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        prompt: 'none',
-        login_hint: email,
-        discoveryDocs: [discoveryUrl],
-      }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-          return;
-        }
-        this.getAndAssignFiles(index, email);
-      });
-    });
+    loadAuth(email, () => this.getAndAssignFiles(index, email));
   }
 
   /**
@@ -249,11 +213,11 @@ class App extends Component {
   }
 
   filterFilesInAllAccounts = (filter) => {
-    this.setState({ starred: false, })
+    this.setState({ starred: false });
     this.setFilterQuery(filter);
     const { userList } = this.state;
     userList.forEach((user, i) => {
-      const { email } = this.parseIDToken(userList[i].idToken);
+      const { email } = parseIDToken(userList[i].idToken);
       this.updateFiles(i, email);
     });
   }
@@ -389,8 +353,8 @@ class App extends Component {
     const index = this.getAccountIndex(userId);
     const updatedList = this.state.userList;
     const newOpenFolders = updatedList[index].openFolders;
-    // If folder is topLevel, we will pass in null oId for these, create new open folder
-    if (oId === null) {
+    // If folder is topLevel, we will pass in -1 oId for these, create new open folder
+    if (oId === -1) {
       newOpenFolders.push({
         path: [folder],
         displayed: updatedList[index].folders[folder.id].children,
@@ -405,7 +369,9 @@ class App extends Component {
       this.setState({ userList: updatedList });
     } else {
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
+
       updatedList[index].openFolders = newOpenFolders;
+
       this.setState({ userList: updatedList });
     }
   }
@@ -451,62 +417,38 @@ class App extends Component {
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
-      window.gapi.client.load('drive', 'v3').then(() => {
-        window.gapi.auth2.authorize({
-          apiKey: API_KEY,
-          clientId: CLIENT_ID,
-          scope: SCOPE,
-          prompt: 'none',
-          login_hint: email,
-          discoveryDocs: [discoveryUrl],
-        }, (r) => {
-          res = res.concat(response.result.files);
-          const { nextPageToken } = response.result;
-          if (nextPageToken) {
-            window.gapi.client.drive.files.list({
-              pageToken: nextPageToken,
-              fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId), nextPageToken',
-              orderBy: sortedBy,
-              q: query,
-              pageSize: 1000,
-              corpora: 'allDrives',
-              includeItemsFromAllDrives: 'true',
-              supportsAllDrives: 'true',
-            }).then((response) => {
-              retrievePageOfFiles(email, response, user);
-            });
-          } else {
-            callback(res);
-          }
-        });
+      loadAuth(email, () => {
+        res = res.concat(response.result.files);
+        const { nextPageToken } = response.result;
+        if (nextPageToken) {
+          window.gapi.client.drive.files.list({
+            pageToken: nextPageToken,
+            fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId), nextPageToken',
+            orderBy: sortedBy,
+            q: query,
+            pageSize: 1000,
+            corpora: 'allDrives',
+            includeItemsFromAllDrives: 'true',
+            supportsAllDrives: 'true',
+          }).then((response) => {
+            retrievePageOfFiles(email, response, user);
+          });
+        } else {
+          callback(res);
+        }
       });
     };
-
-    window.gapi.client.load('drive', 'v3').then(() => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        prompt: 'none',
-        login_hint: email,
-        discoveryDocs: [discoveryUrl],
-      }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-          return;
-        }
-        window.gapi.client.drive.files.list({
-          fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId) , nextPageToken',
-          orderBy: sortedBy,
-          q: query,
-          pageSize: 1000,
-          corpora: 'allDrives',
-          includeItemsFromAllDrives: 'true',
-          supportsAllDrives: 'true',
-        }).then((response) => {
-          retrievePageOfFiles(email, response, user);
-        });
+    loadAuth(email, () => {
+      window.gapi.client.drive.files.list({
+        fields: 'files(id, name, mimeType, starred, iconLink, shared, webViewLink, parents, driveId) , nextPageToken',
+        orderBy: sortedBy,
+        q: query,
+        pageSize: 1000,
+        corpora: 'allDrives',
+        includeItemsFromAllDrives: 'true',
+        supportsAllDrives: 'true',
+      }).then((response) => {
+        retrievePageOfFiles(email, response, user);
       });
     });
   }
@@ -519,21 +461,9 @@ class App extends Component {
   changeSortedBy = (userId, newSort) => {
     const index = this.getAccountIndex(userId);
     const { userList } = this.state;
-    const { email } = this.parseIDToken(userList[index].idToken);
+    const { email } = parseIDToken(userList[index].idToken);
     userList[index].sortedBy = newSort;
     this.updateFiles(index, email);
-  }
-
-  /**
-   * Decrypts the JSON string idToken in order to access the encrytped user information held within
-   * @param {Object} token the idToken of the user
-   */
-  parseIDToken = (token) => {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      return null;
-    }
   }
 
   /**
@@ -545,39 +475,26 @@ class App extends Component {
   moveWithin = (userId, file, newParentId) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
-    const { email } = this.parseIDToken(userToken);
-
-    window.gapi.client.load('drive', 'v3').then(() => {
-      window.gapi.auth2.authorize({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        prompt: 'none',
-        login_hint: email,
-        discoveryDocs: [discoveryUrl],
-      }, (response) => {
-        if (response.error) {
-          console.log(response.error);
-          console.log('authorization error');
-        }
-        if (file.parents === undefined) {
-          return;
-        }
-        if (window.confirm('Warning: moving a file to root will unshare it with everybody it is currently shared with.')) {
-          const preParents = file.parents.join(',');
-          window.gapi.client.drive.files.update({
-            fileId: file.id,
-            addParents: newParentId,
-            removeParents: preParents,
-            fields: 'id, parents',
-          }).then((response) => {
-            if (response.error) {
-              console.log(response.error);
-            }
-            console.log(response);
-          });
-        }
-      });
+    const { email } = parseIDToken(userToken);
+    loadAuth(email, () => {
+      if (file.parents === undefined || (file.parents.length === 1 && file.parents[0][0] === '0' && file.parents[0][1] === 'A')) {
+        alert('File is already in root');
+        return;
+      }
+      if (window.confirm('Warning: moving a file to root will unshare it with everybody it is currently shared with.')) {
+        const preParents = file.parents.join(',');
+        window.gapi.client.drive.files.update({
+          fileId: file.id,
+          addParents: newParentId,
+          removeParents: preParents,
+          fields: 'id, parents',
+        }).then((response) => {
+          if (response.error) {
+            console.log(response.error);
+          }
+          console.log(response);
+        });
+      }
     });
   }
 
@@ -585,10 +502,10 @@ class App extends Component {
    * Gets email for auth from a user Id
    * @param {*} userId
    */
-  getEmailFromUserId(userId) {
+  getEmailFromUserId = (userId) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
-    return this.parseIDToken(userToken).email;
+    return parseIDToken(userToken).email;
   }
 
   moveExternal = (userId, fileId, newUserId) => {
@@ -620,27 +537,6 @@ class App extends Component {
         }));
       });
     });
-  }
-
-  loadAuthorize = (id, func) => {
-    const email = this.getEmailFromUserId(id);
-    return (...args) => {
-      window.gapi.client.load('drive', 'v3').then(() => {
-        window.gapi.auth2.authorize({
-          apiKey: API_KEY,
-          clientId: CLIENT_ID,
-          scope: SCOPE,
-          prompt: 'none',
-          login_hint: email,
-          discoveryDocs: [discoveryUrl],
-        }, (response) => {
-          if (response.error) {
-            console.log(response.error);
-          }
-          func.call(this, ...args);
-        });
-      });
-    };
   }
 
   starredFilter = () => {
@@ -677,7 +573,7 @@ class App extends Component {
       updatedList[i].openFolders = newOpenFolders;
     }
     this.setState({
-      userList: updatedList, isLoading: false
+      userList: updatedList, isLoading: false,
     });
   }
 
@@ -691,11 +587,15 @@ class App extends Component {
   refreshFunction = (id) => {
     const index = this.getAccountIndex(id);
     const { userList } = this.state;
-    const userInfo = this.parseIDToken(userList[index].idToken);
+    const userInfo = parseIDToken(userList[index].idToken);
     const { email } = userInfo;
     this.updateFiles(index, email);
   }
 
+  /**
+   * Gets the index of an account given the id
+   * @param {Number} id the id of the account to look for
+   */
   getAccountIndex = (id) => {
     const { userList } = this.state;
     for (let i = 0; i < userList.length; i++) {
@@ -712,7 +612,7 @@ class App extends Component {
   refreshAllFunction = () => {
     const { userList } = this.state;
     for (let i = 0; i < userList.length; i++) {
-      const userInfo = this.parseIDToken(userList[i].idToken);
+      const userInfo = parseIDToken(userList[i].idToken);
       const { email } = userInfo;
       this.updateFiles(i, email);
     }
@@ -737,7 +637,7 @@ class App extends Component {
    * @param {*} fileUpl File to be uploaded
    */
   fileUpload = (idToken, file) => {
-    const { email } = this.parseIDToken(idToken);
+    const { email } = parseIDToken(idToken);
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
         apiKey: API_KEY,
@@ -796,7 +696,7 @@ class App extends Component {
   render() {
     const { userList, uploadRequests, isLoading } = this.state;
     const cookie = cookies.getAll();
-    const addedAccount = !(Object.keys(cookie).length === 0 && cookie.constructor === Object);
+    const addedAccount = !((Object.keys(cookie).length === 0 || (Object.keys(cookie).length === 1 && Object.keys(cookie).includes('theme'))) && cookie.constructor === Object);
     return (
       <div>
         <Header
@@ -813,22 +713,20 @@ class App extends Component {
             <Layout
               authorizeUser={this.authorizeUser}
               filterFilesInAllAccounts={this.filterFilesInAllAccounts}
-              parseIDToken={this.parseIDToken}
-              userList={userList}
+              removeAllAccounts={this.removeAllAccounts}
               starFilter={this.starredFilter}
+              userList={userList}
             >
               <div className="main-container">
                 <div className="main-content">
                   <UserList
                     userList={userList}
-                    parseIDToken={this.parseIDToken}
                     removeFunc={this.signOutFunction}
                     refreshFunc={this.refreshFunction}
                     fileUpload={this.fileUpload}
                     sortFunc={this.changeSortedBy}
                     moveWithin={this.moveWithin}
                     moveExternal={this.moveExternal}
-                    loadAuth={this.loadAuthorize}
                     openFolder={this.openFolder}
                     closePath={this.closePath}
                     updatePath={this.updatePath}

@@ -5,18 +5,25 @@ import '../css/Filters.css';
 
 export default function Filters({ filterFunc, sortFunc, userId }) {
   const sortOptions = [
+    { value: 'folder, viewedByMeTime desc', label: 'Last Opened by Me' },
     { value: 'folder, createdTime desc', label: 'Newest' },
     { value: 'folder, createdTime', label: 'Oldest' },
     { value: 'folder, name', label: 'By Name' },
-    { value: 'folder, viewedByMeTime desc', label: 'Last Opened by Me' },
     { value: 'folder, modifiedTime desc', label: 'Last Modified' },
   ];
 
   const filterOptions = [
-    { value: "mimeType = 'application/vnd.google-apps.document'", label: 'Google Docs' },
-    { value: "mimeType = 'application/vnd.google-apps.spreadsheet'", label: 'Google Sheets' },
-    { value: "mimeType = 'application/vnd.google-apps.presentation'", label: 'Google Slides' },
-    { value: "mimeType = 'application/pdf'", label: 'PDF' },
+    { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.document'", label: 'Google Docs' },
+    { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.spreadsheet'", label: 'Google Sheets' },
+    { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.presentation'", label: 'Google Slides' },
+    { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/pdf'", label: 'PDF' },
+    { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType contains 'image/' ", label: 'Images' },
+    { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType contains 'video/'", label: 'Videos' },
+    { value: "mimeType = 'application/vnd.google-apps.folder' or mimeType contains 'text/'", label: 'Text' },
+    { value: "mimeType = 'application/vnd.google-apps.folder' or not mimeType contains 'text/'" +
+     " and not mimeType contains 'video/' and not mimeType contains 'image/' and not mimeType = 'application/pdf'" +
+     " and not mimeType = 'application/vnd.google-apps.presentation' and not mimeType = 'application/vnd.google-apps.spreadsheet' and not mimeType = 'application/vnd.google-apps.document'", label: 'Misc' }
+
   ];
 
   const customStyles = (container) => ({
@@ -92,6 +99,8 @@ export default function Filters({ filterFunc, sortFunc, userId }) {
     display: 'inline-block',
     width: 'auto',
     minWidth: '150px',
+    zIndex: "4"
+    
   });
 
   const handleFilterChange = (selected) => {

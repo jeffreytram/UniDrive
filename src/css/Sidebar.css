@@ -74,10 +74,28 @@
   font-weight: bold;
 }
 
+.sidebar-remove-button {
+  display: block;
+  margin: 15px auto;
+  width: 80%;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--main-bg);
+  color: var(--red);
+  font-weight: bold;
+}
+
 .sidebar-add-button:hover {
   cursor: pointer;
   color: var(--main-bg);
   background-color: var(--green);
+}
+
+.sidebar-remove-button:hover {
+  cursor: pointer;
+  color: var(--main-bg);
+  background-color: var(--red);
 }
 
 .sidebar-user-container {

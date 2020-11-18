@@ -8,6 +8,7 @@ import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
   ContextMenu, MenuItem, ContextMenuTrigger,
 } from 'react-contextmenu';
+import { loadAuthParam } from '../logic/auth';
 import '../css/File.css';
 
 class File extends Component {
@@ -107,26 +108,26 @@ deletePermission = (permId) => {
   // export default function File(props) {
   render() {
     const {
-      data, displayed, loadAuth, moveWithin, oId, openFolder, shareFile, userId,
+      data, displayed, email, moveWithin, oId, openFolder, shareFile, userId,
     } = this.props;
 
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
     } = data;
 
-    const copyFunc = loadAuth(userId, this.copy);
-    const deleteFunc = loadAuth(userId, this.delete);
-    const renameFunc = loadAuth(userId, this.rename);
-    const starFunc = loadAuth(userId, this.star);
-    const findPermissionFunc = loadAuth(userId, this.findPermission);
-    const findFilePermissionFunc = loadAuth(userId, this.findFilePermission);
-    const deletePermissionFunc = loadAuth(userId, this.deletePermission);
+    const copyFunc = loadAuthParam(email, this.copy);
+    const deleteFunc = loadAuthParam(email, this.delete);
+    const renameFunc = loadAuthParam(email, this.rename);
+    const starFunc = loadAuthParam(email, this.star);
+    const findPermissionFunc = loadAuthParam(email, this.findPermission);
+    const findFilePermissionFunc = loadAuthParam(email, this.findFilePermission);
+    const deletePermissionFunc = loadAuthParam(email, this.deletePermission);
     if (displayed) {
       if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
         return (
           <div>
-            <ContextMenuTrigger id={id + userId.toString()}>
+            <ContextMenuTrigger id={id + userId.toString() + oId.toString()}>
               <a href={webViewLink} target="blank">
                 <div className="file-container">
                   <div className="file-image-container">
@@ -138,7 +139,7 @@ deletePermission = (permId) => {
                 </div>
               </a>
             </ContextMenuTrigger>
-            <ContextMenu className="context-menu" id={id + userId.toString()}>
+            <ContextMenu className="context-menu" id={id + userId.toString() + oId.toString()}>
               <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
                 <FontAwesomeIcon className="faOpen menu-icon" icon={faFolderOpen} />
                 Open
@@ -176,7 +177,7 @@ deletePermission = (permId) => {
       // if folder
       return (
         <div>
-          <ContextMenuTrigger id={id + userId.toString()}>
+          <ContextMenuTrigger id={id + userId.toString() + oId.toString()}>
             <div className="folder-container" onClick={() => openFolder(userId, oId, data)}>
               <div className="folder-content-container">
                 <img className="folder-img" src={iconLink} alt="File icon" />
@@ -184,7 +185,7 @@ deletePermission = (permId) => {
               </div>
             </div>
           </ContextMenuTrigger>
-          <ContextMenu className="context-menu" id={id + userId.toString()}>
+          <ContextMenu className="context-menu" id={id + userId.toString() + oId.toString()}>
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
               <FontAwesomeIcon className="faGoogle menu-icon" icon={faGoogleDrive} />
               View on Google Drive
@@ -221,7 +222,6 @@ deletePermission = (permId) => {
 File.propTypes = {
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
   displayed: PropTypes.bool.isRequired,
-  loadAuth: PropTypes.func.isRequired,
   moveExternal: PropTypes.func.isRequired,
   moveWithin: PropTypes.func.isRequired,
   oId: PropTypes.number,
