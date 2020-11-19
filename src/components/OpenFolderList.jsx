@@ -10,13 +10,12 @@ export default function OpenFolderList(props) {
   } = props;
 
   return (
-    <div className="file-list-container" style={{ display: 'flex', flexDirection: 'row' }}>
+    <div className="file-list-container">
       {openFolderList.map((pathObj, i) => (
         <OpenFolder
           key={pathObj.path[0].id}
           children={pathObj.displayed}
           closePath={closePath}
-          displayed
           email={email}
           moveExternal={moveExternal}
           moveWithin={moveWithin}

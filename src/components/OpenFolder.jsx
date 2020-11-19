@@ -14,7 +14,7 @@ class OpenFolder extends Component {
 
   render() {
     const {
-      children, closePath, displayed, email, moveExternal, moveWithin,
+      children, closePath, email, moveExternal, moveWithin,
       oId, openFolder, path, refreshFunc, shareFile, updatePath, userId,
     } = this.props;
 
@@ -54,7 +54,6 @@ class OpenFolder extends Component {
               <File
                 key={file.id}
                 data={file}
-                displayed={displayed}
                 email={email}
                 moveExternal={moveExternal}
                 moveWithin={moveWithin}
@@ -72,7 +71,6 @@ class OpenFolder extends Component {
             <File
               key={file.id}
               data={file}
-              displayed={displayed}
               email={email}
               moveExternal={moveExternal}
               moveWithin={moveWithin}
@@ -93,7 +91,6 @@ class OpenFolder extends Component {
 OpenFolder.propTypes = {
   children: PropTypes.arrayOf(PropTypes.object).isRequired,
   closePath: PropTypes.func.isRequired,
-  displayed: PropTypes.bool.isRequired,
   email: PropTypes.string.isRequired,
   moveExternal: PropTypes.func.isRequired,
   moveWithin: PropTypes.func.isRequired,

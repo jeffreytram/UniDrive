@@ -10,12 +10,11 @@ export default function TopLevelFolderList(props) {
 
   return (
     <div className="topFolder">
-      <div className="file-list-container" style={{ display: 'flex', flexDirection: 'row' }}>
+      <div className="file-list-container">
         {topLevelFolderList.map((folderObj) => (
           <File
             key={folderObj.folder.id}
             data={folderObj.folder}
-            displayed
             email={email}
             moveExternal={moveExternal}
             moveWithin={moveWithin}
