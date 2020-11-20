@@ -269,7 +269,7 @@ class App extends Component {
       searchQuery = `name contains '${searchInput}'`;
       const newUserList = this.state.userList;
       //checks if search input is empty, or spaces only
-      if (searchInput !== "" ||(!str.replace(/\s/g, '').length === 0)) {
+      if (searchInput !== "" ||(!searchInput.replace(/\s/g, '').length === 0)) {
       for (let i = 0; i < this.state.userList.length; i++) {
         if ( newUserList[i].storedFolderList === null) {
         newUserList[i].storedFolderList = newUserList[i].folders;
@@ -440,9 +440,6 @@ class App extends Component {
       console.log(folderList)
     // If folder is topLevel, we will pass in -1 oId for these, create new open folder
     if (oId === -1) {
-   // another check to see if folder form search result is a nested folder 
-    console.log(folderList[folder.id]);
-
 
       newOpenFolders.push({
         path: [folder],
