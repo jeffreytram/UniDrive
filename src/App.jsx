@@ -286,7 +286,7 @@ class App extends Component {
       {
         userList: newUserList,
        searchQuery },this.refreshAllFunction());
- 
+      
   }
 
   filterFilesInAllAccounts = (filter) => {
@@ -440,11 +440,20 @@ class App extends Component {
       console.log(folderList)
     // If folder is topLevel, we will pass in -1 oId for these, create new open folder
     if (oId === -1) {
+      console.log(folderList)
+      console.log(folder)
 
       newOpenFolders.push({
         path: [folder],
         displayed: folderList[folder.id].children,
       });
+      let tempFolder = folder;
+      //if file is not top-level, and oId is 0, then it is the result of a nested folder search
+      //this builds its file path up to the root
+     while(!(tempFolder.parents === undefined || (tempFolder.parents.length === 1 && tempFolder.parents[0][0] === '0' && tempFolder.parents[0][1] === 'A'))) {
+      newOpenFolders[newOpenFolders.length-1].path.unshift(folderList[tempFolder.parents[0]].folder)
+      tempFolder = folderList[tempFolder.parents[0]].folder;
+     }
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
     // If folder is not top level it is part of a filePath already
