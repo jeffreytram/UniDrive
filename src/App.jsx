@@ -204,27 +204,22 @@ class App extends Component {
    */
   onFormSubmit = (searchInput) => {
     let searchQuery;
-      searchQuery = `name contains '${searchInput}'`;
-      const newUserList = this.state.userList;
-      //checks if search input is empty, or spaces only
-      if (searchInput !== "" ||(!searchInput.replace(/\s/g, '').length === 0)) {
+    searchQuery = `name contains '${searchInput}'`;
+    const newUserList = this.state.userList;
+    //checks if search input is empty, or spaces only
+    if (searchInput !== "" ||(!searchInput.replace(/\s/g, '').length === 0)) {
       for (let i = 0; i < this.state.userList.length; i++) {
         if ( newUserList[i].storedFolderList === null) {
-        newUserList[i].storedFolderList = newUserList[i].folders;
+          newUserList[i].storedFolderList = newUserList[i].folders;
+        }
       }
-    }
     } else {
       for (let i = 0; i < this.state.userList.length; i++) {
         newUserList[i].storedFolderList = null;
       }
-
     }
     console.log(newUserList)
-    this.setState(
-      {
-        userList: newUserList,
-       searchQuery },this.refreshAllFunction());
-      
+    this.setState({ userList: newUserList, searchQuery }, this.refreshAllFunction());  
   }
 
   filterFilesInAllAccounts = (filter) => {
@@ -234,7 +229,7 @@ class App extends Component {
     //check if there is a stored folder list
     if ((userList[0].storedFolderList !== null)) {
       userList.forEach((user, i) => {
-        const { email } = this.parseIDToken(userList[i].idToken);
+        const { email } = parseIDToken(userList[i].idToken);
         this.updateFiles(i, email);
       });
     } else {
@@ -242,7 +237,7 @@ class App extends Component {
         userList[i].storedFolderList = userList[i].folders;
     }
       userList.forEach((user, i) => {
-        const { email } = this.parseIDToken(userList[i].idToken);
+        const { email } = parseIDToken(user.idToken);
         this.updateFiles(i, email);
     }); 
   }
@@ -336,32 +331,34 @@ class App extends Component {
         }
       }
       /* Update file paths if a folder that was there is not anymore */
+      const folderList = (updatedList[index].storedFolderList == null) ? updatedList[index].folders : updatedList[index].storedFolderList;
       const newOpenFolders = updatedList[index].openFolders;
       for (let oId = 0; oId < newOpenFolders.length; oId++) {
         let pathIndex = 0;
         while (newOpenFolders[oId] && newOpenFolders[oId].path && pathIndex < newOpenFolders[oId].path.length) {
           const oldPath = newOpenFolders[oId].path;
-          if (!updatedList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
+          if (!folderList.hasOwnProperty(oldPath[pathIndex].id)) {
             if (pathIndex === 0) {
               newOpenFolders.splice(oId, 1);
               oId--;
             } else {
               // Cut off the rest of the folders
               newOpenFolders[oId].path.splice(pathIndex, (oldPath.length - pathIndex));
-              // newOpenFolders[oId].displayed = updatedList[index].folders[oldPath[pathIndex - 1].id].children;
+              // newOpenFolders[oId].displayed = folderList[oldPath[pathIndex - 1].id].children;
             }
           } else {
-            newOpenFolders[oId].path[pathIndex] = updatedList[index].folders[oldPath[pathIndex].id].folder;
+            newOpenFolders[oId].path[pathIndex] = folderList[oldPath[pathIndex].id].folder;
           }
           pathIndex++;
         }
         updatedList[index].openFolders = newOpenFolders;
         if (newOpenFolders[oId] && newOpenFolders[oId].path) {
           // let pIndex = newOpenFolders[oId].path.length - 1;
-          // updatedList[index].openFolders[oId].displayed = updatedList[index].folders[newOpenFolders[oId].path[pIndex].id].children;
+          // updatedList[index].openFolders[oId].displayed = folderList[newOpenFolders[oId].path[pIndex].id].children;
           this.openFolder(updatedList[index].id, oId, newOpenFolders[oId].path[newOpenFolders[oId].path.length - 1], true);
         }
       }
+      console.log(updatedList);
       this.setState({ userList: updatedList, isLoading: false });
       if (this.state.starred === true) {
         this.starredFilter();
@@ -377,48 +374,47 @@ class App extends Component {
    */
   openFolder = (userId, oId, folder, isUpdate) => {
     if (!this.state.isLoading){
-    const index = this.getAccountIndex(userId);
-    const updatedList = this.state.userList;
-    const newOpenFolders = updatedList[index].openFolders;
-    let folderList = updatedList[index].folders;
-    //check to see if folder is from search result
+      const index = this.getAccountIndex(userId);
+      const updatedList = this.state.userList;
+      const newOpenFolders = updatedList[index].openFolders;
+      let folderList = updatedList[index].folders;
+      //check to see if folder is from search result
 
-    console.log(updatedList[index].storedFolderList)
+      console.log(updatedList[index].storedFolderList)
       if (updatedList[index].storedFolderList !== null) {
         folderList = updatedList[index].storedFolderList;
       }
       console.log(updatedList[index].folders)
       console.log(folderList)
-    // If folder is topLevel, we will pass in -1 oId for these, create new open folder
-    if (oId === -1) {
-      console.log(folderList)
-      console.log(folder)
-
-      newOpenFolders.push({
-        path: [folder],
-        displayed: folderList[folder.id].children,
-      });
-      let tempFolder = folder;
-      //if file is not top-level, and oId is 0, then it is the result of a nested folder search or filter
-      //this builds its file path up to the root
-     while(!(tempFolder.parents === undefined || (tempFolder.parents.length === 1 && tempFolder.parents[0][0] === '0' && tempFolder.parents[0][1] === 'A'))) {
-      newOpenFolders[newOpenFolders.length-1].path.unshift(folderList[tempFolder.parents[0]].folder)
-      tempFolder = folderList[tempFolder.parents[0]].folder;
-     }
-      updatedList[index].openFolders = newOpenFolders;
-      this.setState({ userList: updatedList });
-    // If folder is not top level it is part of a filePath already
-    } else if (!isUpdate) {
-      newOpenFolders[oId].path.push(folder);
-      newOpenFolders[oId].displayed = folderList[folder.id].children;
-      updatedList[index].openFolders = newOpenFolders;
-      this.setState({ userList: updatedList });
-    } else {
-      newOpenFolders[oId].displayed = folderList[folder.id].children;
-      updatedList[index].openFolders = newOpenFolders;
-      this.setState({ userList: updatedList });
+      // If folder is topLevel, we will pass in -1 oId for these, create new open folder
+      if (oId === -1) {
+        console.log(folderList)
+        console.log(folder)
+        newOpenFolders.push({
+          path: [folder],
+          displayed: folderList[folder.id].children,
+        });
+        let tempFolder = folder;
+        //if file is not top-level, and oId is 0, then it is the result of a nested folder search or filter
+        //this builds its file path up to the root
+        while(!(tempFolder.parents === undefined || (tempFolder.parents.length === 1 && tempFolder.parents[0][0] === '0' && tempFolder.parents[0][1] === 'A'))) {
+          newOpenFolders[newOpenFolders.length-1].path.unshift(folderList[tempFolder.parents[0]].folder);
+          tempFolder = folderList[tempFolder.parents[0]].folder;
+        }
+        updatedList[index].openFolders = newOpenFolders;
+        this.setState({ userList: updatedList });
+      // If folder is not top level it is part of a filePath already
+      } else if (!isUpdate) {
+        newOpenFolders[oId].path.push(folder);
+        newOpenFolders[oId].displayed = folderList[folder.id].children;
+        updatedList[index].openFolders = newOpenFolders;
+        this.setState({ userList: updatedList });
+      } else {
+        newOpenFolders[oId].displayed = folderList[folder.id].children;
+        updatedList[index].openFolders = newOpenFolders;
+        this.setState({ userList: updatedList });
+      }
     }
-  }
   }
 
   /**
@@ -524,7 +520,7 @@ class App extends Component {
   moveWithin = (userId, file, newParentId) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
-    const { email } = this.parseIDToken(userToken);
+    const { email } = parseIDToken(userToken);
 
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
