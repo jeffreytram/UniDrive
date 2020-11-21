@@ -207,8 +207,7 @@ class App extends Component {
    */
   onFormSubmit = (searchInput) => {
     if (!this.state.isLoading) {
-      let searchQuery;
-      searchQuery = `name contains '${searchInput}'`;
+      const searchQuery = `name contains '${searchInput}'`;
       const newUserList = this.state.userList;
       // checks if search input is empty, or spaces only
       if (searchInput !== '') {
