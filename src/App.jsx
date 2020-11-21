@@ -325,7 +325,7 @@ class App extends Component {
               // newOpenFolders[oId].displayed = updatedList[index].folders[oldPath[pathIndex - 1].id].children;
             }
           } else {
-            newOpenFolders[oId].path[pathIndex] = updatedList[index].folders[oldPath[pathIndex].id];
+            newOpenFolders[oId].path[pathIndex] = updatedList[index].folders[oldPath[pathIndex].id].folder;
           }
           pathIndex++;
         }
@@ -369,9 +369,7 @@ class App extends Component {
       this.setState({ userList: updatedList });
     } else {
       newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
-
       updatedList[index].openFolders = newOpenFolders;
-
       this.setState({ userList: updatedList });
     }
   }
@@ -567,6 +565,7 @@ class App extends Component {
           }
           if (del) {
             newOpenFolders.splice(oId, 1);
+            oId--;
           }
         }
       }
