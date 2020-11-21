@@ -216,6 +216,7 @@ class App extends Component {
           filteredBy: '',
           storedFolderList: null,
           storedTopLevelFolders: null,
+          isSearching: false,
         }],
       }));
       cookies.set(email, email, cookieOptions);
@@ -277,19 +278,26 @@ class App extends Component {
         newUserList[i].storedTopLevelFolders = newUserList[i].topLevelFolders;
       }
     }
+    this.setState(
+      {
+        userList: newUserList,
+       searchQuery,
+      isSearching: true },this.refreshAllFunction());
+      
     } else {
       for (let i = 0; i < this.state.userList.length; i++) {
         newUserList[i].storedFolderList = null;
         newUserList[i].storedTopLevelFolders = null;
       }
-
+      this.setState(
+        {
+          userList: newUserList,
+         searchQuery,
+        isSearching: true },this.refreshAllFunction());
+        
     }
     console.log(newUserList)
-    this.setState(
-      {
-        userList: newUserList,
-       searchQuery },this.refreshAllFunction());
-      
+  
   }
 
   filterFilesInAllAccounts = (filter) => {
@@ -404,7 +412,7 @@ class App extends Component {
           let currFolder = results[j].id;
           //find root of folder (if querey is used)
           //we don't want to push to top level if root folder is not included in the filter
-          if (updatedList[index].storedTopLevelFolders !== null) {
+          if (updatedList[index].storedTopLevelFolders !== null && !this.state.isSearching) {
             console.log(updatedList[index].storedTopLevelFolders)
     
           while((!(updatedList[index].storedTopLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) && (updatedList[index].storedFolderList[currFolder].folder.parents !== undefined) && (updatedList[index].storedFolderList[currFolder].folder.mimeType === 'application/vnd.google-apps.folder')) {
