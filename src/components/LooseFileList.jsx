@@ -9,13 +9,12 @@ export default function LooseFileList(props) {
   } = props;
 
   return (
-    <div className="file-list-container" style={{ display: 'flex', flexDirection: 'row' }}>
+    <div className="file-list-container">
       {looseFileList.map((file) => (
         <File
           key={file.id}
           userId={userId}
           data={file}
-          displayed
           moveExternal={moveExternal}
           shareFile={shareFile}
           moveWithin={moveWithin}

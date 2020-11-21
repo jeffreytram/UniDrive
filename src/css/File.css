@@ -88,7 +88,7 @@ a:hover {
   min-width: 160px;
   text-align: left;
   transition: opacity 250ms ease;
-  z-index: 2;
+  z-index: 3;
 }
 
 .divider {

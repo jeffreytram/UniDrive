@@ -13,7 +13,8 @@ body {
   --subtle2: gray;
   --header-margin: 45px;
   --bg-alpha: rgba(30, 30, 30, .8);
-  --sidebar-width: 225px;
+  /* Note: sidebar-width cannot have a leading white space before the value */
+  --sidebar-width:225px;
   --hover-color: rgba(66, 133, 244, .2);
   --shadow-color: rgba(50, 50, 50, 0.4);
   background-color: var(--main-bg);
