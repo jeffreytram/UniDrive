@@ -58,11 +58,7 @@
   min-width: 190px;
   text-align: left;
   transition: opacity 200ms ease;
-<<<<<<< HEAD
-  z-index: 3;
-=======
   z-index: 5;
->>>>>>> 75674989a064ed8cb4b84fad825f035c91537b62
 }
 
 .menu-item {

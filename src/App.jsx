@@ -231,12 +231,6 @@ class App extends Component {
     this.setState({ starred: false });
     this.setFilterQuery(filter);
     const { userList } = this.state;
-<<<<<<< HEAD
-    userList.forEach((user, i) => {
-      const { email } = parseIDToken(userList[i].idToken);
-      this.updateFiles(i, email);
-    });
-=======
     //check if there is a stored folder list
     if ((userList[0].storedFolderList !== null)) {
       userList.forEach((user, i) => {
@@ -251,7 +245,6 @@ class App extends Component {
         const { email } = this.parseIDToken(userList[i].idToken);
         this.updateFiles(i, email);
     }); 
->>>>>>> 75674989a064ed8cb4b84fad825f035c91537b62
   }
 }
 
@@ -421,12 +414,7 @@ class App extends Component {
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
     } else {
-<<<<<<< HEAD
-      newOpenFolders[oId].displayed = updatedList[index].folders[folder.id].children;
-=======
       newOpenFolders[oId].displayed = folderList[folder.id].children;
-
->>>>>>> 75674989a064ed8cb4b84fad825f035c91537b62
       updatedList[index].openFolders = newOpenFolders;
       this.setState({ userList: updatedList });
     }
@@ -536,28 +524,6 @@ class App extends Component {
   moveWithin = (userId, file, newParentId) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
-<<<<<<< HEAD
-    const { email } = parseIDToken(userToken);
-    loadAuth(email, () => {
-      if (file.parents === undefined || (file.parents.length === 1 && file.parents[0][0] === '0' && file.parents[0][1] === 'A')) {
-        alert('File is already in root');
-        return;
-      }
-      if (window.confirm('Warning: moving a file to root will unshare it with everybody it is currently shared with.')) {
-        const preParents = file.parents.join(',');
-        window.gapi.client.drive.files.update({
-          fileId: file.id,
-          addParents: newParentId,
-          removeParents: preParents,
-          fields: 'id, parents',
-        }).then((response) => {
-          if (response.error) {
-            console.log(response.error);
-          }
-          console.log(response);
-        });
-      }
-=======
     const { email } = this.parseIDToken(userToken);
 
     window.gapi.client.load('drive', 'v3').then(() => {
@@ -592,7 +558,6 @@ class App extends Component {
           });
         }
       });
->>>>>>> 75674989a064ed8cb4b84fad825f035c91537b62
     });
   }
 
