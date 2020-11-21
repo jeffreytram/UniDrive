@@ -5,7 +5,7 @@
   transform: translate(-50%, -50%);
   background-color: var(--bg-alpha);
   padding: 25px;
-  z-index: 5;
+  z-index: 4;
   border-radius: 10px;
   text-align: center;
 }

@@ -30,7 +30,6 @@
   left: 425px;
   height: 550px;
   border-radius: 10px;
-  z-index: -1;
   -webkit-box-shadow: 8px 13px 30px 0px rgba(50, 50, 50, 0.6);
   -moz-box-shadow: 8px 13px 30px 0px rgba(50, 50, 50, 0.6);
   box-shadow: 8px 13px 30px 0px rgba(50, 50, 50, 0.6);

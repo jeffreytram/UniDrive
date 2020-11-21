@@ -2,17 +2,20 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCaretSquareLeft, faCaretSquareRight, faUserPlus, faShareSquare, faStar, faHome, faUserSlash
+  faCaretSquareLeft, faCaretSquareRight, faUserPlus, faShareSquare, faStar, faHome, faUserSlash,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
+import { parseIDToken } from '../logic/auth';
 import '../css/Sidebar.css';
 
 export default function Sidebar({
-  authorizeUser, filterFilesInAllAccounts, parseIDToken, userList, removeAllAccounts,
+  authorizeUser, filterFilesInAllAccounts, userList, removeAllAccounts,
   starFilter,
 }) {
-  const [expand, setExpand] = useState(true);
   const body = document.getElementsByTagName('body')[0];
+  const style = getComputedStyle(body);
+  const initialState = (style.getPropertyValue('--sidebar-width') === '225px');
+  const [expand, setExpand] = useState(initialState);
 
   const scrollToggle = (ref) => {
     userList.forEach((user) => {
@@ -53,6 +56,7 @@ export default function Sidebar({
     }
     filterFilesInAllAccounts(query);
   };
+  const sidebarClassName = (expand) ? 'collapsible' : 'collapsible collapse';
   return (
     <div className="sidebar">
       <div>
@@ -64,19 +68,19 @@ export default function Sidebar({
           <FontAwesomeIcon icon={faUserSlash} size="lg" title="Remove All Accounts" />
           {expand ? ' Remove All Accounts' : ''}
         </button>
-        <div className="sidebar-item collapsible selected" onClick={(event) => handleClick(event.target, '')}>
+        <div className={`sidebar-item ${sidebarClassName} selected`} onClick={(event) => handleClick(event.target, '')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faHome} size="lg" title="All Files" />
           {expand ? ' All Files' : ''}
         </div>
-        <div className="sidebar-item collapsible" onClick={(event) => handleClick(event.target, 'my drives')}>
+        <div className={`sidebar-item ${sidebarClassName}`} onClick={(event) => handleClick(event.target, 'my drives')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faGoogleDrive} size="lg" title="My Drive Files" />
           {expand ? ' My Drive Files' : ''}
         </div>
-        <div className="sidebar-item collapsible" onClick={(event) => handleClick(event.target, 'shared')}>
+        <div className={`sidebar-item ${sidebarClassName}`} onClick={(event) => handleClick(event.target, 'shared')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faShareSquare} size="lg" title="Shared" />
           {expand ? ' Shared' : ''}
         </div>
-        <div className="sidebar-item collapsible" onClick={(event) => handleClick(event.target, 'starred')}>
+        <div className={`sidebar-item ${sidebarClassName}`} onClick={(event) => handleClick(event.target, 'starred')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faStar} size="lg" title="Starred" />
           {expand ? ' Starred' : ''}
         </div>
@@ -86,7 +90,7 @@ export default function Sidebar({
             const { name, picture } = parseIDToken(user.idToken);
             const { ref } = user;
             return (
-              <div className="sidebar-user collapsible" key={user.id} onClick={() => scrollToggle(ref)}>
+              <div className={`sidebar-user ${sidebarClassName}`} key={user.id} onClick={() => scrollToggle(ref)}>
                 <img className="sidebar-picture" src={picture} alt="Account profile" />
                 {expand ? ` ${name}` : ''}
               </div>
@@ -106,7 +110,6 @@ export default function Sidebar({
 Sidebar.propTypes = {
   authorizeUser: PropTypes.func.isRequired,
   filterFilesInAllAccounts: PropTypes.func.isRequired,
-  parseIDToken: PropTypes.func.isRequired,
   userList: PropTypes.arrayOf(PropTypes.object).isRequired,
   removeAllAccounts: PropTypes.func.isRequired,
 };
