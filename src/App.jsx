@@ -36,7 +36,7 @@ class App extends Component {
       lastRefreshTime: Date().substring(0, 21),
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
-      isLoading: false,
+      isLoading: true,
       starred: false,
       isSearching: false,
       isFiltering: false,
@@ -268,6 +268,7 @@ class App extends Component {
    * @param {string} searchInput from the searchbar.js
    */
   onFormSubmit = (searchInput) => {
+    if (!this.state.isLoading) {
     let searchQuery;
       searchQuery = `name contains '${searchInput}'`;
       const newUserList = this.state.userList;
@@ -301,10 +302,12 @@ class App extends Component {
         
     }
     console.log(newUserList)
+  }
   
   }
 
   filterFilesInAllAccounts = (filter) => {
+    if (!this.state.isLoading) {
     this.setState({ starred: false });
     this.setFilterQuery(filter);
     const newUserList = this.state.userList;
@@ -333,6 +336,7 @@ class App extends Component {
       isFiltering: true,
     }, this.refreshAllFunction());
   }
+}
 }
    
 
