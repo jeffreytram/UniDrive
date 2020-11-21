@@ -295,24 +295,25 @@ class App extends Component {
   filterFilesInAllAccounts = (filter) => {
     this.setState({ starred: false });
     this.setFilterQuery(filter);
-    const { userList } = this.state;
-    //check if there is a stored folder list
-    if ((userList[0].storedFolderList !== null)) {
-      userList.forEach((user, i) => {
-        const { email } = this.parseIDToken(userList[i].idToken);
-        this.updateFiles(i, email);
-      });
-    } else {
-      for (let i = 0; i < this.state.userList.length; i++) {
-        userList[i].storedFolderList = userList[i].folders;
-        userList[i].storedTopLevelFolders = userList[i].topLevelFolders;
-    }
-      userList.forEach((user, i) => {
-        const { email } = this.parseIDToken(userList[i].idToken);
-        this.updateFiles(i, email);
-    }); 
+    const newUserList = this.state.userList;
+    console.log(filter)
+    console.log(filter === 'trashed = false')
+    if ((newUserList[0].storedFolderList === null)) {
+      for (let i = 0; i < newUserList.length; i++) {
+        newUserList[i].storedFolderList = newUserList[i].folders;
+        newUserList[i].storedTopLevelFolders = newUserList[i].topLevelFolders;
+      }
   }
+  if (filter === 'trashed = false') {
+    for (let i = 0; i < newUserList.length; i++) {
+      newUserList[i].storedFolderList = null;
+      newUserList[i].storedTopLevelFolders = null;
+    }
+  }
+  this.setState({userList : newUserList}, this.refreshAllFunction());
 }
+   
+
 
   setFilterQuery = (filter) => {
     this.setState((prevState) => ({
@@ -400,9 +401,30 @@ class App extends Component {
           }
         }
         if (np) {
-          updatedList[index].topLevelFolders.push(updatedList[index].folders[results[j].id]);
+          let currFolder = results[j].id;
+          //find root of folder (if querey is used)
+          //we don't want to push to top level if root folder is not included in the filter
+          if (updatedList[index].storedTopLevelFolders !== null) {
+            console.log(updatedList[index].storedTopLevelFolders)
+    
+          while((!(updatedList[index].storedTopLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) && (updatedList[index].storedFolderList[currFolder].folder.parents !== undefined) && (updatedList[index].storedFolderList[currFolder].folder.mimeType === 'application/vnd.google-apps.folder')) {
+            if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]] === undefined) {
+              break;
+            }
+            currFolder = updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]].folder.id;
+            console.log(updatedList[index].storedFolderList[currFolder])
+          }
+          //check to see if the root folder belongs in the current filter and if root folder has already been added
+          console.log(updatedList[index].topLevelFolders)
+          if ((updatedList[index].folders[currFolder]) && !(updatedList[index].topLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) {
+            updatedList[index].topLevelFolders.push(updatedList[index].storedFolderList[currFolder]);
+          }
+        } else {
+          updatedList[index].topLevelFolders.push(updatedList[index].folders[currFolder]);
         }
+        
       }
+    }
       /* Update file paths if a folder that was there is not anymore */
       const newOpenFolders = updatedList[index].openFolders;
       for (let oId = 0; oId < newOpenFolders.length; oId++) {
