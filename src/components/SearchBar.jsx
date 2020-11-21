@@ -22,7 +22,6 @@ class SearchBar extends Component {
 
   inputUpdated = (e) => {
     const { value } = e.target;
-
     this.setState({ searchInput: value });
   }
 

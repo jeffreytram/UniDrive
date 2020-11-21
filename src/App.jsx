@@ -603,10 +603,11 @@ class App extends Component {
     const { userList } = this.state;
     const updatedList = userList;
     for (let i = 0; i < updatedList.length; i++) {
+      const folderList = (updatedList[i].storedFolderList == null) ? updatedList[i].folders : updatedList[i].storedFolderList;
       const starred = [];
-      for (const prop in updatedList[i].folders) {
-        if (updatedList[i].folders[prop].folder.starred) {
-          starred.push(updatedList[i].folders[prop]);
+      for (const prop in folderList) {
+        if (folderList[prop].folder.starred) {
+          starred.push(folderList[prop]);
         }
       }
       updatedList[i].topLevelFolders = starred;
