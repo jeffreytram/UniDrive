@@ -38,6 +38,8 @@ class App extends Component {
       searchQuery: 'name contains ""',
       isLoading: false,
       starred: false,
+      isSearching: false,
+      isFiltering: false,
     };
   }
 
@@ -216,7 +218,6 @@ class App extends Component {
           filteredBy: '',
           storedFolderList: null,
           storedTopLevelFolders: null,
-          isSearching: false,
         }],
       }));
       cookies.set(email, email, cookieOptions);
@@ -271,7 +272,8 @@ class App extends Component {
       searchQuery = `name contains '${searchInput}'`;
       const newUserList = this.state.userList;
       //checks if search input is empty, or spaces only
-      if (searchInput !== "" ||(!searchInput.replace(/\s/g, '').length === 0)) {
+      console.log(searchInput)
+      if (searchInput !== "") {
       for (let i = 0; i < this.state.userList.length; i++) {
         if ( newUserList[i].storedFolderList === null) {
         newUserList[i].storedFolderList = newUserList[i].folders;
@@ -286,14 +288,16 @@ class App extends Component {
       
     } else {
       for (let i = 0; i < this.state.userList.length; i++) {
+        if (!this.state.isFiltering) {
         newUserList[i].storedFolderList = null;
         newUserList[i].storedTopLevelFolders = null;
+        }
       }
       this.setState(
         {
           userList: newUserList,
          searchQuery,
-        isSearching: true },this.refreshAllFunction());
+        isSearching: false },this.refreshAllFunction());
         
     }
     console.log(newUserList)
@@ -307,18 +311,28 @@ class App extends Component {
     console.log(filter)
     console.log(filter === 'trashed = false')
     if ((newUserList[0].storedFolderList === null)) {
+      if (!this.state.isSearching) {
       for (let i = 0; i < newUserList.length; i++) {
         newUserList[i].storedFolderList = newUserList[i].folders;
         newUserList[i].storedTopLevelFolders = newUserList[i].topLevelFolders;
       }
+    }
   }
   if (filter === 'trashed = false') {
+    if (!this.state.isSearching) {
     for (let i = 0; i < newUserList.length; i++) {
       newUserList[i].storedFolderList = null;
       newUserList[i].storedTopLevelFolders = null;
     }
   }
-  this.setState({userList : newUserList}, this.refreshAllFunction());
+    this.setState({userList : newUserList,
+      isFiltering: false,
+    }, this.refreshAllFunction());
+  } else {
+    this.setState({userList : newUserList,
+      isFiltering: true,
+    }, this.refreshAllFunction());
+  }
 }
    
 
@@ -481,7 +495,10 @@ class App extends Component {
     console.log(updatedList[index].storedFolderList)
       if (updatedList[index].storedFolderList !== null) {
         folderList = updatedList[index].storedFolderList;
+        console.log(!this.state.isSearching)
+        if (!this.state.isSearching) {
         topLevelFolders = updatedList[index].storedTopLevelFolders;
+        }
       }
       console.log(updatedList[index].folders)
       console.log(folderList)
