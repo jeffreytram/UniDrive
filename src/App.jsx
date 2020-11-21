@@ -293,11 +293,22 @@ class App extends Component {
     this.setState({ starred: false });
     this.setFilterQuery(filter);
     const { userList } = this.state;
-    userList.forEach((user, i) => {
-      const { email } = this.parseIDToken(userList[i].idToken);
-      this.updateFiles(i, email);
-    });
+    //check if there is a stored folder list
+    if ((userList[0].storedFolderList !== null)) {
+      userList.forEach((user, i) => {
+        const { email } = this.parseIDToken(userList[i].idToken);
+        this.updateFiles(i, email);
+      });
+    } else {
+      for (let i = 0; i < this.state.userList.length; i++) {
+        userList[i].storedFolderList = userList[i].folders;
+    }
+      userList.forEach((user, i) => {
+        const { email } = this.parseIDToken(userList[i].idToken);
+        this.updateFiles(i, email);
+    }); 
   }
+}
 
   setFilterQuery = (filter) => {
     this.setState((prevState) => ({
@@ -448,7 +459,7 @@ class App extends Component {
         displayed: folderList[folder.id].children,
       });
       let tempFolder = folder;
-      //if file is not top-level, and oId is 0, then it is the result of a nested folder search
+      //if file is not top-level, and oId is 0, then it is the result of a nested folder search or filter
       //this builds its file path up to the root
      while(!(tempFolder.parents === undefined || (tempFolder.parents.length === 1 && tempFolder.parents[0][0] === '0' && tempFolder.parents[0][1] === 'A'))) {
       newOpenFolders[newOpenFolders.length-1].path.unshift(folderList[tempFolder.parents[0]].folder)
