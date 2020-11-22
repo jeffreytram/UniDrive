@@ -5,21 +5,20 @@ import '../css/FileList.css';
 
 export default function TopLevelFolderList(props) {
   const {
-    loadAuth, moveExternal, moveWithin, openFolder, refreshFunc, shareFile, topLevelFolderList, userId,
+    email, moveExternal, moveWithin, openFolder, refreshFunc, shareFile, topLevelFolderList, userId,
   } = props;
 
   return (
     <div className="topFolder">
-      <div className="file-list-container" style={{ display: 'flex', flexDirection: 'row' }}>
+      <div className="file-list-container">
         {topLevelFolderList.map((folderObj) => (
           <File
             key={folderObj.folder.id}
             data={folderObj.folder}
-            displayed
-            loadAuth={loadAuth}
+            email={email}
             moveExternal={moveExternal}
             moveWithin={moveWithin}
-            oId={null}
+            oId={-1}
             openFolder={openFolder}
             refreshFunc={refreshFunc}
             shareFile={shareFile}
@@ -32,7 +31,7 @@ export default function TopLevelFolderList(props) {
 }
 
 TopLevelFolderList.propTypes = {
-  loadAuth: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
   moveExternal: PropTypes.func.isRequired,
   moveWithin: PropTypes.func.isRequired,
   openFolder: PropTypes.func.isRequired,

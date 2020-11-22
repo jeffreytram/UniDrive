@@ -8,6 +8,7 @@ import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import {
   ContextMenu, MenuItem, ContextMenuTrigger,
 } from 'react-contextmenu';
+import { loadAuthParam } from '../logic/auth';
 import '../css/File.css';
 
 class File extends Component {
@@ -107,87 +108,40 @@ deletePermission = (permId) => {
   // export default function File(props) {
   render() {
     const {
-      data, displayed, loadAuth, moveWithin, oId, openFolder, shareFile, userId,
+      data, email, moveWithin, oId, openFolder, shareFile, userId,
     } = this.props;
 
     const {
       id, webViewLink, iconLink, name, mimeType, starred,
     } = data;
 
-    const copyFunc = loadAuth(userId, this.copy);
-    const deleteFunc = loadAuth(userId, this.delete);
-    const renameFunc = loadAuth(userId, this.rename);
-    const starFunc = loadAuth(userId, this.star);
-    const findPermissionFunc = loadAuth(userId, this.findPermission);
-    const findFilePermissionFunc = loadAuth(userId, this.findFilePermission);
-    const deletePermissionFunc = loadAuth(userId, this.deletePermission);
-    if (displayed) {
-      if (mimeType !== 'application/vnd.google-apps.folder') {
+    const copyFunc = loadAuthParam(email, this.copy);
+    const deleteFunc = loadAuthParam(email, this.delete);
+    const renameFunc = loadAuthParam(email, this.rename);
+    const starFunc = loadAuthParam(email, this.star);
+    const findPermissionFunc = loadAuthParam(email, this.findPermission);
+    const findFilePermissionFunc = loadAuthParam(email, this.findFilePermission);
+    const deletePermissionFunc = loadAuthParam(email, this.deletePermission);
+    if (mimeType !== 'application/vnd.google-apps.folder') {
       // if file
-        return (
-          <div>
-            <ContextMenuTrigger id={id + userId.toString()}>
-              <a href={webViewLink} target="blank">
-                <div className="file-container">
-                  <div className="file-image-container">
-                    <img className="file-img" src={iconLink} alt="File icon" />
-                  </div>
-                  <div className="file-name">
-                    {name}
-                  </div>
-                </div>
-              </a>
-            </ContextMenuTrigger>
-            <ContextMenu className="context-menu" id={id + userId.toString()}>
-              <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
-                <FontAwesomeIcon className="faOpen menu-icon" icon={faFolderOpen} />
-                Open
-              </MenuItem>
-              <hr className="divider" />
-              <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
-                <FontAwesomeIcon className="faShare menu-icon" icon={faShare} />
-                Share
-              </MenuItem>
-              <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
-                <FontAwesomeIcon className="faArrowRight menu-icon" icon={faArrowRight} />
-                Move to Root
-              </MenuItem>
-              <MenuItem className="menu-item" onClick={() => renameFunc()}>
-                <FontAwesomeIcon className="faPencil menu-icon" icon={faPencilAlt} />
-                Rename
-              </MenuItem>
-              <MenuItem className="menu-item" onClick={() => copyFunc()}>
-                <FontAwesomeIcon className="faCopy menu-icon" icon={faCopy} />
-                Make a copy
-              </MenuItem>
-              <MenuItem className="menu-item" onClick={() => starFunc()}>
-                <FontAwesomeIcon className="faStar menu-icon" icon={faStar} />
-                { (starred) ? 'Remove From Starred' : 'Add to Starred' }
-              </MenuItem>
-              <hr className="divider" />
-              <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(findPermissionFunc, findFilePermissionFunc, deletePermissionFunc); } }}>
-                <FontAwesomeIcon className="menu-icon" icon={faTrash} />
-                Delete
-              </MenuItem>
-            </ContextMenu>
-          </div>
-        );
-      }
-      // if folder
       return (
         <div>
-          <ContextMenuTrigger id={id + userId.toString()}>
-            <div className="folder-container" onClick={() => openFolder(userId, oId, data)}>
-              <div className="folder-content-container">
-                <img className="folder-img" src={iconLink} alt="File icon" />
-                <p className="folder-name">{name}</p>
+          <ContextMenuTrigger id={id + userId.toString() + oId.toString()}>
+            <a href={webViewLink} target="blank">
+              <div className="file-container">
+                <div className="file-image-container">
+                  <img className="file-img" src={iconLink} alt="File icon" />
+                </div>
+                <div className="file-name">
+                  {name}
+                </div>
               </div>
-            </div>
+            </a>
           </ContextMenuTrigger>
-          <ContextMenu className="context-menu" id={id + userId.toString()}>
+          <ContextMenu className="context-menu" id={id + userId.toString() + oId.toString()}>
             <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
-              <FontAwesomeIcon className="faGoogle menu-icon" icon={faGoogleDrive} />
-              View on Google Drive
+              <FontAwesomeIcon className="faOpen menu-icon" icon={faFolderOpen} />
+              Open
             </MenuItem>
             <hr className="divider" />
             <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
@@ -198,30 +152,74 @@ deletePermission = (permId) => {
               <FontAwesomeIcon className="faArrowRight menu-icon" icon={faArrowRight} />
               Move to Root
             </MenuItem>
-            <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+            <MenuItem className="menu-item" onClick={() => renameFunc()}>
               <FontAwesomeIcon className="faPencil menu-icon" icon={faPencilAlt} />
               Rename
+            </MenuItem>
+            <MenuItem className="menu-item" onClick={() => copyFunc()}>
+              <FontAwesomeIcon className="faCopy menu-icon" icon={faCopy} />
+              Make a copy
             </MenuItem>
             <MenuItem className="menu-item" onClick={() => starFunc()}>
               <FontAwesomeIcon className="faStar menu-icon" icon={faStar} />
               { (starred) ? 'Remove From Starred' : 'Add to Starred' }
             </MenuItem>
             <hr className="divider" />
-            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(findPermissionFunc, findFilePermissionFunc, deletePermissionFunc); } }}>
+            <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will be placed in the trash. Proceed?')) { deleteFunc(findPermissionFunc, findFilePermissionFunc, deletePermissionFunc); } }}>
               <FontAwesomeIcon className="menu-icon" icon={faTrash} />
               Delete
             </MenuItem>
           </ContextMenu>
         </div>
       );
-    } return null;
+    }
+    // if folder
+    return (
+      <div>
+        <ContextMenuTrigger id={id + userId.toString() + oId.toString()}>
+          <div className="folder-container" onClick={() => openFolder(userId, oId, data)}>
+            <div className="folder-content-container">
+              <img className="folder-img" src={iconLink} alt="File icon" />
+              <p className="folder-name">{name}</p>
+            </div>
+          </div>
+        </ContextMenuTrigger>
+        <ContextMenu className="context-menu" id={id + userId.toString() + oId.toString()}>
+          <MenuItem className="menu-item" onClick={() => window.open(webViewLink, 'blank')}>
+            <FontAwesomeIcon className="faGoogle menu-icon" icon={faGoogleDrive} />
+            View on Google Drive
+          </MenuItem>
+          <hr className="divider" />
+          <MenuItem className="menu-item" onClick={() => shareFile(id, window.prompt('Email Address of sharee: '))}>
+            <FontAwesomeIcon className="faShare menu-icon" icon={faShare} />
+            Share
+          </MenuItem>
+          <MenuItem className="menu-item" onClick={() => moveWithin(userId, data, 'root')}>
+            <FontAwesomeIcon className="faArrowRight menu-icon" icon={faArrowRight} />
+            Move to Root
+          </MenuItem>
+          <MenuItem className="menu-item" onClick={() => renameFunc(userId, id)}>
+            <FontAwesomeIcon className="faPencil menu-icon" icon={faPencilAlt} />
+            Rename
+          </MenuItem>
+          <MenuItem className="menu-item" onClick={() => starFunc()}>
+            <FontAwesomeIcon className="faStar menu-icon" icon={faStar} />
+            { (starred) ? 'Remove From Starred' : 'Add to Starred' }
+          </MenuItem>
+          <hr className="divider" />
+          <MenuItem className="menu-item" onClick={() => { if (window.confirm('This item will become unrecoverable. Proceed?')) { deleteFunc(findPermissionFunc, findFilePermissionFunc, deletePermissionFunc); } }}>
+            <FontAwesomeIcon className="menu-icon" icon={faTrash} />
+            Delete
+          </MenuItem>
+        </ContextMenu>
+      </div>
+    );
   }
 }
 
 File.propTypes = {
   data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.arrayOf(PropTypes.string)])).isRequired,
-  displayed: PropTypes.bool.isRequired,
-  loadAuth: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
   moveExternal: PropTypes.func.isRequired,
   moveWithin: PropTypes.func.isRequired,
   oId: PropTypes.number,
