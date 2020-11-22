@@ -25,16 +25,19 @@ export default function SearchBar({
   return (
     <div className="search-form">
       <form onSubmit={(e) => { e.preventDefault(); }}>
-        <FontAwesomeIcon className="search-icon" icon={faSearch} />
-        <input
-          className="form-control"
-          id="searchbarform"
-          name="search"
-          onInput={inputUpdated}
-          placeholder="Search for a file..."
-          type="input"
-          value={searchInput}
-        />
+        <span className="search-input-container">
+          <FontAwesomeIcon className="search-icon" icon={faSearch} />
+          <input
+            className="form-control"
+            id="searchbarform"
+            name="search"
+            onInput={inputUpdated}
+            placeholder="Search for a file..."
+            type="input"
+            value={searchInput}
+          />
+          <button type="button" id="clear-btn" onClick={clearInput}>X</button>
+        </span>
         <DatePicker
           selected={lastViewDate}
           onChange={(date) => { setStartDate(date); searchDate(date); }}
@@ -42,7 +45,6 @@ export default function SearchBar({
           closeOnScroll
         />
         <button type="submit" style={{ display: 'none' }} onClick={() => onSubmit(searchInput)}>Search</button>
-        <button type="button" id="clear-btn" onClick={clearInput}>Clear</button>
       </form>
     </div>
   );

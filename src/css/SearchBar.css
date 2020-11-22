@@ -5,14 +5,32 @@
 .form-control {
   border: 2px solid var(--subtle2);
   border-radius: 5px;
-  padding: 6px 2px 2px 30px;
+  padding: 6px 30px 2px 30px;
   width: 20vw;
   background-color: var(--main-bg);
   color: var(--text);
+}
+
+.search-input-container {
+  position: relative;
 }
 
 .search-icon {
   position: relative;
   left: 25px;
   color: var(--subtle2);
+}
+
+#clear-btn {
+  background: none;
+  border: none;
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  z-index: 2;
+}
+
+#clear-btn:hover {
+  font-weight: bold;
+  cursor: pointer;
 }
