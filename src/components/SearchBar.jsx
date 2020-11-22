@@ -41,7 +41,7 @@ export default function SearchBar({
         <DatePicker
           selected={lastViewDate}
           onChange={(date) => { setStartDate(date); searchDate(date); }}
-          placeholderText="Last viewed by me"
+          placeholderText="Last viewed after..."
           closeOnScroll
         />
         <button type="submit" style={{ display: 'none' }} onClick={() => onSubmit(searchInput)}>Search</button>
