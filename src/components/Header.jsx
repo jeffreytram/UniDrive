@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt, faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'universal-cookie';
-import DatePicker from 'react-datepicker';
 import SearchBar from './SearchBar';
 import icon from './images/unidrive-logo.png';
 import iconWhite from './images/unidrive-logo-white.png';
 import '../css/Header.css';
-import 'react-datepicker/dist/react-datepicker.css';
 
 export default function Header({
   addedAccount, onSubmit, refreshAllFunc, syncMessage, searchDate,
@@ -23,8 +21,6 @@ export default function Header({
     path: '/',
     expires: cookieExpire,
   };
-
-  const [lastViewDate, setStartDate] = useState(new Date());
 
   const cookies = new Cookies();
   const cookie = cookies.getAll();
@@ -62,13 +58,7 @@ export default function Header({
         <span className="search-container">
           <SearchBar
             onSubmit={onSubmit}
-          />
-          <button type="button" id="clear-btn" onClick={() => { onSubmit(''); document.getElementById('searchbarform').value = ''; }}>Clear</button>
-          <DatePicker
-            selected={lastViewDate}
-            onChange={(date) => { setStartDate(date); searchDate(date); }}
-            placeholderText="Last viewed by me"
-            closeOnScroll
+            searchDate={searchDate}
           />
         </span>
       )}

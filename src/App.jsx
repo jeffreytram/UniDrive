@@ -205,7 +205,7 @@ class App extends Component {
   onFormSubmit = (searchInput) => {
     let searchQuery;
     if (searchInput === '') {
-      searchQuery = `name contains '${searchInput}'`;
+      searchQuery = 'name contains \'\'';
     } else {
       searchQuery = `mimeType != 'application/vnd.google-apps.folder' and name contains '${searchInput}'`;
     }
@@ -219,7 +219,7 @@ class App extends Component {
    */
   searchDate = (date) => {
     if (date != null) {
-      date = date.toISOString()
+      date = date.toISOString();
       let dateQuery;
       dateQuery = ` and viewedByMeTime >= '${date}'`;
       this.setState({ dateQuery });
@@ -425,7 +425,7 @@ class App extends Component {
   retrieveAllFiles = (callback, email, user) => {
     const { filterQuery, searchQuery, dateQuery } = this.state;
     const fileTypeQuery = user.filteredBy;
-    //const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
+    // const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
     const query = `${filterQuery} and ${searchQuery}${dateQuery} and (${fileTypeQuery})`;
     let res = [];
     const { sortedBy } = user;
