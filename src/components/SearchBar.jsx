@@ -17,13 +17,13 @@ class SearchBar extends Component {
     const { searchInput } = this.state;
     const { onSubmit } = this.props;
     onSubmit(searchInput);
-    this.setState({ searchInput: '' });
+
+    this.setState({ searchInput: ''});
     return false;
   }
 
   inputUpdated = (e) => {
     const { value } = e.target;
-
     this.setState({ searchInput: value });
   }
 
@@ -34,9 +34,10 @@ class SearchBar extends Component {
           <FontAwesomeIcon className="search-icon" icon={faSearch} />
           <input
             className="form-control"
+            id="searchbarform"
             name="search"
             onInput={this.inputUpdated}
-            placeholder="Search for a file..."
+            placeholder="Search for a file by name..."
             type="input"
             value={this.state.searchInput}
           />
@@ -51,4 +52,5 @@ export default SearchBar;
 
 SearchBar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  inputUpdated: PropTypes.func.isRequired,
 };

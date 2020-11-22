@@ -37,6 +37,7 @@ class App extends Component {
       lastRefreshTime: Date().substring(0, 21),
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
+      dateQuery: '',
       isLoading: false,
       starred: false,
     };
@@ -205,11 +206,28 @@ class App extends Component {
     let searchQuery;
     if (searchInput === '') {
       searchQuery = `name contains '${searchInput}'`;
+      this.setState((searchInput) => ({
+        searchInput: ''
+      }));
     } else {
       searchQuery = `mimeType != 'application/vnd.google-apps.folder' and name contains '${searchInput}'`;
     }
     this.setState({ searchQuery });
     this.refreshAllFunction();
+  }
+
+  /**
+   * Sets the start date to form the search query of last viewed by
+   * @param {string} date from the datepicker in header
+   */
+  searchDate = (date) => {
+    if (date != null) {
+      date = date.toISOString()
+      let dateQuery;
+      dateQuery = ` and viewedByMeTime >= '${date}'`;
+      this.setState({ dateQuery });
+      this.refreshAllFunction();
+    }
   }
 
   filterFilesInAllAccounts = (filter) => {
@@ -408,9 +426,10 @@ class App extends Component {
    * @param {String} email email of the user to keep automatically authenticating for each list request
    */
   retrieveAllFiles = (callback, email, user) => {
-    const { filterQuery, searchQuery } = this.state;
+    const { filterQuery, searchQuery, dateQuery } = this.state;
     const fileTypeQuery = user.filteredBy;
-    const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
+    //const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
+    const query = `${filterQuery} and ${searchQuery}${dateQuery} and (${fileTypeQuery})`;
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
@@ -699,6 +718,7 @@ class App extends Component {
         <Header
           addedAccount={addedAccount}
           onSubmit={this.onFormSubmit}
+          searchDate={this.searchDate}
           refreshAllFunc={this.refreshAllFunction}
           syncMessage={this.state.lastRefreshTime}
         />

@@ -7,9 +7,11 @@ import SearchBar from './SearchBar';
 import icon from './images/unidrive-logo.png';
 import iconWhite from './images/unidrive-logo-white.png';
 import '../css/Header.css';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Header({
-  addedAccount, onSubmit, refreshAllFunc, syncMessage,
+  addedAccount, onSubmit, refreshAllFunc, syncMessage, searchDate, twoCalls
 }) {
   const d = new Date();
   const year = d.getFullYear();
@@ -21,6 +23,8 @@ export default function Header({
     path: '/',
     expires: cookieExpire,
   };
+
+  const [lastViewDate, setStartDate] = useState(new Date());
 
   const cookies = new Cookies();
   const cookie = cookies.getAll();
@@ -59,6 +63,9 @@ export default function Header({
           <SearchBar
             onSubmit={onSubmit}
           />
+          <button id="clear-btn" onClick={() => {onSubmit(""); document.getElementById('searchbarform').value = ''}}>Clear</button>
+          <DatePicker selected={lastViewDate} onChange={date => { setStartDate(date); searchDate(date)}}
+            placeholderText="Last viewed by me" closeOnScroll={true}/>
         </span>
       )}
       {addedAccount && (
@@ -83,6 +90,7 @@ export default function Header({
 Header.propTypes = {
   addedAccount: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  searchDate: PropTypes.func.isRequired,
   refreshAllFunc: PropTypes.func.isRequired,
   syncMessage: PropTypes.string.isRequired,
 };
