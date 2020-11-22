@@ -108,7 +108,7 @@ deletePermission = (permId) => {
   // export default function File(props) {
   render() {
     const {
-      data, email, moveWithin, oId, openFolder, shareFile, userId,
+      data, email, moveWithin, oId, openFolder, shareFile, userId, isSearching, isFiltering
     } = this.props;
 
     const {

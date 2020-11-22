@@ -98,7 +98,7 @@ class Filepath extends Component {
 
   render() {
     const {
-      email, folder, oId, pIndex, updatePath, userId, shareFile, moveWithin,
+      email, folder, oId, pIndex, updatePath, userId, shareFile, moveWithin, isSearching, isFiltering
     } = this.props;
 
     const deleteFunc = loadAuthParam(email, this.delete);

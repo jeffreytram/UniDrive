@@ -5,7 +5,7 @@ import '../css/FileList.css';
 
 export default function LooseFileList(props) {
   const {
-    looseFileList, moveExternal, moveWithin, refreshFunc, shareFile, userId,
+    looseFileList, moveExternal, moveWithin, refreshFunc, shareFile, userId, isFiltering, isSearching
   } = props;
 
   return (
@@ -20,6 +20,8 @@ export default function LooseFileList(props) {
           moveWithin={moveWithin}
           refreshFunc={refreshFunc}
           oId={-1}
+          isSearching = {isSearching}
+          isFiltering = {isFiltering}
         />
       ))}
     </div>

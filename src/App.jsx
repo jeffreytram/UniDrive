@@ -368,6 +368,10 @@ class App extends Component {
           // find root of folder (if querey is used)
           // we don't want to push to top level if root folder is not included in the filter
           if (updatedList[index].storedTopLevelFolders !== null && !this.state.isSearching) {
+            if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder]] === undefined) {
+             // updatedList[index].storedFolderList.push(updatedList[index].folders[currFolder])
+             updatedList[index].storedFolderList[currFolder] =  updatedList[index].folders[currFolder]
+            }
             while ((!(updatedList[index].storedTopLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) && (updatedList[index].storedFolderList[currFolder].folder.parents !== undefined) && (updatedList[index].storedFolderList[currFolder].folder.mimeType === 'application/vnd.google-apps.folder')) {
               if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]] === undefined) {
                 break;
@@ -574,7 +578,7 @@ class App extends Component {
   moveWithin = (userId, file, newParentId) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
-    const { email } = this.parseIDToken(userToken);
+    const { email } = parseIDToken(userToken);
 
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
@@ -810,7 +814,7 @@ class App extends Component {
   }
 
   render() {
-    const { userList, uploadRequests, isLoading } = this.state;
+    const { userList, uploadRequests, isLoading, isSearching, isFiltering } = this.state;
     const cookie = cookies.getAll();
     const addedAccount = (Object.keys(cookie).length > 0);
     return (
@@ -847,6 +851,8 @@ class App extends Component {
                     closePath={this.closePath}
                     updatePath={this.updatePath}
                     filterFunc={this.changeFilterType}
+                    isSearching = {isSearching}
+                    isFiltering = {isFiltering}
                   />
                   {uploadRequests.length > 0 && (
                     <RequestProgress
