@@ -12,7 +12,7 @@
   justify-content: space-between;
 }
 
-.sidebar.collapse {
+.sidebar.collapse, .sidebar-item.collapse, .sidebar-user.collapse {
   text-align: center;
 }
 
@@ -27,13 +27,23 @@
 }
 
 .sidebar-item {
+  display: block;
+  width: 100%;
+  height: 40px;
   border: 1px solid rgba(0, 0, 0, 0);
   padding: 8px 15px;
+  background: none;
+  text-align: left;
+  font: inherit;
 }
 
 .sidebar-user {
+  width: 100%;
+  text-align: left;
   border: 1px solid rgba(0, 0, 0, 0);
+  background: none;
   padding: 4px 15px;
+  font: inherit;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
