@@ -38,7 +38,7 @@ class App extends Component {
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
       dateQuery: '',
-      isLoading: false,
+      isLoading: true,
       starred: false,
       isSearching: false,
       isFiltering: false,
@@ -821,9 +821,6 @@ class App extends Component {
           refreshAllFunc={this.refreshAllFunction}
           syncMessage={this.state.lastRefreshTime}
         />
-        {isLoading && (
-          <Loading />
-        )}
         {addedAccount
           ? (
             <Layout
@@ -833,6 +830,9 @@ class App extends Component {
               starFilter={this.starredFilter}
               userList={userList}
             >
+              {isLoading && (
+              <Loading />
+              )}
               <div className="main-container">
                 <div className="main-content">
                   <UserList
