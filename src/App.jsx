@@ -811,7 +811,9 @@ class App extends Component {
   render() {
     const { userList, uploadRequests, isLoading } = this.state;
     const cookie = cookies.getAll();
-    const addedAccount = (Object.keys(cookie).length > 0);
+    console.log(cookie);
+    console.log(Object.keys(cookie).length)
+    const addedAccount = (Object.keys(cookie).length > 1);
     return (
       <div>
         <Header
