@@ -206,9 +206,6 @@ class App extends Component {
     let searchQuery;
     if (searchInput === '') {
       searchQuery = `name contains '${searchInput}'`;
-      this.setState((searchInput) => ({
-        searchInput: ''
-      }));
     } else {
       searchQuery = `mimeType != 'application/vnd.google-apps.folder' and name contains '${searchInput}'`;
     }

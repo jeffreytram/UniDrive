@@ -17,8 +17,6 @@ class SearchBar extends Component {
     const { searchInput } = this.state;
     const { onSubmit } = this.props;
     onSubmit(searchInput);
-
-    this.setState({ searchInput: ''});
     return false;
   }
 
@@ -37,7 +35,7 @@ class SearchBar extends Component {
             id="searchbarform"
             name="search"
             onInput={this.inputUpdated}
-            placeholder="Search for a file by name..."
+            placeholder="Search for a file..."
             type="input"
             value={this.state.searchInput}
           />
