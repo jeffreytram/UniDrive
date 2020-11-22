@@ -9,7 +9,7 @@ import iconWhite from './images/unidrive-logo-white.png';
 import '../css/Header.css';
 
 export default function Header({
-  addedAccount, onSubmit, refreshAllFunc, syncMessage, searchDate,
+  addedAccount, onSubmit, refreshAllFunc, syncMessage,
 }) {
   const d = new Date();
   const year = d.getFullYear();
@@ -58,7 +58,6 @@ export default function Header({
         <span className="search-container">
           <SearchBar
             onSubmit={onSubmit}
-            searchDate={searchDate}
           />
         </span>
       )}
@@ -84,7 +83,6 @@ export default function Header({
 Header.propTypes = {
   addedAccount: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  searchDate: PropTypes.func.isRequired,
   refreshAllFunc: PropTypes.func.isRequired,
   syncMessage: PropTypes.string.isRequired,
 };

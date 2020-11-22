@@ -201,30 +201,20 @@ class App extends Component {
   /**
    * Saves the input from the search bar. Will not return folders, only files
    * @param {string} searchInput from the searchbar.js
+   * @param {string} dateInput from the datepicker in header
    */
-  onFormSubmit = (searchInput) => {
+  onFormSubmit = (searchInput, dateInput) => {
     let searchQuery;
     if (searchInput === '') {
       searchQuery = 'name contains \'\'';
     } else {
       searchQuery = `mimeType != 'application/vnd.google-apps.folder' and name contains '${searchInput}'`;
     }
-    this.setState({ searchQuery });
-    this.refreshAllFunction();
-  }
 
-  /**
-   * Sets the start date to form the search query of last viewed by
-   * @param {string} date from the datepicker in header
-   */
-  searchDate = (date) => {
-    if (date != null) {
-      date = date.toISOString();
-      let dateQuery;
-      dateQuery = ` and viewedByMeTime >= '${date}'`;
-      this.setState({ dateQuery });
-      this.refreshAllFunction();
-    }
+    const dateQuery = (dateInput !== null) ? ` and viewedByMeTime >= '${dateInput.toISOString()}'` : '';
+
+    this.setState({ searchQuery, dateQuery });
+    this.refreshAllFunction();
   }
 
   filterFilesInAllAccounts = (filter) => {
@@ -715,7 +705,6 @@ class App extends Component {
         <Header
           addedAccount={addedAccount}
           onSubmit={this.onFormSubmit}
-          searchDate={this.searchDate}
           refreshAllFunc={this.refreshAllFunction}
           syncMessage={this.state.lastRefreshTime}
         />

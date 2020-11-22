@@ -6,10 +6,8 @@ import DatePicker from 'react-datepicker';
 import '../css/SearchBar.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
-export default function SearchBar({
-  onSubmit, searchDate,
-}) {
-  const [lastViewDate, setStartDate] = useState();
+export default function SearchBar({ onSubmit }) {
+  const [lastViewDate, setStartDate] = useState(null);
   const [searchInput, setSearchInput] = useState('');
 
   const inputUpdated = (e) => {
@@ -17,9 +15,14 @@ export default function SearchBar({
     setSearchInput(value);
   };
 
-  const clearInput = () => {
+  const clearSearch = () => {
     setSearchInput('');
-    onSubmit('');
+    onSubmit('', lastViewDate);
+  };
+
+  const clearDate = () => {
+    setStartDate(null);
+    onSubmit(searchInput, null);
   };
 
   return (
@@ -36,15 +39,22 @@ export default function SearchBar({
             type="input"
             value={searchInput}
           />
-          <button type="button" id="clear-btn" onClick={clearInput}>X</button>
+          {searchInput.length > 0 && (
+            <button type="button" className="clear-btn clear-search" onClick={clearSearch}>X</button>
+          )}
         </span>
-        <DatePicker
-          selected={lastViewDate}
-          onChange={(date) => { setStartDate(date); searchDate(date); }}
-          placeholderText="Last viewed after..."
-          closeOnScroll
-        />
-        <button type="submit" style={{ display: 'none' }} onClick={() => onSubmit(searchInput)}>Search</button>
+        <span>
+          <DatePicker
+            selected={lastViewDate}
+            onChange={(date) => { setStartDate(date); onSubmit(searchInput, date);}}
+            placeholderText="Last viewed after..."
+            closeOnScroll
+          />
+          {lastViewDate && (
+            <button type="button" className="clear-btn clear-date" onClick={clearDate}>X</button>
+          )}
+        </span>
+        <button type="submit" style={{ display: 'none' }} onClick={() => onSubmit(searchInput, lastViewDate)}>Search</button>
       </form>
     </div>
   );
@@ -52,5 +62,4 @@ export default function SearchBar({
 
 SearchBar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  searchDate: PropTypes.func.isRequired,
 };

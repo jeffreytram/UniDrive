@@ -33,16 +33,24 @@
   color: var(--subtle2);
 }
 
-#clear-btn {
+.clear-btn {
   background: none;
   border: none;
   color: var(--text);
   position: absolute;
-  right: 10px;
+}
+
+.clear-btn:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.clear-search {
+  right: 5px;
   top: 4px;
 }
 
-#clear-btn:hover {
-  font-weight: bold;
-  cursor: pointer;
+.clear-date {
+  right: 5px;
+  top: 10px;
 }
