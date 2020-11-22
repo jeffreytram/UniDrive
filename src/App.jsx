@@ -37,7 +37,7 @@ class App extends Component {
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
       dateQuery: '',
-      isLoading: true,
+      isLoading: false,
       starred: false,
       isSearching: false,
       isFiltering: false,
@@ -811,7 +811,7 @@ class App extends Component {
   render() {
     const { userList, uploadRequests, isLoading } = this.state;
     const cookie = cookies.getAll();
-    const addedAccount = !((Object.keys(cookie).length === 0 || (Object.keys(cookie).length === 1 && Object.keys(cookie).includes('theme'))) && cookie.constructor === Object);
+    const addedAccount = (Object.keys(cookie).length > 0);
     return (
       <div>
         <Header
