@@ -58,7 +58,7 @@ export default function Sidebar({
   };
   const sidebarClassName = (expand) ? 'collapsible' : 'collapsible collapse';
   return (
-    <div className="sidebar">
+    <div className={(expand) ? 'sidebar' : 'sidebar collapse'}>
       <div>
         <button type="button" className="sidebar-add-button" id="signin-btn" onClick={() => authorizeUser()}>
           <FontAwesomeIcon icon={faUserPlus} size="lg" title="Add an Account" />
