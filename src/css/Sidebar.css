@@ -105,9 +105,18 @@
 .sidebar-user-container {
   margin-top: 20px;
   overflow: hidden auto;
-  max-height: 50vh;
+  max-height: 45vh;
   scrollbar-width: none;
 }
+
+.sidebar-user-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar-user-container::-webkit-scrollbar-thumb {
+  background : var(--subtle2);
+  border-radius: 4px;
+} 
 
 .collapse-container {
   width: calc(100% - 4px);
