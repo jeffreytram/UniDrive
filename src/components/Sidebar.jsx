@@ -14,8 +14,13 @@ export default function Sidebar({
 }) {
   const body = document.getElementsByTagName('body')[0];
   const style = getComputedStyle(body);
+
   const initialState = (style.getPropertyValue('--sidebar-width') === '225px');
   const [expand, setExpand] = useState(initialState);
+
+  const selectedElementList = document.getElementsByClassName('selected');
+  const initilaSelected = (selectedElementList.length === 0) ? 'all-files' : selectedElementList[0].id;
+  const [selected, setSelected] = useState(initilaSelected);
 
   const scrollToggle = (ref) => {
     userList.forEach((user) => {
@@ -40,10 +45,7 @@ export default function Sidebar({
   };
 
   const handleClick = (target) => {
-    const selected = document.getElementsByClassName('selected')[0];
-    selected.classList.remove('selected');
-    document.getElementById(target).classList.add('selected');
-
+    setSelected(target);
     let query = 'trashed = false';
 
     if (target === 'my-drive') {
@@ -68,32 +70,32 @@ export default function Sidebar({
           <FontAwesomeIcon icon={faUserSlash} size="lg" title="Remove All Accounts" />
           {expand ? ' Remove All Accounts' : ''}
         </button>
-        <div className={`sidebar-item ${sidebarClassName} selected`} id="all-files" onClick={() => handleClick('all-files')}>
+        <button type="button" className={`sidebar-item ${sidebarClassName} ${(selected === 'all-files') ? 'selected' : ''}`} id="all-files" onClick={() => handleClick('all-files')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faHome} size="lg" title="All Files" />
           {expand ? ' All Files' : ''}
-        </div>
-        <div className={`sidebar-item ${sidebarClassName}`} id="my-drive" onClick={() => handleClick('my-drive')}>
+        </button>
+        <button type="button" className={`sidebar-item ${sidebarClassName} ${(selected === 'my-drive') ? 'selected' : ''}`} id="my-drive" onClick={() => handleClick('my-drive')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faGoogleDrive} size="lg" title="My Drive Files" />
           {expand ? ' My Drive Files' : ''}
-        </div>
-        <div className={`sidebar-item ${sidebarClassName}`} id="shared" onClick={() => handleClick('shared')}>
+        </button>
+        <button type="button" className={`sidebar-item ${sidebarClassName} ${(selected === 'shared') ? 'selected' : ''}`} id="shared" onClick={() => handleClick('shared')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faShareSquare} size="lg" title="Shared" />
           {expand ? ' Shared' : ''}
-        </div>
-        <div className={`sidebar-item ${sidebarClassName}`} id="starred" onClick={() => handleClick('starred')}>
+        </button>
+        <button type="button" className={`sidebar-item ${sidebarClassName} ${(selected === 'starred') ? 'selected' : ''}`} id="starred" onClick={() => handleClick('starred')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faStar} size="lg" title="Starred" />
           {expand ? ' Starred' : ''}
-        </div>
+        </button>
 
         <div className="sidebar-user-container">
           { userList.map((user) => {
             const { name, picture } = parseIDToken(user.idToken);
             const { ref } = user;
             return (
-              <div className={`sidebar-user ${sidebarClassName}`} key={user.id} onClick={() => scrollToggle(ref)}>
+              <button type="button" className={`sidebar-user ${sidebarClassName}`} key={user.id} onClick={() => scrollToggle(ref)}>
                 <img className="sidebar-picture" src={picture} alt="Account profile" />
                 {expand ? ` ${name}` : ''}
-              </div>
+              </button>
             );
           })}
         </div>
