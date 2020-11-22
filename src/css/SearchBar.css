@@ -2,17 +2,55 @@
   display: inline;
 }
 
-.form-control {
+.form-control, .react-datepicker__input-container input {
   border: 2px solid var(--subtle2);
   border-radius: 5px;
-  padding: 6px 2px 2px 30px;
-  width: 20vw;
   background-color: var(--main-bg);
   color: var(--text);
+  padding-top: 4px;
+  padding-bottom: 1px;
+}
+
+.form-control {
+  padding-left: 30px;
+  padding-right: 30px;
+  width: 20vw;
+}
+
+.react-datepicker__input-container input {
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 110px;
+}
+
+.search-input-container {
+  position: relative;
 }
 
 .search-icon {
   position: relative;
   left: 25px;
   color: var(--subtle2);
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  position: absolute;
+}
+
+.clear-btn:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.clear-search {
+  right: 5px;
+  top: 4px;
+}
+
+.clear-date {
+  right: 5px;
+  top: 10px;
 }

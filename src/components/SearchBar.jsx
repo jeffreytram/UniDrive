@@ -1,53 +1,64 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import DatePicker from 'react-datepicker';
 import '../css/SearchBar.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
-class SearchBar extends Component {
-  constructor(props) {
-    super(props);
+export default function SearchBar({ onSubmit }) {
+  const [lastViewDate, setStartDate] = useState(null);
+  const [searchInput, setSearchInput] = useState('');
 
-    this.state = {
-      searchInput: '',
-    };
-  }
-
-  submitSearchInput = (e) => {
-    const { searchInput } = this.state;
-    const { onSubmit } = this.props;
-    onSubmit(searchInput);
-    this.setState({ searchInput: '' });
-    return false;
-  }
-
-  inputUpdated = (e) => {
+  const inputUpdated = (e) => {
     const { value } = e.target;
+    setSearchInput(value);
+  };
 
-    this.setState({ searchInput: value });
-  }
+  const clearSearch = () => {
+    setSearchInput('');
+    onSubmit('', lastViewDate);
+  };
 
-  render() {
-    return (
-      <div className="search-form">
-        <form onSubmit={(e) => { e.preventDefault(); }}>
+  const clearDate = () => {
+    setStartDate(null);
+    onSubmit(searchInput, null);
+  };
+
+  return (
+    <div className="search-form">
+      <form onSubmit={(e) => { e.preventDefault(); }}>
+        <span className="search-input-container">
           <FontAwesomeIcon className="search-icon" icon={faSearch} />
           <input
             className="form-control"
+            id="searchbarform"
             name="search"
-            onInput={this.inputUpdated}
+            onInput={inputUpdated}
             placeholder="Search for a file..."
             type="input"
-            value={this.state.searchInput}
+            value={searchInput}
           />
-          <button type="submit" style={{ display: 'none' }} onClick={() => this.submitSearchInput()}>Search</button>
-        </form>
-      </div>
-    );
-  }
+          {searchInput.length > 0 && (
+            <button type="button" className="clear-btn clear-search" onClick={clearSearch}>X</button>
+          )}
+        </span>
+        <span>
+          <DatePicker
+            selected={lastViewDate}
+            onChange={(date) => { setStartDate(date); onSubmit(searchInput, date);}}
+            placeholderText="Last viewed after..."
+            closeOnScroll
+          />
+          {lastViewDate && (
+            <button type="button" className="clear-btn clear-date" onClick={clearDate}>X</button>
+          )}
+        </span>
+        <button type="submit" style={{ display: 'none' }} onClick={() => onSubmit(searchInput, lastViewDate)}>Search</button>
+      </form>
+    </div>
+  );
 }
-
-export default SearchBar;
 
 SearchBar.propTypes = {
   onSubmit: PropTypes.func.isRequired,

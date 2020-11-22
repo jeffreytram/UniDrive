@@ -37,6 +37,7 @@ class App extends Component {
       lastRefreshTime: this.getCurrentDateTime(),
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
+      dateQuery: '',
       isLoading: true,
       starred: false,
       isSearching: false,
@@ -204,13 +205,15 @@ class App extends Component {
   /**
    * Saves the input from the search bar. Will not return folders, only files
    * @param {string} searchInput from the searchbar.js
+   * @param {string} dateInput from the datepicker in header
    */
-  onFormSubmit = (searchInput) => {
+  onFormSubmit = (searchInput, dateInput) => {
     if (!this.state.isLoading) {
       const searchQuery = `name contains '${searchInput}'`;
+      const dateQuery = (dateInput !== null) ? ` and viewedByMeTime >= '${dateInput.toISOString()}'` : '';
       const newUserList = this.state.userList;
       // checks if search input is empty, or spaces only
-      if (searchInput !== '') {
+      if (searchInput !== '' || dateInput !== null) {
         for (let i = 0; i < this.state.userList.length; i++) {
           if (newUserList[i].storedFolderList === null) {
             newUserList[i].storedFolderList = newUserList[i].folders;
@@ -221,6 +224,7 @@ class App extends Component {
           {
             userList: newUserList,
             searchQuery,
+            dateQuery,
             isSearching: true,
           }, this.refreshAllFunction(),
         );
@@ -235,6 +239,7 @@ class App extends Component {
           {
             userList: newUserList,
             searchQuery,
+            dateQuery,
             isSearching: false,
           }, this.refreshAllFunction(),
         );
@@ -504,9 +509,10 @@ class App extends Component {
    * @param {String} email email of the user to keep automatically authenticating for each list request
    */
   retrieveAllFiles = (callback, email, user) => {
-    const { filterQuery, searchQuery } = this.state;
+    const { filterQuery, searchQuery, dateQuery } = this.state;
     const fileTypeQuery = user.filteredBy;
-    const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
+    // const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
+    const query = `${filterQuery} and ${searchQuery}${dateQuery} and (${fileTypeQuery})`;
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
