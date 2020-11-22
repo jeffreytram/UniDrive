@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt, faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'universal-cookie';
+import DatePicker from 'react-datepicker';
 import SearchBar from './SearchBar';
 import icon from './images/unidrive-logo.png';
 import iconWhite from './images/unidrive-logo-white.png';
 import '../css/Header.css';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function Header({
-  addedAccount, onSubmit, refreshAllFunc, syncMessage, searchDate, twoCalls
+  addedAccount, onSubmit, refreshAllFunc, syncMessage, searchDate,
 }) {
   const d = new Date();
   const year = d.getFullYear();
@@ -63,9 +63,13 @@ export default function Header({
           <SearchBar
             onSubmit={onSubmit}
           />
-          <button id="clear-btn" onClick={() => {onSubmit(""); document.getElementById('searchbarform').value = ''}}>Clear</button>
-          <DatePicker selected={lastViewDate} onChange={date => { setStartDate(date); searchDate(date)}}
-            placeholderText="Last viewed by me" closeOnScroll={true}/>
+          <button type="button" id="clear-btn" onClick={() => { onSubmit(''); document.getElementById('searchbarform').value = ''; }}>Clear</button>
+          <DatePicker
+            selected={lastViewDate}
+            onChange={(date) => { setStartDate(date); searchDate(date); }}
+            placeholderText="Last viewed by me"
+            closeOnScroll
+          />
         </span>
       )}
       {addedAccount && (
