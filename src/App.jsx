@@ -34,9 +34,10 @@ class App extends Component {
     this.state = {
       userList: [],
       uploadRequests: [],
-      lastRefreshTime: Date().substring(0, 21),
+      lastRefreshTime: this.getCurrentDateTime(),
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
+      dateQuery: '',
       isLoading: true,
       starred: false,
       isSearching: false,
@@ -204,22 +205,29 @@ class App extends Component {
   /**
    * Saves the input from the search bar. Will not return folders, only files
    * @param {string} searchInput from the searchbar.js
+   * @param {string} dateInput from the datepicker in header
    */
-  onFormSubmit = (searchInput) => {
+  onFormSubmit = (searchInput, dateInput) => {
     if (!this.state.isLoading) {
-      let searchQuery;
-      searchQuery = `name contains '${searchInput}'`;
+      const searchQuery = `name contains '${searchInput}'`;
+      const dateQuery = (dateInput !== null) ? ` and viewedByMeTime >= '${dateInput.toISOString()}'` : '';
       const newUserList = this.state.userList;
-      //checks if search input is empty, or spaces only
-      console.log(searchInput)
-      if (searchInput !== "") {
+      // checks if search input is empty, or spaces only
+      if (searchInput !== '' || dateInput !== null) {
         for (let i = 0; i < this.state.userList.length; i++) {
-          if ( newUserList[i].storedFolderList === null) {
+          if (newUserList[i].storedFolderList === null) {
             newUserList[i].storedFolderList = newUserList[i].folders;
             newUserList[i].storedTopLevelFolders = newUserList[i].topLevelFolders;
           }
         }
-        this.setState({userList: newUserList, searchQuery, isSearching: true },this.refreshAllFunction());
+        this.setState(
+          {
+            userList: newUserList,
+            searchQuery,
+            dateQuery,
+            isSearching: true,
+          }, this.refreshAllFunction(),
+        );
       } else {
         for (let i = 0; i < this.state.userList.length; i++) {
           if (!this.state.isFiltering) {
@@ -227,9 +235,15 @@ class App extends Component {
             newUserList[i].storedTopLevelFolders = null;
           }
         }
-        this.setState({userList: newUserList, searchQuery, isSearching: false },this.refreshAllFunction());
+        this.setState(
+          {
+            userList: newUserList,
+            searchQuery,
+            dateQuery,
+            isSearching: false,
+          }, this.refreshAllFunction(),
+        );
       }
-      console.log(newUserList)
     }
   }
 
@@ -238,8 +252,6 @@ class App extends Component {
       this.setState({ starred: false });
       this.setFilterQuery(filter);
       const newUserList = this.state.userList;
-      console.log(filter)
-      console.log(filter === 'trashed = false')
       if ((newUserList[0].storedFolderList === null)) {
         if (!this.state.isSearching) {
           for (let i = 0; i < newUserList.length; i++) {
@@ -255,17 +267,18 @@ class App extends Component {
             newUserList[i].storedTopLevelFolders = null;
           }
         }
-        this.setState({userList : newUserList,
+        this.setState({
+          userList: newUserList,
           isFiltering: false,
         }, this.refreshAllFunction());
       } else {
-        this.setState({userList : newUserList,
+        this.setState({
+          userList: newUserList,
           isFiltering: true,
         }, this.refreshAllFunction());
       }
     }
-  } 
-
+  }
 
   setFilterQuery = (filter) => {
     this.setState((prevState) => ({
@@ -352,29 +365,24 @@ class App extends Component {
         }
         if (np) {
           let currFolder = results[j].id;
-          //find root of folder (if querey is used)
-          //we don't want to push to top level if root folder is not included in the filter
+          // find root of folder (if querey is used)
+          // we don't want to push to top level if root folder is not included in the filter
           if (updatedList[index].storedTopLevelFolders !== null && !this.state.isSearching) {
-            console.log(updatedList[index].storedTopLevelFolders)
-    
-          while((!(updatedList[index].storedTopLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) && (updatedList[index].storedFolderList[currFolder].folder.parents !== undefined) && (updatedList[index].storedFolderList[currFolder].folder.mimeType === 'application/vnd.google-apps.folder')) {
-            if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]] === undefined) {
-              break;
+            while ((!(updatedList[index].storedTopLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) && (updatedList[index].storedFolderList[currFolder].folder.parents !== undefined) && (updatedList[index].storedFolderList[currFolder].folder.mimeType === 'application/vnd.google-apps.folder')) {
+              if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]] === undefined) {
+                break;
+              }
+              currFolder = updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]].folder.id;
             }
-            currFolder = updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]].folder.id;
-            console.log(updatedList[index].storedFolderList[currFolder])
+            // check to see if the root folder belongs in the current filter and if root folder has already been added
+            if ((updatedList[index].folders[currFolder]) && !(updatedList[index].topLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) {
+              updatedList[index].topLevelFolders.push(updatedList[index].storedFolderList[currFolder]);
+            }
+          } else {
+            updatedList[index].topLevelFolders.push(updatedList[index].folders[currFolder]);
           }
-          //check to see if the root folder belongs in the current filter and if root folder has already been added
-          console.log(updatedList[index].topLevelFolders)
-          if ((updatedList[index].folders[currFolder]) && !(updatedList[index].topLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) {
-            updatedList[index].topLevelFolders.push(updatedList[index].storedFolderList[currFolder]);
-          }
-        } else {
-          updatedList[index].topLevelFolders.push(updatedList[index].folders[currFolder]);
         }
-        
       }
-    }
       /* Update file paths if a folder that was there is not anymore */
       const folderList = (updatedList[index].storedFolderList == null) ? updatedList[index].folders : updatedList[index].storedFolderList;
       const newOpenFolders = updatedList[index].openFolders;
@@ -398,8 +406,6 @@ class App extends Component {
         }
         updatedList[index].openFolders = newOpenFolders;
         if (newOpenFolders[oId] && newOpenFolders[oId].path) {
-          // let pIndex = newOpenFolders[oId].path.length - 1;
-          // updatedList[index].openFolders[oId].displayed = folderList[newOpenFolders[oId].path[pIndex].id].children;
           this.openFolder(updatedList[index].id, oId, newOpenFolders[oId].path[newOpenFolders[oId].path.length - 1], true);
         }
       }
@@ -424,7 +430,7 @@ class App extends Component {
       const newOpenFolders = updatedList[index].openFolders;
       let folderList = updatedList[index].folders;
       let topLevelFolders = null;
-      //check to see if folder is from search result
+      // check to see if folder is from search result
       if (updatedList[index].storedFolderList !== null) {
         folderList = updatedList[index].storedFolderList;
         if (!this.state.isSearching) {
@@ -504,9 +510,10 @@ class App extends Component {
    * @param {String} email email of the user to keep automatically authenticating for each list request
    */
   retrieveAllFiles = (callback, email, user) => {
-    const { filterQuery, searchQuery } = this.state;
+    const { filterQuery, searchQuery, dateQuery } = this.state;
     const fileTypeQuery = user.filteredBy;
-    const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
+    // const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
+    const query = `${filterQuery} and ${searchQuery}${dateQuery} and (${fileTypeQuery})`;
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
@@ -731,10 +738,13 @@ class App extends Component {
       const { email } = userInfo;
       this.updateFiles(i, email);
     }
-    const currentTimeDate = Date().substring(0, 21);
-    this.setState((prevState) => ({
-      lastRefreshTime: currentTimeDate,
-    }));
+    this.setState({ lastRefreshTime: this.getCurrentDateTime() });
+  }
+
+  getCurrentDateTime = () => {
+    const newDate = new Date();
+    const currentDateTime = `${newDate.getMonth() + 1}/${newDate.getDate()}/${newDate.getFullYear()} ${newDate.getHours()}:${(newDate.getMinutes() < 10) ? '0' : ''}${newDate.getMinutes()}`;
+    return currentDateTime;
   }
 
   /**
@@ -811,7 +821,7 @@ class App extends Component {
   render() {
     const { userList, uploadRequests, isLoading } = this.state;
     const cookie = cookies.getAll();
-    const addedAccount = !((Object.keys(cookie).length === 0 || (Object.keys(cookie).length === 1 && Object.keys(cookie).includes('theme'))) && cookie.constructor === Object);
+    const addedAccount = (Object.keys(cookie).length > 0);
     return (
       <div>
         <Header
@@ -820,9 +830,6 @@ class App extends Component {
           refreshAllFunc={this.refreshAllFunction}
           syncMessage={this.state.lastRefreshTime}
         />
-        {isLoading && (
-          <Loading />
-        )}
         {addedAccount
           ? (
             <Layout
@@ -832,6 +839,9 @@ class App extends Component {
               starFilter={this.sidebarStar}
               userList={userList}
             >
+              {isLoading && (
+              <Loading />
+              )}
               <div className="main-container">
                 <div className="main-content">
                   <UserList

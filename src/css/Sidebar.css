@@ -12,6 +12,10 @@
   justify-content: space-between;
 }
 
+.sidebar.collapse, .sidebar-item.collapse, .sidebar-user.collapse {
+  text-align: center;
+}
+
 .sidebar-icon {
   color: var(--subtle2);
 }
@@ -23,13 +27,23 @@
 }
 
 .sidebar-item {
+  display: block;
+  width: 100%;
+  height: 40px;
   border: 1px solid rgba(0, 0, 0, 0);
   padding: 8px 15px;
+  background: none;
+  text-align: left;
+  font: inherit;
 }
 
 .sidebar-user {
+  width: 100%;
+  text-align: left;
   border: 1px solid rgba(0, 0, 0, 0);
+  background: none;
   padding: 4px 15px;
+  font: inherit;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -101,17 +115,29 @@
 .sidebar-user-container {
   margin-top: 20px;
   overflow: hidden auto;
-  max-height: 50vh;
+  max-height: 45vh;
   scrollbar-width: none;
 }
 
+.sidebar-user-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar-user-container::-webkit-scrollbar-thumb {
+  background : var(--subtle2);
+  border-radius: 4px;
+} 
+
 .collapse-container {
-  width: 100%;
+  width: calc(100% - 4px);
   margin-bottom: 10px;
+  padding-right: 4px;
   text-align: right;
 }
 
 .collapse-container.collapse {
+  width: 100%;
+  padding-right: 0;
   text-align: center;
 }
 
