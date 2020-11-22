@@ -39,18 +39,18 @@ export default function Sidebar({
     setExpand(!expand);
   };
 
-  const handleClick = (target, filter) => {
+  const handleClick = (target) => {
     const selected = document.getElementsByClassName('selected')[0];
     selected.classList.remove('selected');
-    target.classList.add('selected');
+    document.getElementById(target).classList.add('selected');
 
     let query = 'trashed = false';
 
-    if (filter === 'my drives') {
+    if (target === 'my-drive') {
       query += ' and "me" in owners';
-    } else if (filter === 'shared') {
+    } else if (target === 'shared') {
       query += ' and not "me" in owners';
-    } else if (filter === 'starred') {
+    } else if (target === 'starred') {
       starFilter();
       return;
     }
@@ -58,7 +58,7 @@ export default function Sidebar({
   };
   const sidebarClassName = (expand) ? 'collapsible' : 'collapsible collapse';
   return (
-    <div className="sidebar">
+    <div className={(expand) ? 'sidebar' : 'sidebar collapse'}>
       <div>
         <button type="button" className="sidebar-add-button" id="signin-btn" onClick={() => authorizeUser()}>
           <FontAwesomeIcon icon={faUserPlus} size="lg" title="Add an Account" />
@@ -68,19 +68,19 @@ export default function Sidebar({
           <FontAwesomeIcon icon={faUserSlash} size="lg" title="Remove All Accounts" />
           {expand ? ' Remove All Accounts' : ''}
         </button>
-        <div className={`sidebar-item ${sidebarClassName} selected`} onClick={(event) => handleClick(event.target, '')}>
+        <div className={`sidebar-item ${sidebarClassName} selected`} id="all-files" onClick={() => handleClick('all-files')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faHome} size="lg" title="All Files" />
           {expand ? ' All Files' : ''}
         </div>
-        <div className={`sidebar-item ${sidebarClassName}`} onClick={(event) => handleClick(event.target, 'my drives')}>
+        <div className={`sidebar-item ${sidebarClassName}`} id="my-drive" onClick={() => handleClick('my-drive')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faGoogleDrive} size="lg" title="My Drive Files" />
           {expand ? ' My Drive Files' : ''}
         </div>
-        <div className={`sidebar-item ${sidebarClassName}`} onClick={(event) => handleClick(event.target, 'shared')}>
+        <div className={`sidebar-item ${sidebarClassName}`} id="shared" onClick={() => handleClick('shared')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faShareSquare} size="lg" title="Shared" />
           {expand ? ' Shared' : ''}
         </div>
-        <div className={`sidebar-item ${sidebarClassName}`} onClick={(event) => handleClick(event.target, 'starred')}>
+        <div className={`sidebar-item ${sidebarClassName}`} id="starred" onClick={() => handleClick('starred')}>
           <FontAwesomeIcon className="sidebar-icon" icon={faStar} size="lg" title="Starred" />
           {expand ? ' Starred' : ''}
         </div>

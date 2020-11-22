@@ -31,7 +31,7 @@
 
 .sync-message {
   font-style: italic;
-  border: 1px solid var(--text);
+  border: none;
   background: none;
   color: var(--text);
   margin-right: 20px;
