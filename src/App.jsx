@@ -368,10 +368,12 @@ class App extends Component {
           // find root of folder (if querey is used)
           // we don't want to push to top level if root folder is not included in the filter
           if (updatedList[index].storedTopLevelFolders !== null && !this.state.isSearching) {
+            if (!this.state.filterQuery.includes(' and not "me" in owners')) {
             if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder]] === undefined) {
              // updatedList[index].storedFolderList.push(updatedList[index].folders[currFolder])
              updatedList[index].storedFolderList[currFolder] =  updatedList[index].folders[currFolder]
             }
+          }
             while ((!(updatedList[index].storedTopLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) && (updatedList[index].storedFolderList[currFolder].folder.parents !== undefined) && (updatedList[index].storedFolderList[currFolder].folder.mimeType === 'application/vnd.google-apps.folder')) {
               if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]] === undefined) {
                 break;
