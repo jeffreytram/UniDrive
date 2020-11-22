@@ -34,7 +34,7 @@ class App extends Component {
     this.state = {
       userList: [],
       uploadRequests: [],
-      lastRefreshTime: Date().substring(0, 21),
+      lastRefreshTime: this.getCurrentDateTime(),
       filterQuery: 'trashed = false',
       searchQuery: 'name contains ""',
       isLoading: true,
@@ -723,10 +723,13 @@ class App extends Component {
       const { email } = userInfo;
       this.updateFiles(i, email);
     }
-    const currentTimeDate = Date().substring(0, 21);
-    this.setState((prevState) => ({
-      lastRefreshTime: currentTimeDate,
-    }));
+    this.setState({ lastRefreshTime: this.getCurrentDateTime() });
+  }
+
+  getCurrentDateTime = () => {
+    const newDate = new Date();
+    const currentDateTime = `${newDate.getMonth() + 1}/${newDate.getDate()}/${newDate.getFullYear()} ${newDate.getHours()}:${(newDate.getMinutes() < 10) ? '0' : ''}${newDate.getMinutes()}`;
+    return currentDateTime;
   }
 
   /**
