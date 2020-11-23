@@ -35,6 +35,7 @@
   background: none;
   text-align: left;
   font: inherit;
+  color: inherit;
 }
 
 .sidebar-user {
@@ -44,6 +45,7 @@
   background: none;
   padding: 4px 15px;
   font: inherit;
+  color: inherit;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
