@@ -663,15 +663,22 @@ class App extends Component {
     const { userList } = this.state;
     const updatedList = userList;
     for (let i = 0; i < updatedList.length; i++) {
+      let folderList = updatedList[i].folders
+      let topLevelFolderList = updatedList[i].topLevelFolders;
+      
+      if (updatedList[i].storedFolderList !== null) {
+        folderList = updatedList[i].storedFolderList;
+        topLevelFolderList = updatedList[i].storedTopLevelFolders;
+      }
       const starred = [];
-      for (const prop in updatedList[i].folders) {
-        if (updatedList[i].folders[prop].folder.starred) {
-          starred.push(updatedList[i].folders[prop]);
+      for (const prop in folderList) {
+        if (folderList[prop].folder.starred) {
+          starred.push(folderList[prop]);
         }
       }
-      updatedList[i].topLevelFolders = starred;
+      topLevelFolderList = starred;
       starred.forEach((f, k) => {
-        updatedList[i].topLevelFolders[k] = f;
+      topLevelFolderList[k] = f;
       });
       updatedList[i].looseFiles = updatedList[i].looseFiles.filter((file) => file.starred);
       const newOpenFolders = updatedList[i].openFolders;
@@ -689,6 +696,8 @@ class App extends Component {
           }
         }
       }
+      updatedList[i].topLevelFolders = topLevelFolderList;
+      updatedList[i].folders = folderList;
       updatedList[i].openFolders = newOpenFolders;
     }
     this.setState({
