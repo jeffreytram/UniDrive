@@ -14,13 +14,13 @@
 .form-control {
   padding-left: 30px;
   padding-right: 30px;
-  width: 20vw;
+  width: 60px;
 }
 
 .react-datepicker__input-container input {
   padding-left: 5px;
   padding-right: 5px;
-  width: 110px;
+  width: 85px;
 }
 
 .search-input-container {
@@ -53,4 +53,15 @@
 .clear-date {
   right: 5px;
   top: 10px;
+}
+
+@media (min-width:800px) {
+  
+.form-control {
+  width: 20vw;
+}
+
+.react-datepicker__input-container input {
+  width: 110px;
+}
 }
