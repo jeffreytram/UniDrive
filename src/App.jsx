@@ -836,7 +836,12 @@ class App extends Component {
   render() {
     const { userList, uploadRequests, isLoading, isSearching, isFiltering } = this.state;
     const cookie = cookies.getAll();
-    const addedAccount = (Object.keys(cookie).length > 0);
+    let addedAccount = false;
+    for (let i = 0; i < Object.keys(cookie).length; i++) {
+      if ( Object.keys(cookie)[i].includes('@gmail')) {
+        addedAccount = true;
+      }
+    }
     return (
       <div>
         <Header
