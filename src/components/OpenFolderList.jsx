@@ -6,7 +6,7 @@ import '../css/FileList.css';
 export default function OpenFolderList(props) {
   const {
     closePath, email, moveExternal, moveWithin, openFolder, openFolderList,
-    refreshFunc, shareFile, updatePath, userId, isSearching, isFiltering
+    refreshFunc, shareFile, updatePath, userId,
   } = props;
 
   return (
@@ -26,8 +26,6 @@ export default function OpenFolderList(props) {
           shareFile={shareFile}
           updatePath={updatePath}
           userId={userId}
-          isSearching = {isSearching}
-          isFiltering = {isFiltering}
         />
       ))}
     </div>
