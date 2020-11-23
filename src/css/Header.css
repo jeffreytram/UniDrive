@@ -30,6 +30,7 @@
 }
 
 .sync-message {
+  display: none;
   font-style: italic;
   border: none;
   background: none;
@@ -70,4 +71,10 @@
 
 .toggle-theme:hover { 
   background-color: var(--text);
+}
+
+@media (min-width:870px) {
+  .sync-message {
+    display: inline;
+  }
 }

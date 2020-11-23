@@ -172,6 +172,7 @@ class App extends Component {
           filteredBy: '',
           storedFolderList: null,
           storedTopLevelFolders: null,
+          storedLooseFiles: null,
         }],
       }));
       cookies.set(email, email, cookieOptions);
@@ -208,6 +209,8 @@ class App extends Component {
    */
   onFormSubmit = (searchInput, dateInput) => {
     if (!this.state.isLoading) {
+      searchInput = searchInput.replace(/'/g, '');
+      searchInput = searchInput.replace(/"/g, '');
       const searchQuery = `name contains '${searchInput}'`;
       const dateQuery = (dateInput !== null) ? ` and viewedByMeTime >= '${dateInput.toISOString()}'` : '';
       const newUserList = this.state.userList;
@@ -217,6 +220,7 @@ class App extends Component {
           if (newUserList[i].storedFolderList === null) {
             newUserList[i].storedFolderList = newUserList[i].folders;
             newUserList[i].storedTopLevelFolders = newUserList[i].topLevelFolders;
+            newUserList[i].storedLooseFiles = newUserList[i].looseFiles;
           }
         }
         this.setState(
@@ -232,6 +236,7 @@ class App extends Component {
           if (!this.state.isFiltering) {
             newUserList[i].storedFolderList = null;
             newUserList[i].storedTopLevelFolders = null;
+            newUserList[i].storedLooseFiles = null;
           }
         }
         this.setState(
@@ -256,6 +261,7 @@ class App extends Component {
           for (let i = 0; i < newUserList.length; i++) {
             newUserList[i].storedFolderList = newUserList[i].folders;
             newUserList[i].storedTopLevelFolders = newUserList[i].topLevelFolders;
+            newUserList[i].storedLooseFiles = newUserList[i].looseFiles;
           }
         }
       }
@@ -264,6 +270,7 @@ class App extends Component {
           for (let i = 0; i < newUserList.length; i++) {
             newUserList[i].storedFolderList = null;
             newUserList[i].storedTopLevelFolders = null;
+            newUserList[i].stored = null;
           }
         }
         this.setState({
@@ -367,6 +374,12 @@ class App extends Component {
           // find root of folder (if querey is used)
           // we don't want to push to top level if root folder is not included in the filter
           if (updatedList[index].storedTopLevelFolders !== null && !this.state.isSearching) {
+            if (!this.state.filterQuery.includes(' and not "me" in owners')) {
+              if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder]] === undefined) {
+                // updatedList[index].storedFolderList.push(updatedList[index].folders[currFolder])
+                updatedList[index].storedFolderList[currFolder] = updatedList[index].folders[currFolder];
+              }
+            }
             while ((!(updatedList[index].storedTopLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) && (updatedList[index].storedFolderList[currFolder].folder.parents !== undefined) && (updatedList[index].storedFolderList[currFolder].folder.mimeType === 'application/vnd.google-apps.folder')) {
               if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]] === undefined) {
                 break;
@@ -383,20 +396,23 @@ class App extends Component {
         }
       }
       /* Update file paths if a folder that was there is not anymore */
+      const folderList = (updatedList[index].storedFolderList == null) ? updatedList[index].folders : updatedList[index].storedFolderList;
       const newOpenFolders = updatedList[index].openFolders;
       for (let oId = 0; oId < newOpenFolders.length; oId++) {
         let pathIndex = 0;
         while (newOpenFolders[oId] && newOpenFolders[oId].path && pathIndex < newOpenFolders[oId].path.length) {
           const oldPath = newOpenFolders[oId].path;
-          if (!updatedList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
+          if (!folderList.hasOwnProperty(oldPath[pathIndex].id)) {
             if (pathIndex === 0) {
               newOpenFolders.splice(oId, 1);
               oId--;
             } else {
               // Cut off the rest of the folders
               newOpenFolders[oId].path.splice(pathIndex, (oldPath.length - pathIndex));
-              // newOpenFolders[oId].displayed = updatedList[index].folders[oldPath[pathIndex - 1].id].children;
+              // newOpenFolders[oId].displayed = folderList[oldPath[pathIndex - 1].id].children;
             }
+          } else {
+            newOpenFolders[oId].path[pathIndex] = folderList[oldPath[pathIndex].id].folder;
           }
           pathIndex++;
         }
@@ -405,10 +421,11 @@ class App extends Component {
           this.openFolder(updatedList[index].id, oId, newOpenFolders[oId].path[newOpenFolders[oId].path.length - 1], true);
         }
       }
-      this.setState({ userList: updatedList, isLoading: false });
       if (this.state.starred === true) {
-        this.starredFilter();
+        this.starredFilter(updatedList);
+        return;
       }
+      this.setState({ userList: updatedList, isLoading: false });
     }, email, user);
   }
 
@@ -439,15 +456,14 @@ class App extends Component {
           displayed: folderList[folder.id].children,
         });
         let tempFolder = folder;
-        // if file is not top-level, and oId is 0, then it is the result of a nested folder search or filter
-        // this builds its file path up to the root
-
+        //if file is not top-level, and oId is 0, then it is the result of a nested folder search or filter
+        //this builds its file path up to the root
         if (topLevelFolders !== null) {
-          while ((!(topLevelFolders.includes(tempFolder))) && (tempFolder.parents !== undefined)) {
+          while((!(topLevelFolders.includes(tempFolder))) && (tempFolder.parents !== undefined)) {
             if (folderList[tempFolder.parents[0]] === undefined) {
               break;
             }
-            newOpenFolders[newOpenFolders.length - 1].path.unshift(folderList[tempFolder.parents[0]].folder);
+            newOpenFolders[newOpenFolders.length-1].path.unshift(folderList[tempFolder.parents[0]].folder);
             tempFolder = folderList[tempFolder.parents[0]].folder;
           }
         }
@@ -461,9 +477,7 @@ class App extends Component {
         this.setState({ userList: updatedList });
       } else {
         newOpenFolders[oId].displayed = folderList[folder.id].children;
-
         updatedList[index].openFolders = newOpenFolders;
-
         this.setState({ userList: updatedList });
       }
     }
@@ -573,7 +587,7 @@ class App extends Component {
   moveWithin = (userId, file, newParentId) => {
     const userIndex = this.getAccountIndex(userId);
     const userToken = this.state.userList[userIndex].idToken;
-    const { email } = this.parseIDToken(userToken);
+    const { email } = parseIDToken(userToken);
 
     window.gapi.client.load('drive', 'v3').then(() => {
       window.gapi.auth2.authorize({
@@ -651,42 +665,62 @@ class App extends Component {
     });
   }
 
-  starredFilter = () => {
+  /**
+   * Function to call in sidebar file as it does not have access to userList
+   * @param {*} userList You know what this is
+   */
+
+  sidebarStar = () => {
+    this.starredFilter(this.state.userList);
+  }
+
+  starredFilter = (userList) => {
     this.setState({ isLoading: true, starred: true });
-    const { userList } = this.state;
     const updatedList = userList;
     for (let i = 0; i < updatedList.length; i++) {
+      let folderList = updatedList[i].folders;
+      let topLevelFolderList = updatedList[i].topLevelFolders;
+      let looseFileList = updatedList[i].looseFiles;
+
+      if (updatedList[i].storedFolderList !== null) {
+        folderList = updatedList[i].storedFolderList;
+        topLevelFolderList = updatedList[i].storedTopLevelFolders;
+        looseFileList = updatedList[i].storedLooseFiles;
+      }
       const starred = [];
-      for (const prop in updatedList[i].folders) {
-        if (updatedList[i].folders[prop].folder.starred) {
-          starred.push(updatedList[i].folders[prop]);
+      for (const prop in folderList) {
+        if (folderList[prop].folder.starred) {
+          starred.push(folderList[prop]);
         }
       }
-      updatedList[i].topLevelFolders = starred;
+      topLevelFolderList = starred;
       starred.forEach((f, k) => {
-        updatedList[i].topLevelFolders[k] = f;
+        topLevelFolderList[k] = f;
       });
-      updatedList[i].looseFiles = updatedList[i].looseFiles.filter((file) => file.starred);
+
+      looseFileList = looseFileList.filter((file) => file.starred);
       const newOpenFolders = updatedList[i].openFolders;
       for (let oId = 0; oId < updatedList[i].openFolders.length; oId++) {
         let del = true;
         if (newOpenFolders[oId] && newOpenFolders[oId].path && newOpenFolders[oId].path[0]) {
           for (let k = 0; k < updatedList[i].topLevelFolders.length; k++) {
-            if (updatedList[i].topLevelFolders[k].id === newOpenFolders[oId].path[0].id) {
+            if (updatedList[i].topLevelFolders[k].folder.id === newOpenFolders[oId].path[0].id) {
               del = false;
               break;
             }
           }
           if (del) {
             newOpenFolders.splice(oId, 1);
+            oId--;
           }
         }
       }
+      updatedList[i].topLevelFolders = topLevelFolderList;
+      updatedList[i].folders = folderList;
+      updatedList[i].looseFiles = looseFileList;
       updatedList[i].openFolders = newOpenFolders;
     }
-    this.setState({
-      userList: updatedList, isLoading: false,
-    });
+    this.setState({ userList: updatedList, isLoading: false });
   }
 
   /**
@@ -809,9 +843,16 @@ class App extends Component {
   }
 
   render() {
-    const { userList, uploadRequests, isLoading } = this.state;
+    const {
+      userList, uploadRequests, isLoading, isSearching, isFiltering,
+    } = this.state;
     const cookie = cookies.getAll();
-    const addedAccount = (Object.keys(cookie).length > 1);
+    let addedAccount = false;
+    for (let i = 0; i < Object.keys(cookie).length; i++) {
+      if (Object.keys(cookie)[i].includes('@gmail')) {
+        addedAccount = true;
+      }
+    }
     return (
       <div>
         <Header
@@ -826,7 +867,7 @@ class App extends Component {
               authorizeUser={this.authorizeUser}
               filterFilesInAllAccounts={this.filterFilesInAllAccounts}
               removeAllAccounts={this.removeAllAccounts}
-              starFilter={this.starredFilter}
+              starFilter={this.sidebarStar}
               userList={userList}
             >
               {isLoading && (
@@ -846,6 +887,8 @@ class App extends Component {
                     closePath={this.closePath}
                     updatePath={this.updatePath}
                     filterFunc={this.changeFilterType}
+                    isSearching={isSearching}
+                    isFiltering={isFiltering}
                   />
                   {uploadRequests.length > 0 && (
                     <RequestProgress

@@ -6,7 +6,7 @@ import '../css/UserList.css';
 export default function UserList(props) {
   const {
     closePath, fileUpload, moveExternal, moveWithin, openFolder,
-    refreshFunc, removeFunc, sortFunc, updatePath, userList, filterFunc
+    refreshFunc, removeFunc, sortFunc, updatePath, userList, filterFunc, isSearching, isFiltering
   } = props;
   return (
     <div className="user-list">
@@ -29,6 +29,8 @@ export default function UserList(props) {
           openFolder={openFolder}
           closePath={closePath}
           updatePath={updatePath}
+          isSearching = {isSearching}
+          isFiltering = {isFiltering}
         />
       ))}
     </div>
