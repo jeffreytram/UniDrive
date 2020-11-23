@@ -210,7 +210,10 @@ class App extends Component {
    */
   onFormSubmit = (searchInput, dateInput) => {
     if (!this.state.isLoading) {
+      searchInput = searchInput.replace(/'/g, '');
+      searchInput = searchInput.replace(/"/g, '');
       const searchQuery = `name contains '${searchInput}'`;
+      console.log(searchQuery)
       const dateQuery = (dateInput !== null) ? ` and viewedByMeTime >= '${dateInput.toISOString()}'` : '';
       const newUserList = this.state.userList;
       // checks if search input is empty, or spaces only
@@ -524,6 +527,7 @@ class App extends Component {
     const fileTypeQuery = user.filteredBy;
     // const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
     const query = `${filterQuery} and ${searchQuery}${dateQuery} and (${fileTypeQuery})`;
+    console.log(query)
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
