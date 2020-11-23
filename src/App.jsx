@@ -173,6 +173,7 @@ class App extends Component {
           filteredBy: '',
           storedFolderList: null,
           storedTopLevelFolders: null,
+          storedLooseFiles: null,
         }],
       }));
       cookies.set(email, email, cookieOptions);
@@ -218,6 +219,7 @@ class App extends Component {
           if (newUserList[i].storedFolderList === null) {
             newUserList[i].storedFolderList = newUserList[i].folders;
             newUserList[i].storedTopLevelFolders = newUserList[i].topLevelFolders;
+            newUserList[i].storedLooseFiles = newUserList[i].looseFiles;
           }
         }
         this.setState(
@@ -233,6 +235,7 @@ class App extends Component {
           if (!this.state.isFiltering) {
             newUserList[i].storedFolderList = null;
             newUserList[i].storedTopLevelFolders = null;
+            newUserList[i].storedLooseFiles = null;
           }
         }
         this.setState(
@@ -257,6 +260,7 @@ class App extends Component {
           for (let i = 0; i < newUserList.length; i++) {
             newUserList[i].storedFolderList = newUserList[i].folders;
             newUserList[i].storedTopLevelFolders = newUserList[i].topLevelFolders;
+            newUserList[i].storedLooseFiles = newUserList[i].looseFiles;
           }
         }
       }
@@ -265,6 +269,7 @@ class App extends Component {
           for (let i = 0; i < newUserList.length; i++) {
             newUserList[i].storedFolderList = null;
             newUserList[i].storedTopLevelFolders = null;
+            newUserList[i].stored = null;
           }
         }
         this.setState({
@@ -665,10 +670,12 @@ class App extends Component {
     for (let i = 0; i < updatedList.length; i++) {
       let folderList = updatedList[i].folders
       let topLevelFolderList = updatedList[i].topLevelFolders;
+      let looseFileList = updatedList[i].looseFiles;
       
       if (updatedList[i].storedFolderList !== null) {
         folderList = updatedList[i].storedFolderList;
         topLevelFolderList = updatedList[i].storedTopLevelFolders;
+        looseFileList = updatedList[i].storedLooseFiles;
       }
       const starred = [];
       for (const prop in folderList) {
@@ -680,7 +687,8 @@ class App extends Component {
       starred.forEach((f, k) => {
       topLevelFolderList[k] = f;
       });
-      updatedList[i].looseFiles = updatedList[i].looseFiles.filter((file) => file.starred);
+    
+      looseFileList = looseFileList.filter((file) => file.starred);
       const newOpenFolders = updatedList[i].openFolders;
       for (let oId = 0; oId < updatedList[i].openFolders.length; oId++) {
         let del = true;
@@ -698,6 +706,7 @@ class App extends Component {
       }
       updatedList[i].topLevelFolders = topLevelFolderList;
       updatedList[i].folders = folderList;
+      updatedList[i].looseFiles = looseFileList;
       updatedList[i].openFolders = newOpenFolders;
     }
     this.setState({
