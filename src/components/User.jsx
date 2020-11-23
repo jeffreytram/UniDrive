@@ -138,7 +138,7 @@ class User extends Component {
     const {
       closePath, filterFunc, idToken, looseFileList, moveExternal,
       moveWithin, openFolder, openFolderList, refreshFunc, removeFunc, sortFunc,
-      topLevelFolderList, updatePath, userId, isSearching, isFiltering
+      topLevelFolderList, updatePath, userId,
     } = this.props;
 
     const { name, email, picture } = parseIDToken(idToken);
@@ -243,8 +243,6 @@ class User extends Component {
             moveExternal={moveExternal}
             refreshFunc={refreshFunc}
             openFolder={openFolder}
-            isSearching = {isSearching}
-            isFiltering = {isFiltering}
           />
           <OpenFolderList
             email={email}
@@ -257,8 +255,6 @@ class User extends Component {
             openFolder={openFolder}
             closePath={closePath}
             updatePath={updatePath}
-            isSearching = {isSearching}
-            isFiltering = {isFiltering}
           />
           {looseFilesIsDisplayed && (
             <LooseFileList
@@ -269,8 +265,6 @@ class User extends Component {
               moveWithin={moveWithin}
               moveExternal={moveExternal}
               refreshFunc={refreshFunc}
-              isSearching = {isSearching}
-              isFiltering = {isFiltering}
             />
           )}
         </div>
