@@ -397,20 +397,23 @@ class App extends Component {
         }
       }
       /* Update file paths if a folder that was there is not anymore */
+      const folderList = (updatedList[index].storedFolderList == null) ? updatedList[index].folders : updatedList[index].storedFolderList;
       const newOpenFolders = updatedList[index].openFolders;
       for (let oId = 0; oId < newOpenFolders.length; oId++) {
         let pathIndex = 0;
         while (newOpenFolders[oId] && newOpenFolders[oId].path && pathIndex < newOpenFolders[oId].path.length) {
           const oldPath = newOpenFolders[oId].path;
-          if (!updatedList[index].folders.hasOwnProperty(oldPath[pathIndex].id)) {
+          if (!folderList.hasOwnProperty(oldPath[pathIndex].id)) {
             if (pathIndex === 0) {
               newOpenFolders.splice(oId, 1);
               oId--;
             } else {
               // Cut off the rest of the folders
               newOpenFolders[oId].path.splice(pathIndex, (oldPath.length - pathIndex));
-              // newOpenFolders[oId].displayed = updatedList[index].folders[oldPath[pathIndex - 1].id].children;
+              // newOpenFolders[oId].displayed = folderList[oldPath[pathIndex - 1].id].children;
             }
+          } else {
+            newOpenFolders[oId].path[pathIndex] = folderList[oldPath[pathIndex].id].folder;
           }
           pathIndex++;
         }
@@ -419,10 +422,11 @@ class App extends Component {
           this.openFolder(updatedList[index].id, oId, newOpenFolders[oId].path[newOpenFolders[oId].path.length - 1], true);
         }
       }
-      this.setState({ userList: updatedList, isLoading: false });
       if (this.state.starred === true) {
-        this.starredFilter();
+        this.starredFilter(updatedList);
+        return;
       }
+      this.setState({ userList: updatedList, isLoading: false });
     }, email, user);
   }
 
@@ -453,15 +457,14 @@ class App extends Component {
           displayed: folderList[folder.id].children,
         });
         let tempFolder = folder;
-        // if file is not top-level, and oId is 0, then it is the result of a nested folder search or filter
-        // this builds its file path up to the root
-
+        //if file is not top-level, and oId is 0, then it is the result of a nested folder search or filter
+        //this builds its file path up to the root
         if (topLevelFolders !== null) {
-          while ((!(topLevelFolders.includes(tempFolder))) && (tempFolder.parents !== undefined)) {
+          while((!(topLevelFolders.includes(tempFolder))) && (tempFolder.parents !== undefined)) {
             if (folderList[tempFolder.parents[0]] === undefined) {
               break;
             }
-            newOpenFolders[newOpenFolders.length - 1].path.unshift(folderList[tempFolder.parents[0]].folder);
+            newOpenFolders[newOpenFolders.length-1].path.unshift(folderList[tempFolder.parents[0]].folder);
             tempFolder = folderList[tempFolder.parents[0]].folder;
           }
         }
@@ -475,9 +478,7 @@ class App extends Component {
         this.setState({ userList: updatedList });
       } else {
         newOpenFolders[oId].displayed = folderList[folder.id].children;
-
         updatedList[index].openFolders = newOpenFolders;
-
         this.setState({ userList: updatedList });
       }
     }
@@ -665,9 +666,17 @@ class App extends Component {
     });
   }
 
-  starredFilter = () => {
+  /**
+   * Function to call in sidebar file as it does not have access to userList
+   * @param {*} userList You know what this is
+   */
+
+  sidebarStar = () => {
+    this.starredFilter(this.state.userList);
+  }
+
+  starredFilter = (userList) => {
     this.setState({ isLoading: true, starred: true });
-    const { userList } = this.state;
     const updatedList = userList;
     for (let i = 0; i < updatedList.length; i++) {
       let folderList = updatedList[i].folders;
@@ -696,13 +705,14 @@ class App extends Component {
         let del = true;
         if (newOpenFolders[oId] && newOpenFolders[oId].path && newOpenFolders[oId].path[0]) {
           for (let k = 0; k < updatedList[i].topLevelFolders.length; k++) {
-            if (updatedList[i].topLevelFolders[k].id === newOpenFolders[oId].path[0].id) {
+            if (updatedList[i].topLevelFolders[k].folder.id === newOpenFolders[oId].path[0].id) {
               del = false;
               break;
             }
           }
           if (del) {
             newOpenFolders.splice(oId, 1);
+            oId--;
           }
         }
       }
@@ -711,9 +721,7 @@ class App extends Component {
       updatedList[i].looseFiles = looseFileList;
       updatedList[i].openFolders = newOpenFolders;
     }
-    this.setState({
-      userList: updatedList, isLoading: false,
-    });
+    this.setState({ userList: updatedList, isLoading: false });
   }
 
   /**
@@ -860,7 +868,7 @@ class App extends Component {
               authorizeUser={this.authorizeUser}
               filterFilesInAllAccounts={this.filterFilesInAllAccounts}
               removeAllAccounts={this.removeAllAccounts}
-              starFilter={this.starredFilter}
+              starFilter={this.sidebarStar}
               userList={userList}
             >
               {isLoading && (
