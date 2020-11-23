@@ -213,7 +213,6 @@ class App extends Component {
       searchInput = searchInput.replace(/'/g, '');
       searchInput = searchInput.replace(/"/g, '');
       const searchQuery = `name contains '${searchInput}'`;
-      console.log(searchQuery)
       const dateQuery = (dateInput !== null) ? ` and viewedByMeTime >= '${dateInput.toISOString()}'` : '';
       const newUserList = this.state.userList;
       // checks if search input is empty, or spaces only
@@ -377,11 +376,11 @@ class App extends Component {
           // we don't want to push to top level if root folder is not included in the filter
           if (updatedList[index].storedTopLevelFolders !== null && !this.state.isSearching) {
             if (!this.state.filterQuery.includes(' and not "me" in owners')) {
-            if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder]] === undefined) {
-             // updatedList[index].storedFolderList.push(updatedList[index].folders[currFolder])
-             updatedList[index].storedFolderList[currFolder] =  updatedList[index].folders[currFolder]
+              if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder]] === undefined) {
+                // updatedList[index].storedFolderList.push(updatedList[index].folders[currFolder])
+                updatedList[index].storedFolderList[currFolder] = updatedList[index].folders[currFolder];
+              }
             }
-          }
             while ((!(updatedList[index].storedTopLevelFolders.includes(updatedList[index].storedFolderList[currFolder]))) && (updatedList[index].storedFolderList[currFolder].folder.parents !== undefined) && (updatedList[index].storedFolderList[currFolder].folder.mimeType === 'application/vnd.google-apps.folder')) {
               if (updatedList[index].storedFolderList[updatedList[index].storedFolderList[currFolder].folder.parents[0]] === undefined) {
                 break;
@@ -527,7 +526,6 @@ class App extends Component {
     const fileTypeQuery = user.filteredBy;
     // const query = `${filterQuery} and ${searchQuery} and (${fileTypeQuery})`;
     const query = `${filterQuery} and ${searchQuery}${dateQuery} and (${fileTypeQuery})`;
-    console.log(query)
     let res = [];
     const { sortedBy } = user;
     const retrievePageOfFiles = function (email, response, user) {
@@ -672,10 +670,10 @@ class App extends Component {
     const { userList } = this.state;
     const updatedList = userList;
     for (let i = 0; i < updatedList.length; i++) {
-      let folderList = updatedList[i].folders
+      let folderList = updatedList[i].folders;
       let topLevelFolderList = updatedList[i].topLevelFolders;
       let looseFileList = updatedList[i].looseFiles;
-      
+
       if (updatedList[i].storedFolderList !== null) {
         folderList = updatedList[i].storedFolderList;
         topLevelFolderList = updatedList[i].storedTopLevelFolders;
@@ -689,9 +687,9 @@ class App extends Component {
       }
       topLevelFolderList = starred;
       starred.forEach((f, k) => {
-      topLevelFolderList[k] = f;
+        topLevelFolderList[k] = f;
       });
-    
+
       looseFileList = looseFileList.filter((file) => file.starred);
       const newOpenFolders = updatedList[i].openFolders;
       for (let oId = 0; oId < updatedList[i].openFolders.length; oId++) {
@@ -838,11 +836,13 @@ class App extends Component {
   }
 
   render() {
-    const { userList, uploadRequests, isLoading, isSearching, isFiltering } = this.state;
+    const {
+      userList, uploadRequests, isLoading, isSearching, isFiltering,
+    } = this.state;
     const cookie = cookies.getAll();
     let addedAccount = false;
     for (let i = 0; i < Object.keys(cookie).length; i++) {
-      if ( Object.keys(cookie)[i].includes('@gmail')) {
+      if (Object.keys(cookie)[i].includes('@gmail')) {
         addedAccount = true;
       }
     }
@@ -880,8 +880,8 @@ class App extends Component {
                     closePath={this.closePath}
                     updatePath={this.updatePath}
                     filterFunc={this.changeFilterType}
-                    isSearching = {isSearching}
-                    isFiltering = {isFiltering}
+                    isSearching={isSearching}
+                    isFiltering={isFiltering}
                   />
                   {uploadRequests.length > 0 && (
                     <RequestProgress
