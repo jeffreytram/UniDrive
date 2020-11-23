@@ -15,7 +15,7 @@ class OpenFolder extends Component {
   render() {
     const {
       children, closePath, email, moveExternal, moveWithin,
-      oId, openFolder, path, refreshFunc, shareFile, updatePath, userId,
+      oId, openFolder, path, refreshFunc, shareFile, updatePath, userId, isSearching, isFiltering
     } = this.props;
 
     const folderList = [];
@@ -45,6 +45,8 @@ class OpenFolder extends Component {
               refreshFunc={refreshFunc}
               shareFile={shareFile}
               moveWithin={moveWithin}
+              isSearching = {isSearching}
+              isFiltering = {isFiltering}
             />
           ))}
         </div>
@@ -62,6 +64,8 @@ class OpenFolder extends Component {
                 refreshFunc={refreshFunc}
                 shareFile={shareFile}
                 userId={userId}
+                isSearching = {isSearching}
+                isFiltering = {isFiltering}
               />
             ))}
           </div>
