@@ -1,68 +1,44 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# UniDrive
+UniDrive provides a way to access, organize, and manage several Google Drive accounts in one place.
 
-## Available Scripts
+For a more detailed step-by-step walkthrough, check out the `Delivery Documentation` PDF located in the root folder.
 
-In the project directory, you can run:
+## Pre-requisites
+Node.js, and Node Package Manager (NPM) are required.
 
-### `npm start`
+## ⚙ Google Drive API Setup
+Setup your application and retrieve a **Google Drive API key** and **Client ID** at https://console.developers.google.com/
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🔧 Setting up your config file
+The config file is needed to be able to run the applicaiton locally. At this point, you should have a **Google Drive API key** and **Client ID**.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Create a `config.js` file in the `src` folder.
 
-### `npm test`
+Format the file as so. Replace the placeholder text with the necessary information. Do not remove the quotes.
+```
+export const config = {
+    web: {
+        api_key: "Paste API Key Here",
+        client_id: "Paste Client ID Here",
+     }
+}
+```
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ▶ Running the applicaiton
+If you have not already, install all the dependencies by typing in `npm install`
 
-### `npm run build`
+Then, type `npm start` to run the app in the development mode.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Open http://localhost:3000 to view the application in your browser.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## 🌟 Credits
+Team UniDrive
+- Braeden Collins
+- Sebastian Escobar
+- Robert Giuffreda
+- Jamie Hannukainen
+- May Vy Le
+- Jeffrey Tram
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+## 📜 License
+UniDrive is under the GNU General Public License v2.0
