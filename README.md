@@ -1,5 +1,10 @@
-# UniDrive
+# UniDrive · [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 UniDrive provides a way to access, organize, and manage several Google Drive accounts in one place.
+- **Search** for files and folders across multiple accounts
+- **Refine** your search with familiar and additional filters
+- **View, share, delete, rename, and star** your files and folders
+- **Create and upload** new files to your accounts
+- **Sync** any changes done in UniDrive or Google Drive
 
 ## 📑 Pre-requisites
 Node.js, and Node Package Manager (NPM) are required.
