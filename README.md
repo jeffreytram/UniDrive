@@ -10,7 +10,7 @@ Node.js, and Node Package Manager (NPM) are required.
 Setup your application and retrieve a **Google Drive API key** and **Client ID** at https://console.developers.google.com/
 
 ## 🔧 Setting up your config file
-The config file is needed to be able to run the applicaiton locally. At this point, you should have a **Google Drive API key** and **Client ID**.
+The config file is needed to be able to run the application locally. At this point, you should have a **Google Drive API key** and **Client ID**.
 
 Create a `config.js` file in the `src` folder.
 
@@ -25,7 +25,7 @@ export const config = {
 ```
 
 ## ▶ Running the applicaiton
-If you have not already, install all the dependencies by typing in `npm install`
+Install all dependencies by typing in `npm install`.
 
 Then, type `npm start` to run the app in the development mode.
 
