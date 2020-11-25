@@ -1,15 +1,16 @@
 # UniDrive
 UniDrive provides a way to access, organize, and manage several Google Drive accounts in one place.
 
-For a more detailed step-by-step walkthrough, check out the `Delivery Documentation` PDF located in the root folder.
-
-## Pre-requisites
+## 📑 Pre-requisites
 Node.js, and Node Package Manager (NPM) are required.
 
 ## ⚙ Google Drive API Setup
-Setup your application and retrieve a **Google Drive API key** and **Client ID** at https://console.developers.google.com/
+In the [Google Developers Console](https://console.developers.google.com/),
+- Setup your application
+- Get a **Google Drive API key** and **Client ID**
+- Add http://localhost:3000 as an Authorized JavaScript Origin URI
 
-## 🔧 Setting up your config file
+## 🛠 Setting up your config file
 The config file is needed to be able to run the application locally. At this point, you should have a **Google Drive API key** and **Client ID**.
 
 Create a `config.js` file in the `src` folder.
@@ -24,7 +25,7 @@ export const config = {
 }
 ```
 
-## ▶ Running the applicaiton
+## 🚀 Running the applicaiton
 Install all dependencies by typing in `npm install`.
 
 Then, type `npm start` to run the app in the development mode.
@@ -42,3 +43,6 @@ Team UniDrive
 
 ## 📜 License
 UniDrive is under the GNU General Public License v2.0
+
+## 📚 Additional Documentation
+For a more detailed step-by-step walkthrough, check out the `Delivery Documentation` PDF located in the root folder.
