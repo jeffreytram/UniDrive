@@ -2,7 +2,7 @@
   position: fixed;
   right: 15px;
   bottom: 15px;
-  background-color: rgba(30, 30, 30, .8);
+  background-color: var(--bg-alpha);
   color: var(--main-bg);
   padding: 10px 20px;
   border-radius: 15px;
